@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollEmpire - Digital Real Estate</title>
+    <meta name="description" content="Your destination for premium digital assets and online solutions">
+    <meta name="author" content="ScrollEmpire">
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="ScrollEmpire - Digital Real Estate">
+    <meta property="og:description" content="Your destination for premium digital assets and online solutions">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
+
+
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ asset('css/styles.css')}}">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="#" class="navbar-logo">Webify</a>
+
+    <div class="navbar-links">
+        <a href="#products" class="navbar-link">Products</a>
+        <a href="#about" class="navbar-link">About</a>
+        <a href="#contact" class="navbar-link">Contact</a>
+    </div>
+
+    <div class="navbar-actions">
+       <a href="{{ path('app_login') }}"> <button class="icon-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </button></a>
+
+        <div class="navbar-cart">
+            <a href="{{ path('app_login') }}"> <button class="icon-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <span class="cart-count">0</span>
+                </button></a>
+        </div>
+       <a href="{{ path('app_login') }}"  class="navbar-link">
+        <button class="mobile-menu-btn icon-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button></a>
+    </div>
+    <a href="{{ path('app_login') }}" class="btn btn-outline-light">Login</a>
+
+</nav>
+
+<!-- Main scroll animation container -->
+<div class="wrapper">
+    <div class="content">
+        <section class="section hero">
+            <div class="scroll-appear-div position-fixed d-flex justify-content-center align-items-center text-center">
+                <div class="bg-transparent text-white p-4" style="max-width: 700px; border-radius: 20px;">
+                    <h2 class="display-4 font-weight-bold" style="color: rgb(30, 27, 75);">Create Your Own World</h2>
+                    <div id="sd-container">
+                        <div class="arrow"></div>
+                        <div class="arrow"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section gradient-purple"  style="background-image: url(https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&auto=format&fit=crop&w=2000&q=80)">
+            <div class="section-message" >
+                <h2>Craft Your Digital Kingdom</h2>
+                <p>"The web is your canvas - we provide the brushes to paint your vision."</p>
+            </div>
+        </section>
+
+        <section class="py-5"  id="login"  style="background-color: #a95fd5;">
+            <div class="container">
+                <div class="row align-items-center">
+
+                    <!-- Animated Image Column -->
+                    <div style="background-color:white" class="col-md-6 mb-4 mb-md-0">
+                        <img src="https://assets.market-storefront.envato-static.com/storefront/assets/home/themeforest/hero-image--popular-items-2963d5759f434e6691a0bb5363bf2d1707c8885ab10b6dba3b0648f8c5f94da5.webp"
+                             alt="Exclusive Products"
+                             class="img-fluid rounded-3 shadow animate__animated animate__fadeInLeft">
+                    </div>
+
+                    <!-- Text & Button Column with Animation -->
+                    <div class="col-md-6 text-white text-center text-md-start ps-md-5 animate__animated animate__fadeInRight">
+                        <h2 class="fw-bold mb-3">Member Exclusive Content</h2>
+                        <p class="mb-4">Please login to access our premium products.</p>
+                        <a href="{{ path('app_login') }}"
+                           class="btn btn-light btn-lg px-4 animate__animated animate__pulse animate__infinite">
+                            Login Now
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="image-container">
+        <img src="https://assets-global.website-files.com/63ec206c5542613e2e5aa784/643312a6bc4ac122fc4e3afa_main%20home.webp" alt="Digital Empire" class="main-image">
+    </div>
+</div>
+
+<!-- Products Section -->
+<section id="products" class="products-section">
+    <h2 class="section-title">Build Your Digital Empire</h2>
+
+    <div class="products-grid">
+        <!-- Product 1 -->
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1493119508027-2b584f234d6c?q=80&w=1000&auto=format&fit=crop" alt="Premium Domain Name" class="product-image">
+            <div class="product-details">
+                <h3 class="product-title">Premium Domain Name</h3>
+                <div class="product-price">$899</div>
+                <p class="product-description">High-value domain name perfect for your business with SEO benefits and brand recognition.</p>
+                <a href="{{ path('app_login') }}" ><button class="add-to-cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Add to Cart
+                </button></a>
+            </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop" alt="E-Commerce Template" class="product-image">
+            <div class="product-details">
+                <h3 class="product-title">E-Commerce Template</h3>
+                <div class="product-price">$499</div>
+                <p class="product-description">Fully responsive e-commerce template with payment processing and inventory management.</p>
+                <a href="{{ path('app_login') }}" > <button class="add-to-cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Add to Cart
+                </button></a>
+            </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop" alt="SEO Package" class="product-image">
+            <div class="product-details">
+                <h3 class="product-title">SEO Package</h3>
+                <div class="product-price">$349</div>
+                <p class="product-description">Complete SEO optimization for your digital property with ongoing support and analytics.</p>
+                <a href="{{ path('app_login') }}" ><button class="add-to-cart" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Add to Cart
+                    </button> </a>
+            </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=1000&auto=format&fit=crop" alt="Brand Identity Pack" class="product-image">
+            <div class="product-details">
+                <h3 class="product-title">Brand Identity Pack</h3>
+                <div class="product-price">$799</div>
+                <p class="product-description">Comprehensive brand identity package including logo, color schemes, and brand guidelines.</p>
+                <a href="{{ path('app_login') }}" > <button class="add-to-cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Add to Cart
+                </button></a>
+            </div>
+        </div>
+
+        <!-- Product 5 -->
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop" alt="Marketing Analytics" class="product-image">
+            <div class="product-details">
+                <h3 class="product-title">Marketing Analytics</h3>
+                <div class="product-price">$249</div>
+                <p class="product-description">Advanced analytics dashboard for tracking your marketing campaigns and digital performance.</p>
+                <a href="{{ path('app_login') }}" > <button class="add-to-cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Add to Cart
+                </button></a>
+            </div>
+        </div>
+
+        <!-- Product 6 -->
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1000&auto=format&fit=crop" alt="Social Media Package" class="product-image">
+            <div class="product-details">
+                <h3 class="product-title">Social Media Package</h3>
+                <div class="product-price">$599</div>
+                <p class="product-description">Complete social media management with content creation and growth strategies.</p>
+                <a href="{{ path('app_login') }}" ><button class="add-to-cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Add to Cart
+                    </button></a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Developers Contact Section -->
+<section id="contact" class="py-5" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">Meet Our Developers</h2>
+                <p class="lead">Get in touch with our talented development team</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Developer 1 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://www.w3schools.com/howto/img_avatar.png" class="rounded-circle mb-3" width="100" alt="Developer">
+                        <h5 class="card-title">Amr Slama</h5>
+                        <p class="text-muted mb-2">Fullstack Engineer</p>
+                        <div class="d-flex justify-content-center gap-2 mb-3">
+                            <a href="https://github.com/AmrDroid-git" class="text-primary"><i class="fab fa-github"></i></a>
+                            <a href="https://www.linkedin.com/in/slama-amr-27834b339/" class="text-primary"><i class="fab fa-linkedin"></i></a>
+                            <a href="mailto:amr.slama@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
+                        </div>
+                        <small class="d-block text-muted">
+                            <i class="fas fa-phone me-2"></i> +216 28123673
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developer 2 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://scontent.ftun1-2.fna.fbcdn.net/v/t39.30808-1/493061104_3052157518292133_607520065773271803_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=111&ccb=1-7&_nc_sid=e99d92&_nc_ohc=CgheXOOQL_kQ7kNvwEq3s0Y&_nc_oc=AdmfVkqocghfCg4ZxQAlGQdNZ9eibis1RnKRyombZMV4NdJWUh2ikpK_QGnp7oB1M4g&_nc_zt=24&_nc_ht=scontent.ftun1-2.fna&_nc_gid=yFtVu6Jq-qlg16-RbfmUlA&oh=00_AfEWi4rkZLxjyjP7nCgQpbCRE6PatSQUcOg0dZJtD1MRwg&oe=681DE782" class="rounded-circle mb-3" width="100" alt="Developer">
+                        <h5 class="card-title">Sinda Ferchichi</h5>
+                        <p class="text-muted mb-2">Software Engineer</p>
+                        <div class="d-flex justify-content-center gap-2 mb-3">
+                            <a href="https://github.com/sendaferchichi" class="text-primary"><i class="fab fa-github"></i></a>
+                            <a href="https://www.linkedin.com/in/ferchichi-sinda-7115a0333/" class="text-primary"><i class="fab fa-linkedin"></i></a>
+                            <a href="mailto:senda.ferchichi@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
+                        </div>
+                        <small class="d-block text-muted">
+                            <i class="fas fa-phone me-2"></i> +216 57069847
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developer 3 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://scontent.ftun1-2.fna.fbcdn.net/v/t39.30808-6/438162187_1826671474471227_7845581713543393157_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=wpbT5NYcNQoQ7kNvwGbAWZt&_nc_oc=AdmgPZPv5NJBh3wSyOc_e7Jfj3RMDK4n0TmKB0HCaPUAqgqiCXzRiAGlatjdOrA0DOg&_nc_zt=23&_nc_ht=scontent.ftun1-2.fna&_nc_gid=oKhWLFgchoeCdFLhkS5N-w&oh=00_AfGLzV7VfNDeye3HHxQUHfaat7O7Bs4jDjr7-NbU2CdiJw&oe=681DBB6C" class="rounded-circle mb-3" width="100" alt="Developer">
+                        <h5 class="card-title">Moetaz Fradi</h5>
+                        <p class="text-muted mb-2">AI Engineer</p>
+                        <div class="d-flex justify-content-center gap-2 mb-3">
+                            <a href="https://github.com/Moetez-Fradi" class="text-primary"><i class="fab fa-github"></i></a>
+                            <a href="https://www.linkedin.com/in/moetez-fradi-349b2933b/" class="text-primary"><i class="fab fa-linkedin"></i></a>
+                            <a href="mailto:moetez.fradi@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
+                        </div>
+                        <small class="d-block text-muted">
+                            <i class="fas fa-phone me-2"></i> +216 48000136
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developer 4 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <img src="https://scontent.ftun1-2.fna.fbcdn.net/v/t39.30808-1/298802009_1772842319727569_2734529842139955722_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=e99d92&_nc_ohc=HAnQ-TvAOz0Q7kNvwExFN3u&_nc_oc=Adm3Ho5_uFuD7Wqx3ujbyO8bFiq1x8pG5Np9hnEVQWcRIWpH-5X9i9OcnjFkJBS2fp8&_nc_zt=24&_nc_ht=scontent.ftun1-2.fna&_nc_gid=x1l0hhbePXtMIaQ00oc44Q&oh=00_AfH0akrymPWQakUN0VTJe0OGs-jn-wMa2EOfNoLfAl-ARQ&oe=681DC139" class="rounded-circle mb-3" width="100" alt="Developer">
+                        <h5 class="card-title">Rakia Tsouri</h5>
+                        <p class="text-muted mb-2">Software Engineer</p>
+                        <div class="d-flex justify-content-center gap-2 mb-3">
+                            <a href="https://github.com/rakia-tsouri" class="text-primary"><i class="fab fa-github"></i></a>
+                            <a href="https://www.linkedin.com/in/rakia-tsouri-795053303/" class="text-primary"><i class="fab fa-linkedin"></i></a>
+                            <a href="mailto:tsourirakia88@gmail.com" class="text-primary"><i class="fas fa-envelope"></i></a>
+                        </div>
+                        <small class="d-block text-muted">
+                            <i class="fas fa-phone me-2"></i> +216 21798827
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer  class="footer">
+    <div  id="about" class="footer-logo">Webify</div>
+    <p>Your destination for premium digital assets and online solutions</p></br>
+    <br>We're a team of four passionate developer students from INSAT, building the future one line of code at a time. At Webify, we combine academic knowledge with practical expertise to deliver premium digital solutions.
+
+        What We Offer:
+
+        Premium website templates & UI kits </br>
+
+
+
+    Full-stack development services</br>
+
+
+
+    Our mission is to bridge classroom concepts with real-world digital needs, offering affordable yet high-quality solutions for businesses and creators. As students ourselves, we understand the importance of budget-friendly options without compromising on quality.</br>
+
+    <i  style="color: #2a1ec6;font-size: large">"From our laptops at INSAT to your digital presence - we make web excellence accessible."</i></p>
+
+
+    <div class="footer-links">
+        <a href="#" class="footer-link">Home</a>
+        <a href="#products" class="footer-link">Products</a>
+        <a href="#about" class="footer-link">About</a>
+        <a href="#contact" class="footer-link">Contact</a>
+        <a href="#privacy" class="footer-link">Privacy Policy</a>
+    </div>
+
+    <div class="footer-copyright">
+        &copy; <span id="current-year"></span> Webify. All rights reserved.
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script src="{{ asset('js/script.js') }}"></script>
+</body>
+</html>

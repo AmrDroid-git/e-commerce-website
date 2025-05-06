@@ -1,0 +1,175 @@
+ <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="auth-container p-4 rounded">
+                            {# Login Form #}
+                            <div id="login-form">
+                                <h3 class="text-white mb-4">Sign In</h3>
+                                <form action="{{ path('app_login') }}" method="post">
+                                    {% if error %}
+                                        <div class="alert alert-danger">
+                                            {{ error.messageKey|trans(error.messageData ?? {}, 'security') }}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label text-white">Email</label>
+                                        <input type="email" class="form-control" id="username" name="_username" value="{{ last_username }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label text-white">Password</label>
+                                        <input type="password" class="form-control" id="password" name="_password" required>
+                                    </div>
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                    <button type="submit" class="btn btn-light w-100">Login</button>
+                                </form>
+                                <p class="text-white mt-3 text-center">
+                                    Don't have an account?
+                                    <a href="#" class="text-light" onclick="showRegisterForm()">Register here</a>
+                                </p>
+                            </div>
+
+                            {# Registration Form (hidden by default) #}
+                            <div id="register-form" style="display:none;">
+                                <h3 class="text-white mb-4">Create Account</h3>
+                                {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                                <div class="mb-3">
+                                    {{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_row(registrationForm.plainPassword, {
+                                        'label': 'Password',
+                                        'attr': {'class': 'form-control'}
+                                    }) }}
+                                </div>
+                                <div class="mb-3 form-check">
+                                    {{ form_row(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                                </div>
+                                <button type="submit" class="btn btn-light w-100">Register</button>
+                                {{ form_end(registrationForm) }}
+                                <p class="text-white mt-3 text-center">
+                                    Already have an account?
+                                    <a href="#" class="text-light" onclick="showLoginForm()">Login here</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <section id="products" class="products-section">
+                <h2 class="section-title">Build Your Digital Empire</h2>
+
+                <div class="products-grid">
+                    <!-- Product 1 -->
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1493119508027-2b584f234d6c?q=80&w=1000&auto=format&fit=crop" alt="Premium Domain Name" class="product-image">
+                        <div class="product-details">
+                            <h3 class="product-title">Premium Domain Name</h3>
+                            <div class="product-price">$899</div>
+                            <p class="product-description">High-value domain name perfect for your business with SEO benefits and brand recognition.</p>
+                            <button class="add-to-cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop" alt="E-Commerce Template" class="product-image">
+                        <div class="product-details">
+                            <h3 class="product-title">E-Commerce Template</h3>
+                            <div class="product-price">$499</div>
+                            <p class="product-description">Fully responsive e-commerce template with payment processing and inventory management.</p>
+                            <button class="add-to-cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 3 -->
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop" alt="SEO Package" class="product-image">
+                        <div class="product-details">
+                            <h3 class="product-title">SEO Package</h3>
+                            <div class="product-price">$349</div>
+                            <p class="product-description">Complete SEO optimization for your digital property with ongoing support and analytics.</p>
+                            <button class="add-to-cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 4 -->
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=1000&auto=format&fit=crop" alt="Brand Identity Pack" class="product-image">
+                        <div class="product-details">
+                            <h3 class="product-title">Brand Identity Pack</h3>
+                            <div class="product-price">$799</div>
+                            <p class="product-description">Comprehensive brand identity package including logo, color schemes, and brand guidelines.</p>
+                            <button class="add-to-cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 5 -->
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop" alt="Marketing Analytics" class="product-image">
+                        <div class="product-details">
+                            <h3 class="product-title">Marketing Analytics</h3>
+                            <div class="product-price">$249</div>
+                            <p class="product-description">Advanced analytics dashboard for tracking your marketing campaigns and digital performance.</p>
+                            <button class="add-to-cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 6 -->
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1000&auto=format&fit=crop" alt="Social Media Package" class="product-image">
+                        <div class="product-details">
+                            <h3 class="product-title">Social Media Package</h3>
+                            <div class="product-price">$599</div>
+                            <p class="product-description">Complete social media management with content creation and growth strategies.</p>
+                            <button class="add-to-cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>

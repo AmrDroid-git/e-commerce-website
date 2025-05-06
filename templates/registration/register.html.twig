@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register - Webify{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <nav class="topbar">
+        <a href="#" class="topbar-logo">Webify</a>
+        <div class="topbar-links">
+            <a href="#products" class="topbar-link">Products</a>
+            <a href="#about" class="topbar-link">About</a>
+            <a href="#contact" class="topbar-link">Contact</a>
+        </div>
+        <div class="topbar-actions">
+            <a href="{{ path('app_login') }}" class="btn btn-outline-light">Login</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1 class="h3 mb-3 font-weight-normal">Create Account</h1>
+                <p class="text-muted">Join Webify today</p>
+            </div>
+
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+            {% endfor %}
+
+            {{ form_start(registrationForm, {'attr': {'class': 'auth-form'}}) }}
+
+            <div class="mb-3">
+                {{ form_row(registrationForm.username, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Choose a username'
+                    },
+                    'label_attr': {'class': 'form-label'}
+                }) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(registrationForm.email, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Your email address'
+                    },
+                    'label_attr': {'class': 'form-label'}
+                }) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(registrationForm.plainPassword, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Create a password',
+                        'oninput': 'checkPasswordStrength(this.value)'
+                    },
+                    'label': 'Password',
+                    'label_attr': {'class': 'form-label'}
+                }) }}
+                <div class="password-strength mt-2">
+                    <span id="password-strength-bar"></span>
+                </div>
+                <small class="text-muted">At least 8 characters with numbers and symbols</small>
+            </div>
+
+
+            <div class="mb-3">
+                {{ form_row(registrationForm.agreeTerms, {
+                    'label_attr': {'class': 'form-label'}
+                }) }}
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-auth">Register</button>
+            </div>
+
+            <div class="form-footer mt-4">
+                <p>Already have an account? <a href="{{ path('app_login') }}">Sign in</a></p>
+            </div>
+
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+
+    <script>
+        function checkPasswordStrength(password) {
+            const strengthBar = document.getElementById('password-strength-bar');
+            let strength = 0;
+
+            if (password.length > 7) strength += 1;
+            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength += 1;
+            if (password.match(/([0-9])/)) strength += 1;
+            if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1;
+
+            switch(strength) {
+                case 0:
+                    strengthBar.style.width = '0%';
+                    strengthBar.style.backgroundColor = 'transparent';
+                    break;
+                case 1:
+                    strengthBar.style.width = '25%';
+                    strengthBar.style.backgroundColor = '#ff4d4d';
+                    break;
+                case 2:
+                    strengthBar.style.width = '50%';
+                    strengthBar.style.backgroundColor = '#ffa64d';
+                    break;
+                case 3:
+                    strengthBar.style.width = '75%';
+                    strengthBar.style.backgroundColor = '#ffff4d';
+                    break;
+                case 4:
+                    strengthBar.style.width = '100%';
+                    strengthBar.style.backgroundColor = '#4dff4d';
+                    break;
+            }
+        }
+    </script>
+{% endblock %}
