@@ -1,47 +1,62 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Liste des produits{% endblock %}
-
+ {% block stylesheets %}{{ parent() }}{% endblock %}
 {% block body %}
-    <h1>Produits</h1>
+    <div class="container mt-4">
+        <h1 class="mb-4">Liste des Produits</h1>
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <a href="#" class="btn btn-primary">Ajouter un produit</a>
-    {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="#" class="btn btn-primary mb-4">
+                <i class="bi bi-plus-circle"></i> Ajouter un produit
+            </a>
+        {% endif %}
 
-    <div class="row mt-4">
-        {% for product in products %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    {% if product.imageUrl %}
-                        <img src="{{ asset('uploads/products/' ~ product.imageUrl) }}" class="card-img-top" alt="{{ product.name }}">
-                    {% else %}
-                        <img src="{{ asset('images/default.jpg') }}" class="card-img-top" alt="Image par défaut">
-                    {% endif %}
-
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">Catégorie : {{ product.category }}</p>
-                        <p class="card-text">Prix : {{ product.price }} €</p>
-                        <p class="card-text">Note : {{ product.rating }}/5</p>
-
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a href="#" class="btn btn-warning">Modifier</a>
-                            <form method="post" action="#" style="display:inline-block;" onsubmit="return confirm('Supprimer ce produit ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
-                                <button class="btn btn-danger">Supprimer</button>
-                            </form>
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if product.imageUrl %}
+                            <img src="{{ asset('uploads/products/' ~ product.imageUrl) }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="{{ asset('images/web.png') }}" class="card-img-top" alt="Image par défaut">
                         {% endif %}
 
-                        {% if is_granted('ROLE_USER') %}
-                            <a href="#" class="btn btn-success">Ajouter au panier</a>
-                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text mb-1"><strong>Catégorie :</strong> {{ product.category }}</p>
+                            <p class="card-text mb-1"><strong>Prix :</strong> {{ product.price }} €</p>
+                            <p class="card-text mb-3"><strong>Note :</strong> {{ product.rating }}/5</p>
+
+                            <div class="mt-auto">
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="#" class="btn btn-sm btn-warning me-2">
+                                        <i class="bi bi-pencil-square"></i> Modifier
+                                    </a>
+
+                                    <form method="post" action="#" class="d-inline" onsubmit="return confirm('Supprimer ce produit ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                        <button class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Supprimer
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                                {% if is_granted('ROLE_USER') %}
+                                    <a href="#" class="btn btn-sm btn-success mt-2">
+                                        <i class="bi bi-cart-plus"></i> Ajouter au panier
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <p>Aucun produit trouvé.</p>
-        {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">Aucun produit trouvé.</div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
 
