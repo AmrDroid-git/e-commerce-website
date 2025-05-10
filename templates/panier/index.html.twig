@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+{#    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">#}
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+{% endblock %}
+{% block title %}{{ panier.user.username }}'s Cart - Webify{% endblock %}
+
+{% block body %}
+    <div class="w-100 px-4 mt-4" id="dashboardContent">
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center justify-content-between text-white">
+                <div class="d-flex align-items-center">
+                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="User"
+                         class="me-2" style="width: 50px; height: 50px; border-radius: 50%;">
+                    <h1 class="h3 mb-0 text-dark">{{ panier.user.username }}'s Shopping Cart</h1>                </div>
+                <a href="{{ path('product') }}" class="btn btn-outline-dark">
+                    <i class="fas fa-arrow-left me-2 text-dark"></i>Continue Shopping
+                </a>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="h5 mb-0"><i class="fas fa-shopping-cart me-2"></i>Cart Items ({{ panier.products|length }})</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if panier.products is empty %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-cart-arrow-down fa-3x text-muted mb-3"></i>
+                                <p class="h5 text-muted">Your cart is empty</p>
+                            </div>
+                        {% else %}
+                            {% for product in panier.products %}
+                                <div class="cart-item d-flex mb-4 pb-2 border-bottom">
+                                    <img src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                         class="flex-shrink-0 me-3"
+                                         alt="{{ product.name }}"
+                                         style="width: 120px; height: 80px; object-fit: cover; border-radius: 8px;">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h5 class="mb-1">{{ product.name }}</h5>
+                                                <p class="mb-1 text-muted small">{{ product.category }}</p>
+                                                <div class="rating small">
+                                                    {% for i in 1..5 %}
+                                                        {% if i <= product.rating %}
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star text-muted"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <p class="h5 mb-1">${{ product.price }}</p>
+                                                <form action="{{ path('app_panier_remove', { 'user': user.id }) }}" method="post" class="d-inline">
+                                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash-alt"></i> Remove
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="h5 mb-0"><i class="fas fa-receipt me-2"></i>Order Summary</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Subtotal ({{ panier.products|length }} items)</span>
+                            <span class="text-success">
+                                {% set total = 0 %}
+                                {% for product in panier.products %}
+                                    {% set total = total + product.price %}
+                                {% endfor %}
+                                {{ total }} €
+                            </span>
+{#                            <span>${{ panier.total|number_format(2) }}</span>#}
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Shipping</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total</span>
+{#                            <span>${{ panier.total|number_format(2) }}</span>#}
+                        </div>
+                        <a
+{#                                href="{{ path('app_checkout') }}"#}
+                           class="btn btn-primary w-100 mt-3"
+                           {% if panier.products is empty %}disabled{% endif %}>
+                            <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

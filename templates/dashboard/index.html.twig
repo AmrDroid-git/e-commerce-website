@@ -60,13 +60,15 @@
 
         <!-- Main Dashboard Content -->
 
-            <div class="page-header mb-4">
-                <div class="d-flex align-items-center text-white">
-                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="User" style="width: 50px; height: 50px; border-radius: 50%;" class="me-2">
-                    <h1>Welcome, User</h1>
-                </div>
-                <p>Welcome back! Here's what's happening with your digital empire.</p>
-            </div>
+    <div class="page-header mb-4">
+        <div class="d-flex align-items-center text-white">
+            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="User" style="width: 50px; height: 50px; border-radius: 50%;" class="me-2">
+            <h1 class="me-auto">Welcome, User</h1>
+
+            <a href="{{ path('app_panier', {'user': app.user.id}) }}" class="btn btn-primary ms-auto">Go to My Panier</a>
+        </div>
+        <p>Welcome back! Here's what's happening with your digital empire.</p>
+    </div>
 
             <!-- Stats Cards -->
             <div class="row stats-row mb-4">
