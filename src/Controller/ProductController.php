@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\Panier;
 use App\Entity\Category; // Assuming you have a Category entity
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +20,6 @@ class ProductController extends AbstractController
         $products = $entityManager->getRepository(Product::class)->findAll();
         $categories = $entityManager->getRepository(Category::class)->findAll();
 
-        // Render the template and pass products and categories
         return $this->render('product/index.html.twig', [
             'products' => $products,
             'categories' => $categories,
