@@ -73,39 +73,48 @@
                 </div>
             </div>
         </section>
-
-        <section class="section gradient-purple"  style="background-image: url(https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&auto=format&fit=crop&w=2000&q=80)">
-            <div class="section-message" >
-                <h2>Craft Your Digital Kingdom</h2>
-                <p>"The web is your canvas - we provide the brushes to paint your vision."</p>
-            </div>
-        </section>
-
-        <section class="py-5"  id="login"  style="background-color: #a95fd5;">
-            <div class="container">
-                <div class="row align-items-center">
-
-                    <!-- Animated Image Column -->
-                    <div style="background-color:white" class="col-md-6 mb-4 mb-md-0">
-                        <img src="https://assets.market-storefront.envato-static.com/storefront/assets/home/themeforest/hero-image--popular-items-2963d5759f434e6691a0bb5363bf2d1707c8885ab10b6dba3b0648f8c5f94da5.webp"
-                             alt="Exclusive Products"
-                             class="img-fluid rounded-3 shadow animate__animated animate__fadeInLeft">
-                    </div>
-
-                    <!-- Text & Button Column with Animation -->
-                    <div class="col-md-6 text-white text-center text-md-start ps-md-5 animate__animated animate__fadeInRight">
-                        <h2 class="fw-bold mb-3">Member Exclusive Content</h2>
-                        <p class="mb-4">Please login to access our premium products.</p>
-                        <a href="{{ path('app_login') }}"
-                           class="btn btn-light btn-lg px-4 animate__animated animate__pulse animate__infinite">
-                            Login Now
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-        </section>
     </div>
+
+    {# About / Trust section with 3 paragraphs #}
+    <section id="about" class="container my-5">
+        <h2 class="text-center mb-4">Why 1,250+ Users Trust Webify</h2>
+
+        <div class="row align-items-center mb-5">
+            <div class="col-md-6">
+                <img src="{{ asset('images/about1.jpg') }}" alt="Happy customers" class="img-fluid rounded">
+            </div>
+            <div class="col-md-6">
+                <p>
+                    At Webify we believe in building relationships first and code second. Over <strong>1,250 satisfied users</strong> rely on our digital-asset marketplace every single day to launch their brands with confidence.
+                    From Fortune 500s to burgeoning startups, our customers rave about how easy and secure it is to find premium domain names, templates, and UI kits—all in one place.
+                </p>
+            </div>
+        </div>
+
+        <div class="row align-items-center mb-5">
+            <div class="col-md-6 order-md-2">
+                <img src="{{ asset('images/about2.jpg') }}" alt="Top-tier support" class="img-fluid rounded">
+            </div>
+            <div class="col-md-6 order-md-1">
+                <p>
+                    Our <strong>24/7 dedicated support</strong> team is what really sets us apart. Questions about compatibility, customizations, or advanced integrations?
+                    We’ve got your back with in-depth documentation, live chat, and video tutorials—so you can go from “just browsing” to “live in production” in no time.
+                </p>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img src="{{ asset('images/about3.jpg') }}" alt="Secure transactions" class="img-fluid rounded">
+            </div>
+            <div class="col-md-6">
+                <p>
+                    Security and reliability aren’t afterthoughts: they’re baked into our platform from day one.
+                    With <strong>PCI-compliant payments</strong>, automated backups, and a 99.9 % uptime guarantee, you can rest easy knowing your assets—and your users—are always protected.
+                </p>
+            </div>
+        </div>
+    </section>
 
     <div class="image-container">
         <img src="https://assets-global.website-files.com/63ec206c5542613e2e5aa784/643312a6bc4ac122fc4e3afa_main%20home.webp" alt="Digital Empire" class="main-image">
@@ -117,113 +126,35 @@
     <h2 class="section-title">Build Your Digital Empire</h2>
 
     <div class="products-grid">
-        <!-- Product 1 -->
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1493119508027-2b584f234d6c?q=80&w=1000&auto=format&fit=crop" alt="Premium Domain Name" class="product-image">
-            <div class="product-details">
-                <h3 class="product-title">Premium Domain Name</h3>
-                <div class="product-price">$899</div>
-                <p class="product-description">High-value domain name perfect for your business with SEO benefits and brand recognition.</p>
-                <a href="{{ path('app_login') }}" ><button class="add-to-cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    Add to Cart
-                </button></a>
+        {# Loop over the real products we passed from HomeController #}
+        {% for product in products %}
+            <div class="product-card animate-fade-in-up">
+                <img
+                        src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                        alt="{{ product.name }}"
+                        class="product-image"
+                >
+                <div class="product-details">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    <div class="product-price">€{{ product.price }}</div>
+                    {% if product.description is defined %}
+                        <p class="product-description">{{ product.description }}</p>
+                    {% endif %}
+                    <form
+                            action="{{ path('app_dashboard') }}"
+                            method="POST"
+                            class="d-inline"
+                    >
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <button type="submit" class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </form>
+                </div>
             </div>
-        </div>
-
-        <!-- Product 2 -->
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop" alt="E-Commerce Template" class="product-image">
-            <div class="product-details">
-                <h3 class="product-title">E-Commerce Template</h3>
-                <div class="product-price">$499</div>
-                <p class="product-description">Fully responsive e-commerce template with payment processing and inventory management.</p>
-                <a href="{{ path('app_login') }}" > <button class="add-to-cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    Add to Cart
-                </button></a>
-            </div>
-        </div>
-
-        <!-- Product 3 -->
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop" alt="SEO Package" class="product-image">
-            <div class="product-details">
-                <h3 class="product-title">SEO Package</h3>
-                <div class="product-price">$349</div>
-                <p class="product-description">Complete SEO optimization for your digital property with ongoing support and analytics.</p>
-                <a href="{{ path('app_login') }}" ><button class="add-to-cart" >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    Add to Cart
-                    </button> </a>
-            </div>
-        </div>
-
-        <!-- Product 4 -->
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=1000&auto=format&fit=crop" alt="Brand Identity Pack" class="product-image">
-            <div class="product-details">
-                <h3 class="product-title">Brand Identity Pack</h3>
-                <div class="product-price">$799</div>
-                <p class="product-description">Comprehensive brand identity package including logo, color schemes, and brand guidelines.</p>
-                <a href="{{ path('app_login') }}" > <button class="add-to-cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    Add to Cart
-                </button></a>
-            </div>
-        </div>
-
-        <!-- Product 5 -->
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop" alt="Marketing Analytics" class="product-image">
-            <div class="product-details">
-                <h3 class="product-title">Marketing Analytics</h3>
-                <div class="product-price">$249</div>
-                <p class="product-description">Advanced analytics dashboard for tracking your marketing campaigns and digital performance.</p>
-                <a href="{{ path('app_login') }}" > <button class="add-to-cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    Add to Cart
-                </button></a>
-            </div>
-        </div>
-
-        <!-- Product 6 -->
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1000&auto=format&fit=crop" alt="Social Media Package" class="product-image">
-            <div class="product-details">
-                <h3 class="product-title">Social Media Package</h3>
-                <div class="product-price">$599</div>
-                <p class="product-description">Complete social media management with content creation and growth strategies.</p>
-                <a href="{{ path('app_login') }}" ><button class="add-to-cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    Add to Cart
-                    </button></a>
-            </div>
-        </div>
+        {% else %}
+            <p class="text-center text-muted">No products available.</p>
+        {% endfor %}
     </div>
 </section>
 <!-- Developers Contact Section -->
