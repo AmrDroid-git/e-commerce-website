@@ -37,6 +37,7 @@ body {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    min-height: 200vh;
 }
 
 .gradient-purple {
@@ -698,4 +699,26 @@ img:hover {
     text-decoration: none;
     font-weight: 500;
     margin-left: 1rem;
+}
+
+/* the About block floats over the lower half of the hero */
+#about {
+    position: absolute;
+    top: 100vh;       /* exactly one viewport height down */
+    left: 0;
+    width: 100%;
+    padding: 4rem 1rem;
+    background: rgba(0,0,0,0.35); /* translucent tint so your text is legible */
+    color: #fff;
+}
+
+/* remove the default white container spacing */
+#about .row {
+    margin: 0;
+}
+
+/* optional: shrink your circular images a bit more */
+#about img {
+    max-width: 120px;
+    border-radius: 50%;
 }

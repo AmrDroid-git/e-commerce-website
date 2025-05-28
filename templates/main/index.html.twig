@@ -73,48 +73,64 @@
                 </div>
             </div>
         </section>
+        {# About / Trust section with 3 paragraphs #}
+        <section id="about" class="container my-5">
+            <h2 class="text-center mb-4">Why 1,250+ Users Trust Webify</h2>
+
+            <div class="row align-items-center mb-5">
+                <div class="col-md-6">
+                    <img
+                            src="{{ asset('images/about1.jpg') }}"
+                            alt="Happy customers"
+                            class="img-fluid"
+                            style="max-width: 150px; border-radius: 50%;"
+                    />
+                </div>
+                <div class="col-md-6">
+                    <p>
+                        At Webify we believe in building relationships first and code second. Over <strong>1,250 satisfied users</strong> rely on our digital-asset marketplace every single day to launch their brands with confidence.
+                        From Fortune 500s to burgeoning startups, our customers rave about how easy and secure it is to find premium domain names, templates, and UI kits—all in one place.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row align-items-center mb-5">
+                <div class="col-md-6 order-md-2">
+                    <img
+                            src="{{ asset('images/about2.jpg') }}"
+                            alt="Top-tier support"
+                            class="img-fluid"
+                            style="max-width: 150px; border-radius: 50%;"
+                    />
+                </div>
+                <div class="col-md-6 order-md-1">
+                    <p>
+                        Our <strong>24/7 dedicated support</strong> team is what really sets us apart. Questions about compatibility, customizations, or advanced integrations?
+                        We’ve got your back with in-depth documentation, live chat, and video tutorials—so you can go from “just browsing” to “live in production” in no time.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+
+                    <img
+                            src="{{ asset('images/about3.jpg') }}"
+                            alt="Secure transactions"
+                            class="img-fluid"
+                            style="max-width: 150px; border-radius: 50%;"
+                    />
+                </div>
+                <div class="col-md-6">
+                    <p>
+                        Security and reliability aren’t afterthoughts: they’re baked into our platform from day one.
+                        With <strong>PCI-compliant payments</strong>, automated backups, and a 99.9 % uptime guarantee, you can rest easy knowing your assets—and your users—are always protected.
+                    </p>
+                </div>
+            </div>
+        </section>
     </div>
 
-    {# About / Trust section with 3 paragraphs #}
-    <section id="about" class="container my-5">
-        <h2 class="text-center mb-4">Why 1,250+ Users Trust Webify</h2>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6">
-                <img src="{{ asset('images/about1.jpg') }}" alt="Happy customers" class="img-fluid rounded">
-            </div>
-            <div class="col-md-6">
-                <p>
-                    At Webify we believe in building relationships first and code second. Over <strong>1,250 satisfied users</strong> rely on our digital-asset marketplace every single day to launch their brands with confidence.
-                    From Fortune 500s to burgeoning startups, our customers rave about how easy and secure it is to find premium domain names, templates, and UI kits—all in one place.
-                </p>
-            </div>
-        </div>
-
-        <div class="row align-items-center mb-5">
-            <div class="col-md-6 order-md-2">
-                <img src="{{ asset('images/about2.jpg') }}" alt="Top-tier support" class="img-fluid rounded">
-            </div>
-            <div class="col-md-6 order-md-1">
-                <p>
-                    Our <strong>24/7 dedicated support</strong> team is what really sets us apart. Questions about compatibility, customizations, or advanced integrations?
-                    We’ve got your back with in-depth documentation, live chat, and video tutorials—so you can go from “just browsing” to “live in production” in no time.
-                </p>
-            </div>
-        </div>
-
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <img src="{{ asset('images/about3.jpg') }}" alt="Secure transactions" class="img-fluid rounded">
-            </div>
-            <div class="col-md-6">
-                <p>
-                    Security and reliability aren’t afterthoughts: they’re baked into our platform from day one.
-                    With <strong>PCI-compliant payments</strong>, automated backups, and a 99.9 % uptime guarantee, you can rest easy knowing your assets—and your users—are always protected.
-                </p>
-            </div>
-        </div>
-    </section>
 
     <div class="image-container">
         <img src="https://assets-global.website-files.com/63ec206c5542613e2e5aa784/643312a6bc4ac122fc4e3afa_main%20home.webp" alt="Digital Empire" class="main-image">
@@ -123,7 +139,7 @@
 
 <!-- Products Section -->
 <section id="products" class="products-section">
-    <h2 class="section-title">Build Your Digital Empire</h2>
+    <h2 class="section-title">Have a look at our products !</h2>
 
     <div class="products-grid">
         {# Loop over the real products we passed from HomeController #}
