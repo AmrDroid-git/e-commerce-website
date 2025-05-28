@@ -701,16 +701,28 @@ img:hover {
     margin-left: 1rem;
 }
 
-/* the About block floats over the lower half of the hero */
-#about {
-    position: absolute;
-    top: 100vh;       /* exactly one viewport height down */
-    left: 0;
-    width: 100%;
+/* — Reveal “customerReview” after scroll — */
+.customerReview {
+    position: relative;
+    margin-top: 100vh;                /* sit just below the hero */
     padding: 4rem 1rem;
-    background: rgba(0,0,0,0.35); /* translucent tint so your text is legible */
+    background: rgba(0, 0, 0, 0.5) !important;
     color: #fff;
+    border-radius: 12px;
+
+    /* start hidden & shifted down */
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    z-index: 1;
 }
+
+.customerReview.scroll-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
 
 /* remove the default white container spacing */
 #about .row {
@@ -721,4 +733,11 @@ img:hover {
 #about img {
     max-width: 120px;
     border-radius: 50%;
+}
+
+
+.customerReview {
+    /* bring it above the hero image */
+    position: relative;
+    z-index: 3;
 }
