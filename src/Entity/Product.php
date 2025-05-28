@@ -37,6 +37,9 @@ class Product
     #[ORM\ManyToMany(targetEntity: Panier::class, mappedBy: 'Products')]
     private Collection $paniers;
 
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->paniers = new ArrayCollection();
@@ -55,7 +58,6 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -67,7 +69,6 @@ class Product
     public function setCategory(string $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -79,7 +80,6 @@ class Product
     public function setPrice(string $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -91,7 +91,6 @@ class Product
     public function setRating(int $rating): static
     {
         $this->rating = $rating;
-
         return $this;
     }
 
@@ -103,7 +102,6 @@ class Product
     public function setImageUrl(string $imageUrl): static
     {
         $this->imageUrl = $imageUrl;
-
         return $this;
     }
 
@@ -121,7 +119,6 @@ class Product
             $this->paniers->add($panier);
             $panier->addProduct($this);
         }
-
         return $this;
     }
 
@@ -130,7 +127,17 @@ class Product
         if ($this->paniers->removeElement($panier)) {
             $panier->removeProduct($this);
         }
+        return $this;
+    }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
         return $this;
     }
 }
