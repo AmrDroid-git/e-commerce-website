@@ -39,6 +39,7 @@ class RegistrationController extends AbstractController
             $user->setPanier($panier);
             $panier->setUser($user);
             // encode the plain password
+
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $entityManager->persist($user);

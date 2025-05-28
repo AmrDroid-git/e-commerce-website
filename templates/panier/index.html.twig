@@ -110,9 +110,7 @@
                             <span>Total</span>
 {#                            <span>${{ panier.total|number_format(2) }}</span>#}
                         </div>
-                        <a
-{#                                href="{{ path('app_checkout') }}"#}
-                           class="btn btn-primary w-100 mt-3"
+                        <a href="{{ path('app_checkout') }}" class="btn btn-primary w-100 mt-3"
                            {% if panier.products is empty %}disabled{% endif %}>
                             <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
                         </a>

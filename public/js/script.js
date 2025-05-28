@@ -201,3 +201,15 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', addToCart);
     });
 });
+
+
+
+window.addEventListener('scroll', () => {
+    const about = document.querySelector('.constumerReview');
+    const triggerPoint = window.innerHeight * 0.8;
+    if (about.getBoundingClientRect().top < triggerPoint) {
+        about.classList.add('visible');
+    } else {
+        about.classList.remove('visible');
+    }
+});

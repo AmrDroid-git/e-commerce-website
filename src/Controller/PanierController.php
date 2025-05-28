@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Product;
 use App\Repository\PanierRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;

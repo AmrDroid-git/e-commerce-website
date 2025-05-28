@@ -2,24 +2,21 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationFormType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'main')]
-    public function index(): Response {
+    #[Route('/', name: 'app_home')]
+    public function index(ProductRepository $products): Response
+    {
+        $allProducts = $products->findAll();
 
-
-
-        return $this->render('main/index.html.twig');
+        return $this->render('main/index.html.twig', [
+            'products' => $allProducts,
+        ]);
     }
 
 
