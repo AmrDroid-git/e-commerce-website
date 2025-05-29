@@ -3,6 +3,8 @@
 namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CommandeRepository;
+
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande

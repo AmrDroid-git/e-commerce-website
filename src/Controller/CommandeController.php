@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Commande;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted; // Ou Sensio si Symfony < 6.2
 
 class CommandeController extends AbstractController
 {
@@ -23,19 +27,23 @@ class CommandeController extends AbstractController
             'commandes' => $commandes,
         ]);
     }
+
     #[Route('/commande/delete/{id}', name: 'commande_delete')]
     #[IsGranted('ROLE_USER')]
     public function delete(Commande $commande, EntityManagerInterface $em): RedirectResponse
     {
         $user = $this->getUser();
-        // Vérifie si la commande appartient à l'utilisateur
+
         if ($commande->getUser() !== $user) {
             $this->addFlash('error', 'Vous ne pouvez pas supprimer cette commande.');
             return $this->redirectToRoute('app_commandes');
         }
+
         $em->remove($commande);
         $em->flush();
+
         $this->addFlash('success', 'Commande annulée avec succès.');
         return $this->redirectToRoute('app_commandes');
     }
 }
+
