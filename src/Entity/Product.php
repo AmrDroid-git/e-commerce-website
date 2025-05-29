@@ -31,6 +31,10 @@ class Product
     #[ORM\Column(length: 255)]
     private ?string $imageUrl = null;
 
+    //quantity column
+    #[ORM\Column]
+    private ?int $quantity = null;
+
     /**
      * @var Collection<int, Panier>
      */
@@ -54,9 +58,9 @@ class Product
 
     public function __construct()
     {
-        $this->paniers = new ArrayCollection();
+        $this->paniers  = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->ratings = new ArrayCollection();
+        $this->ratings  = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,6 +123,17 @@ class Product
         return $this;
     }
 
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): static
+    {
+        $this->quantity = $quantity;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Panier>
      */
@@ -129,7 +144,7 @@ class Product
 
     public function addPanier(Panier $panier): static
     {
-        if (!$this->paniers->contains($panier)) {
+        if (! $this->paniers->contains($panier)) {
             $this->paniers->add($panier);
             $panier->addProduct($this);
         }
@@ -165,7 +180,7 @@ class Product
 
     public function addComment(Comment $comment): static
     {
-        if (!$this->comments->contains($comment)) {
+        if (! $this->comments->contains($comment)) {
             $this->comments->add($comment);
             $comment->setProduct($this);
         }
@@ -175,13 +190,9 @@ class Product
 
     public function removeComment(Comment $comment): static
     {
-        if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
-            if ($comment->getProduct() === $this) {
-                $comment->setProduct(null);
-            }
+        if ($this->comments->removeElement($comment) && $comment->getProduct() === $this) {
+            $comment->setProduct(null);
         }
-
         return $this;
     }
 
@@ -195,7 +206,7 @@ class Product
 
     public function addRating(Rating $rating): static
     {
-        if (!$this->ratings->contains($rating)) {
+        if (! $this->ratings->contains($rating)) {
             $this->ratings->add($rating);
             $rating->setProduct($this);
         }
@@ -205,13 +216,9 @@ class Product
 
     public function removeRating(Rating $rating): static
     {
-        if ($this->ratings->removeElement($rating)) {
-            // set the owning side to null (unless already changed)
-            if ($rating->getProduct() === $this) {
-                $rating->setProduct(null);
-            }
+        if ($this->ratings->removeElement($rating) && $rating->getProduct() === $this) {
+            $rating->setProduct(null);
         }
-
         return $this;
     }
 }

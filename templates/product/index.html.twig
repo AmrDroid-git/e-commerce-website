@@ -3,6 +3,17 @@
 {% block title %}Liste des produits - ScriptSphere{% endblock %}
 {% block stylesheets %}{{ parent() }}{% endblock %}
 {% block body %}
+
+    {% for label, messages in app.flashes %}
+        {% for msg in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ msg }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+
     <div class="w-100 px-4 mt-4" id="dashboardContent">
         <div class="page-header mb-4">
             <div class="d-flex align-items-center justify-content-between">

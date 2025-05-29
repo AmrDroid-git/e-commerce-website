@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Product;
 use App\Repository\PanierRepository;
 use App\Repository\ProductRepository;
@@ -18,11 +17,12 @@ final class PanierController extends AbstractController
     #[Route('/panier/{user}', name: 'app_panier')]
     public function index(PanierRepository $repository, Security $security): Response
     {
-        $user = $security->getUser();
+        $user   = $security->getUser();
         $panier = $repository->findOneBy(['user' => $user]);
+
         return $this->render('panier/index.html.twig', [
             'panier' => $panier,
-            'user' => $user
+            'user'   => $user,
         ]);
     }
 
@@ -35,20 +35,29 @@ final class PanierController extends AbstractController
         Security $security
     ): Response {
         $productId = $request->request->get('product_id');
-        $user = $security->getUser();
-        $panier = $panierRepository->findOneBy(['user' => $user]);
-        $product = $productRepository->find($productId);
+        $user      = $security->getUser();
+        $panier    = $panierRepository->findOneBy(['user' => $user]);
+        $product   = $productRepository->find($productId);
 
-        if ($panier && $product) {
-            $panier->addProduct($product);
-            $entityManager->persist($panier);
-            $entityManager->flush();
-            $this->addFlash('success', 'Product added to panier successfully.');
-        } else {
-            $this->addFlash('error', 'Failed to add product to panier.');
+        // If panier or product not found
+        if (! $panier || ! $product) {
+            $this->addFlash('danger', 'Impossible d’ajouter le produit au panier.');
+            return $this->redirectToRoute('product');
         }
 
-        return $this->redirectToRoute('app_panier', ['user' => $user->getId()]);
+        // 1. Check stock quantity
+        if ($product->getQuantity() === 0) {
+            $this->addFlash('danger', 'Le stock est vide de ce produit');
+            return $this->redirectToRoute('product');
+        }
+
+        // 2. Add to panier if in stock
+        $panier->addProduct($product);
+        $entityManager->persist($panier);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Produit ajouté au panier avec succès.');
+        return $this->redirectToRoute('product');
     }
 
     #[Route('/panier/{user}/remove', name: 'app_panier_remove', methods: ['DELETE', 'POST'])]
@@ -60,15 +69,17 @@ final class PanierController extends AbstractController
         Security $security
     ): Response {
         $productId = $request->request->get('product_id');
-        $user = $security->getUser();
-        $panier = $panierRepository->findOneBy(['user' => $user]);
-        $product = $productRepository->find($productId);
+        $user      = $security->getUser();
+        $panier    = $panierRepository->findOneBy(['user' => $user]);
+        $product   = $productRepository->find($productId);
+
         if ($panier && $product) {
             $panier->removeProduct($product);
             $entityManager->persist($panier);
             $entityManager->flush();
             $this->addFlash('success', 'Product removed from panier.');
         }
+
         return $this->redirectToRoute('app_panier', ['user' => $user->getId()]);
     }
 }
