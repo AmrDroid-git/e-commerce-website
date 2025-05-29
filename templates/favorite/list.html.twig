@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Favoris{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <h1 class="h3 mb-4">Mes Produits Favoris</h1>
+
+        {% if favorites|length > 0 %}
+            <div class="row g-4">
+                {% for product in favorites %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm border-0 hover-lift">
+                            <div class="card-img-top overflow-hidden" style="height: 200px; background: #f8f9fa;">
+                                {% if product.imageUrl %}
+                                    <img
+                                            src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                            class="img-fluid w-100 h-100 object-fit-cover"
+                                            alt="{{ product.name }}"
+                                    >
+                                {% else %}
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <i class="fas fa-image fa-3x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0">{{ product.name }}</h5>
+                                    <span class="badge bg-primary rounded-pill">{{ product.category }}</span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="rating small text-warning">
+                                        {% for i in 1..5 %}
+                                            <i class="fas fa-star{{ i > product.rating ? '-half-alt' : '' }}"></i>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="h4 text-dark mt-2">{{ product.price }} €</div>
+                                </div>
+
+                                <div class="mt-auto d-flex justify-content-between">
+                                    <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-outline-info btn-sm w-50">
+                                        <i class="fas fa-search me-1"></i>Inspect
+                                    </a>
+                                    <form
+                                            method="post"
+                                            action="{{ path('favorite_remove', { id: product.id }) }}"
+                                            class="w-50"
+                                    >
+                                        <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ product.id) }}">
+                                        <button type="submit" class="btn btn-danger btn-sm w-100">
+                                            <i class="fas fa-heart"></i> Retirer
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-light text-center py-5" style="border: 1px dashed #ccc;">
+                <i class="fas fa-heart-broken fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Aucun favori pour le moment.</h5>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 2.5rem rgba(22,28,45,.1), 0 0.5rem 1rem -0.75rem rgba(22,28,45,.05)!important;
+        }
+        .object-fit-cover {
+            object-fit: cover;
+        }
+    </style>
+{% endblock %}

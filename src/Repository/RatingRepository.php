@@ -32,5 +32,14 @@ class RatingRepository extends ServiceEntityRepository
 
         return $qb !== null ? floatval($qb) : null;
     }
+    public function findAverageRatingByUser(User $user): ?float
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('AVG(r.value) as avgRating')
+            ->where('r.user = :user')
+            ->setParameter('user', $user);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
 }
 
