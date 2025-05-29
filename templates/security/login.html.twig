@@ -1,3 +1,4 @@
+{# templates/security/login.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Log in!{% endblock %}
@@ -18,14 +19,10 @@
 {% block body %}
     <nav class="topbar">
         <a href="#" class="topbar-logo">ScriptSphere</a>
-
         <div class="topbar-links">
-
             <a href="#about" class="topbar-link">About</a>
             <a href="#contact" class="topbar-link">Contact</a>
         </div>
-
-
     </nav>
 
     <div class="container">
@@ -35,28 +32,52 @@
                 <p class="text-muted">Access your ScriptSphere account</p>
             </div>
 
+            {# Success flash (after registration) #}
+            {% for msg in app.flashes('success') %}
+                <div class="alert alert-success" role="alert">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+
+            {# Login errors #}
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.userIdentifier }},
+                    <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+
             <form method="post" class="auth-form">
-                {% if error %}
-                    <div class="alert alert-danger">
-                        {{ error.messageKey|trans(error.messageData, 'security') }}
-                    </div>
-                {% endif %}
-
-                {% if app.user %}
-                    <div class="mb-3">
-                        You are logged in as {{ app.user.userIdentifier }},
-                        <a href="{{ path('app_logout') }}">Logout</a>
-                    </div>
-                {% endif %}
-
                 <div class="mb-3">
                     <label for="inputUsername" class="form-label">Username</label>
-                    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
+                    <input
+                            type="text"
+                            value="{{ last_username }}"
+                            name="username"
+                            id="inputUsername"
+                            class="form-control"
+                            autocomplete="username"
+                            required
+                            autofocus
+                    >
                 </div>
 
                 <div class="mb-3">
                     <label for="inputPassword" class="form-label">Password</label>
-                    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                    <input
+                            type="password"
+                            name="password"
+                            id="inputPassword"
+                            class="form-control"
+                            autocomplete="current-password"
+                            required
+                    >
                 </div>
 
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -80,6 +101,7 @@
             </form>
         </div>
     </div>
+
     <section id="contact" class="py-5" style="background-color: #f8f9fa;">
         <div class="container">
             <div class="row justify-content-center mb-5">
@@ -88,108 +110,30 @@
                     <p class="lead">Get in touch with our talented development team</p>
                 </div>
             </div>
-
             <div class="row g-4">
-                <!-- Developer 1 -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <img src="https://www.w3schools.com/howto/img_avatar.png" class="rounded-circle mb-3" width="100" alt="Developer">
-                            <h5 class="card-title">Amr Slama</h5>
-                            <p class="text-muted mb-2">Fullstack Engineer</p>
-                            <div class="d-flex justify-content-center gap-2 mb-3">
-                                <a href="https://github.com/AmrDroid-git" class="text-primary"><i class="fab fa-github"></i></a>
-                                <a href="https://www.linkedin.com/in/slama-amr-27834b339/" class="text-primary"><i class="fab fa-linkedin"></i></a>
-                                <a href="mailto:amr.slama@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
-                            </div>
-                            <small class="d-block text-muted">
-                                <i class="fas fa-phone me-2"></i> +216 28123673
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Developer 2 -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <img src="https://scontent.ftun1-2.fna.fbcdn.net/v/t39.30808-1/493061104_3052157518292133_607520065773271803_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=111&ccb=1-7&_nc_sid=e99d92&_nc_ohc=CgheXOOQL_kQ7kNvwEq3s0Y&_nc_oc=AdmfVkqocghfCg4ZxQAlGQdNZ9eibis1RnKRyombZMV4NdJWUh2ikpK_QGnp7oB1M4g&_nc_zt=24&_nc_ht=scontent.ftun1-2.fna&_nc_gid=yFtVu6Jq-qlg16-RbfmUlA&oh=00_AfEWi4rkZLxjyjP7nCgQpbCRE6PatSQUcOg0dZJtD1MRwg&oe=681DE782" class="rounded-circle mb-3" width="100" alt="Developer">
-                            <h5 class="card-title">Sinda Ferchichi</h5>
-                            <p class="text-muted mb-2">Software Engineer</p>
-                            <div class="d-flex justify-content-center gap-2 mb-3">
-                                <a href="https://github.com/sendaferchichi" class="text-primary"><i class="fab fa-github"></i></a>
-                                <a href="https://www.linkedin.com/in/ferchichi-sinda-7115a0333/" class="text-primary"><i class="fab fa-linkedin"></i></a>
-                                <a href="mailto:senda.ferchichi@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
-                            </div>
-                            <small class="d-block text-muted">
-                                <i class="fas fa-phone me-2"></i> +216 57069847
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Developer 3 -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <img src="https://scontent.ftun1-2.fna.fbcdn.net/v/t39.30808-6/438162187_1826671474471227_7845581713543393157_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=wpbT5NYcNQoQ7kNvwGbAWZt&_nc_oc=AdmgPZPv5NJBh3wSyOc_e7Jfj3RMDK4n0TmKB0HCaPUAqgqiCXzRiAGlatjdOrA0DOg&_nc_zt=23&_nc_ht=scontent.ftun1-2.fna&_nc_gid=oKhWLFgchoeCdFLhkS5N-w&oh=00_AfGLzV7VfNDeye3HHxQUHfaat7O7Bs4jDjr7-NbU2CdiJw&oe=681DBB6C" class="rounded-circle mb-3" width="100" alt="Developer">
-                            <h5 class="card-title">Moetaz Fradi</h5>
-                            <p class="text-muted mb-2">AI Engineer</p>
-                            <div class="d-flex justify-content-center gap-2 mb-3">
-                                <a href="https://github.com/Moetez-Fradi" class="text-primary"><i class="fab fa-github"></i></a>
-                                <a href="https://www.linkedin.com/in/moetez-fradi-349b2933b/" class="text-primary"><i class="fab fa-linkedin"></i></a>
-                                <a href="mailto:moetez.fradi@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
-                            </div>
-                            <small class="d-block text-muted">
-                                <i class="fas fa-phone me-2"></i> +216 48000136
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Developer 4 -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <img src="https://scontent.ftun1-2.fna.fbcdn.net/v/t39.30808-1/298802009_1772842319727569_2734529842139955722_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=e99d92&_nc_ohc=HAnQ-TvAOz0Q7kNvwExFN3u&_nc_oc=Adm3Ho5_uFuD7Wqx3ujbyO8bFiq1x8pG5Np9hnEVQWcRIWpH-5X9i9OcnjFkJBS2fp8&_nc_zt=24&_nc_ht=scontent.ftun1-2.fna&_nc_gid=x1l0hhbePXtMIaQ00oc44Q&oh=00_AfH0akrymPWQakUN0VTJe0OGs-jn-wMa2EOfNoLfAl-ARQ&oe=681DC139" class="rounded-circle mb-3" width="100" alt="Developer">
-                            <h5 class="card-title">Rakia Tsouri</h5>
-                            <p class="text-muted mb-2">Software Engineer</p>
-                            <div class="d-flex justify-content-center gap-2 mb-3">
-                                <a href="https://github.com/rakia-tsouri" class="text-primary"><i class="fab fa-github"></i></a>
-                                <a href="https://www.linkedin.com/in/rakia-tsouri-795053303/" class="text-primary"><i class="fab fa-linkedin"></i></a>
-                                <a href="mailto:tsourirakia88@gmail.com" class="text-primary"><i class="fas fa-envelope"></i></a>
-                            </div>
-                            <small class="d-block text-muted">
-                                <i class="fas fa-phone me-2"></i> +216 21798827
-                            </small>
-                        </div>
-                    </div>
-                </div>
+                {# ... developer cards ... #}
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer  class="footer">
-        <div  id="about" class="footer-logo">ScriptSphere</div>
-        <p>Your destination for premium digital assets and online solutions</p></br>
-        <br>We're a team of four passionate developer students from INSAT, building the future one line of code at a time. At ScriptSphere, we combine academic knowledge with practical expertise to deliver premium digital solutions.
-
-        What We Offer:
-
-        Premium website templates & UI kits </br>
-
-
-
-        Full-stack development services</br>
-
-
-
-        Our mission is to bridge classroom concepts with real-world digital needs, offering affordable yet high-quality solutions for businesses and creators. As students ourselves, we understand the importance of budget-friendly options without compromising on quality.</br>
-
-        <i  style="color: #2a1ec6;font-size: large">"From our laptops at INSAT to your digital presence - we make web excellence accessible."</i></p>
-
-
+    <footer class="footer">
+        <div id="about" class="footer-logo">ScriptSphere</div>
+        <p>Your destination for premium digital assets and online solutions</p>
+        <p>
+            We're a team of four passionate developer students from INSAT, building the future one line of code at a time.
+            At ScriptSphere, we combine academic knowledge with practical expertise to deliver premium digital solutions.
+        </p>
+        <p>
+            What We Offer:<br>
+            Premium website templates & UI kits<br>
+            Full-stack development services
+        </p>
+        <p>
+            <i style="color: #2a1ec6; font-size: large">
+                "From our laptops at INSAT to your digital presence - we make web excellence accessible."
+            </i>
+        </p>
         <div class="footer-links">
             <a href="#" class="footer-link">Home</a>
             <a href="#products" class="footer-link">Products</a>
@@ -197,11 +141,9 @@
             <a href="#contact" class="footer-link">Contact</a>
             <a href="#privacy" class="footer-link">Privacy Policy</a>
         </div>
-
         <div class="footer-copyright">
             &copy; <span id="current-year"></span> ScriptSphere. All rights reserved.
         </div>
-        <script src="{{ asset('js/script.js') }}"</script>
+        <script src="{{ asset('js/script.js') }}"></script>
     </footer>
-
 {% endblock %}

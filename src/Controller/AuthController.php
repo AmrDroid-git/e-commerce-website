@@ -10,16 +10,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class AuthController extends AbstractController
 {
-    #[Route('/auth', name: 'app_auth')]
-    public function index(): Response
-    {
-        $form = $this->createForm(AuthForm::class);
-
-        return $this->render('auth/index.html.twig', [
-            'controller_name' => 'AuthController', 'form' => $form->createView(),
-        ]);
-    }
-
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {

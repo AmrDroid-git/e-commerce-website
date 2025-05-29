@@ -1,3 +1,4 @@
+{# templates/registration/register.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Register - ScriptSphere{% endblock %}
@@ -34,8 +35,18 @@
                 <p class="text-muted">Join ScriptSphere today</p>
             </div>
 
-            {% for flash_error in app.flashes('verify_email_error') %}
-                <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+            {# Email verification errors #}
+            {% for msg in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+
+            {# Form validation & duplicate‐account errors #}
+            {% for msg in app.flashes('error') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ msg }}
+                </div>
             {% endfor %}
 
             {{ form_start(registrationForm, {'attr': {'class': 'auth-form'}}) }}
@@ -49,6 +60,7 @@
                     'label_attr': {'class': 'form-label'}
                 }) }}
             </div>
+
             <div class="mb-3">
                 {{ form_row(registrationForm.email, {
                     'attr': {
@@ -58,6 +70,7 @@
                     'label_attr': {'class': 'form-label'}
                 }) }}
             </div>
+
             <div class="mb-3">
                 {{ form_row(registrationForm.plainPassword, {
                     'attr': {
@@ -73,7 +86,6 @@
                 </div>
                 <small class="text-muted">At least 8 characters with numbers and symbols</small>
             </div>
-
 
             <div class="mb-3">
                 {{ form_row(registrationForm.agreeTerms, {
@@ -95,35 +107,23 @@
 
     <script>
         function checkPasswordStrength(password) {
-            const strengthBar = document.getElementById('password-strength-bar');
+            const bar = document.getElementById('password-strength-bar');
             let strength = 0;
-
-            if (password.length > 7) strength += 1;
-            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength += 1;
-            if (password.match(/([0-9])/)) strength += 1;
-            if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1;
-
-            switch(strength) {
+            if (password.length > 7) strength++;
+            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength++;
+            if (password.match(/([0-9])/)) strength++;
+            if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/)) strength++;
+            switch (strength) {
                 case 0:
-                    strengthBar.style.width = '0%';
-                    strengthBar.style.backgroundColor = 'transparent';
-                    break;
+                    bar.style.width = '0%'; bar.style.backgroundColor = 'transparent'; break;
                 case 1:
-                    strengthBar.style.width = '25%';
-                    strengthBar.style.backgroundColor = '#ff4d4d';
-                    break;
+                    bar.style.width = '25%'; bar.style.backgroundColor = '#ff4d4d'; break;
                 case 2:
-                    strengthBar.style.width = '50%';
-                    strengthBar.style.backgroundColor = '#ffa64d';
-                    break;
+                    bar.style.width = '50%'; bar.style.backgroundColor = '#ffa64d'; break;
                 case 3:
-                    strengthBar.style.width = '75%';
-                    strengthBar.style.backgroundColor = '#ffff4d';
-                    break;
+                    bar.style.width = '75%'; bar.style.backgroundColor = '#ffff4d'; break;
                 case 4:
-                    strengthBar.style.width = '100%';
-                    strengthBar.style.backgroundColor = '#4dff4d';
-                    break;
+                    bar.style.width = '100%'; bar.style.backgroundColor = '#4dff4d'; break;
             }
         }
     </script>
