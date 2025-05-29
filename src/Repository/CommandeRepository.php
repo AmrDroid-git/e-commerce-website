@@ -15,6 +15,4 @@ class CommandeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Commande::class);
     }
-
-    // Ajoute ici des méthodes personnalisées si besoin
 }

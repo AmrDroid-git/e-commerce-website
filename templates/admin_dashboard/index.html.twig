@@ -1,5 +1,8 @@
+{% extends 'base.html.twig' %}
 
-<!DOCTYPE html>
+{% block title %}ScriptSphere - Dashboard{% endblock %}
+
+{% block body %}
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -10,22 +13,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-
 </head>
 <body>
 
 <!-- Top Navbar -->
 <nav class="navbar navbar-expand-lg  px-4" style="background-color: #1e1b4b">
-
     <a href="#" class="navbar-logo">ScriptSphere</a>
-
-
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
         <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="mainNavbar">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item"><a class="nav-link active" href="#dashboard" style="color: white"><i class="fas fa-home me-1"></i>Dashboard</a></li>
@@ -41,7 +37,6 @@
                 <i class="fas fa-bell text-white"></i>
                 <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle p-1">3</span>
             </div>
-
             <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </div>
@@ -63,25 +58,25 @@
         <div class="col-md-3">
             <div class="stat-card purple">
                 <div class="stat-icon"><i class="fas fa-users"></i></div>
-                <div class="stat-info"><h3>254</h3><p>Registered Users</p></div>
+                <div class="stat-info"><h3>{{ userCount }}</h3><p>Registered Users</p></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card blue">
                 <div class="stat-icon"><i class="fas fa-box-open"></i></div>
-                <div class="stat-info"><h3>98</h3><p>Products Available</p></div>
+                <div class="stat-info"><h3>{{ productCount }}</h3><p>Products Available</p></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card green">
                 <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                <div class="stat-info"><h3>$12,345</h3><p>Total Sales</p></div>
+                <div class="stat-info"><h3>{{ totalSales }}$</h3><p>Total Sales</p></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card orange">
                 <div class="stat-icon"><i class="fas fa-headset"></i></div>
-                <div class="stat-info"><h3>5</h3><p>Pending Tickets</p></div>
+                <div class="stat-info"><h3>{{ commandeCount }}</h3><p>Pending Tasks</p></div>
             </div>
         </div>
     </div>
@@ -90,22 +85,21 @@
     <div class="card mb-4 activity-card">
         <div class="card-header d-flex justify-content-between">
             <h3>Recent Admin Activity</h3>
-            <a href="#" class="btn btn-sm btn-outline-primary">View All Logs</a>
+{#            <a href="#" class="btn btn-sm btn-outline-primary">View All Logs</a>#}
         </div>
         <div class="card-body">
             <ul class="activity-list">
-                <li><div class="activity-icon"><i class="fas fa-user-plus"></i></div>
-                    <div class="activity-details"><p>New user <strong>john_doe</strong> registered</p><small>1 hour ago</small></div>
-                </li>
-                <li><div class="activity-icon"><i class="fas fa-box"></i></div>
-                    <div class="activity-details"><p>New product <strong>UX Template</strong> approved</p><small>3 hours ago</small></div>
-                </li>
-                <li><div class="activity-icon"><i class="fas fa-ban"></i></div>
-                    <div class="activity-details"><p>User <strong>spammer123</strong> was banned</p><small>1 day ago</small></div>
-                </li>
-                <li><div class="activity-icon"><i class="fas fa-cogs"></i></div>
-                    <div class="activity-details"><p>System maintenance completed</p><small>2 days ago</small></div>
-                </li>
+                {% for user in latestUsers %}
+                    <li>
+                        <div class="activity-icon"><i class="fas fa-user-plus"></i></div>
+                        <div class="activity-details">
+                            <p>New user <strong>{{ user.username }}</strong> registered</p>
+{#                            <small>{{ user.createdAt|date('Y-m-d H:i') }}</small>#}
+                        </div>
+                    </li>
+                {% else %}
+                    <li><em>No recent user registrations.</em></li>
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -113,53 +107,60 @@
     <!-- Produits en attente de validation -->
     <div class="card products-card">
         <div class="card-header d-flex justify-content-between">
-            <h3>Pending Product Approvals</h3>
-            <a href="#" class="btn btn-sm btn-outline-primary">Manage All</a>
+            <h3>Highest Rated</h3>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <!-- Produit 1 -->
+        <div class="row">
+            {% for product in topProducts %}
                 <div class="col-md-4">
                     <div class="product-recommendation">
-                        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1000&auto=format&fit=crop" alt="Product">
+                        <img
+                                src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                alt="{{ product.name }}"
+                                class="img-fluid rounded mb-2"
+                        >
                         <div class="product-info">
-                            <h4>Creative Landing Page</h4>
-                            <p class="price">$49</p>
-                            <div class="rating"><span class="text-muted">Submitted by user_102</span></div>
-                            <button class="btn btn-sm btn-success">Approve</button>
+                            <h4>{{ product.name }}</h4>
+                            <p class="price">{{ product.price }}€</p>
+                            <div class="rating">
+                                {% set ratings = product.ratings %}
+                                {% set avg = 0 %}
+                                {% if ratings|length > 0 %}
+                                    {% set sum = 0 %}
+                                    {% for r in ratings %}
+                                        {% set sum = sum + r.value %}
+                                    {% endfor %}
+                                    {% set avg = (sum / ratings|length)|round(1) %}
+                                {% endif %}
+                                {% for i in 1..5 %}
+                                    {% if i <= avg %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% elseif (i - avg) < 1 %}
+                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span>({{ ratings|length }})</span>
+                            </div>
+                            <a href="{{ path('product_show', { id: product.id }) }}"
+                               class="btn btn-sm btn-primary mt-2">
+                                View Details
+                            </a>
                         </div>
                     </div>
                 </div>
-                <!-- Produit 2 -->
-                <div class="col-md-4">
-                    <div class="product-recommendation">
-                        <img src="https://images.unsplash.com/photo-1493119508027-2b584f234d6c?q=80&w=1000&auto=format&fit=crop" alt="Product">
-                        <div class="product-info">
-                            <h4>Photography Portfolio</h4>
-                            <p class="price">$99</p>
-                            <div class="rating"><span class="text-muted">Submitted by photoMax</span></div>
-                            <button class="btn btn-sm btn-success">Approve</button>
-                        </div>
-                    </div>
+            {% else %}
+                <div class="col-12">
+                    <p class="text-muted">No recommended products at this time.</p>
                 </div>
-                <!-- Produit 3 -->
-                <div class="col-md-4">
-                    <div class="product-recommendation">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop" alt="Product">
-                        <div class="product-info">
-                            <h4>Minimalist UI Kit</h4>
-                            <p class="price">$79</p>
-                            <div class="rating"><span class="text-muted">Submitted by devZone</span></div>
-                            <button class="btn btn-sm btn-success">Approve</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
+        </div>
         </div>
     </div>
 
 </div> <!-- Fin contenu admin -->
+
 <script src="{{ asset('js/script.js') }}"></script>
-
-
-
+</body>
+</html>
+{% endblock %}
