@@ -1,4 +1,3 @@
-{# comment/new.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}New Comment{% endblock %}
@@ -38,7 +37,9 @@
                 </h2>
 
                 <div class="d-flex align-items-center product-badge rounded p-3 mb-4">
-                    <img src="{{ product.imageUrl }}" alt="{{ product.name }}"
+                    <img
+                            src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                            alt="{{ product.name }}"
                          class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
                     <div>
                         <h5 class="mb-0" style="color: var(--primary-dark);">{{ product.name }}</h5>
