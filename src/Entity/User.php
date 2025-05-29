@@ -180,9 +180,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Commande::class)]
     private Collection $commandes;
 
+    /**
+     * @var Collection<int, Product>
+     */
+    #[ORM\ManyToMany(targetEntity: Product::class)]
+    private Collection $favorites;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
     }
 
     public function getCommandes(): Collection
@@ -203,6 +210,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCommande(Commande $commande): static
     {
         $this->commandes->removeElement($commande);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Product $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Product $favorite): static
+    {
+        $this->favorites->removeElement($favorite);
 
         return $this;
     }

@@ -141,6 +141,30 @@
                     <p class="mb-2"><strong>Description:</strong> {{ product.description }}</p>
                     <p class="mb-0"><strong>Rating:</strong> {{ average_rating }} ⭐</p>
                 </div>
+                <div class="d-flex justify-content-center mt-2">
+                    {% set isFav = user.getFavorites().contains(product) %}
+                    {% if isFav %}
+                        <button
+                                type="button"
+                                class="favorite-btn btn btn-danger"
+                                data-action-url="{{ path('favorite_remove', { id: product.id }) }}"
+                                data-csrf-token="{{ csrf_token('remove' ~ product.id) }}"
+                                data-product-id="{{ product.id }}"
+                        >
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    {% else %}
+                        <button
+                                type="button"
+                                class="favorite-btn btn btn-outline-danger"
+                                data-action-url="{{ path('favorite_add', { id: product.id }) }}"
+                                data-csrf-token="{{ csrf_token('add' ~ product.id) }}"
+                                data-product-id="{{ product.id }}"
+                        >
+                            <i class="far fa-heart"></i>
+                        </button>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
@@ -222,4 +246,52 @@
             {% include 'product/_rating_widget.html.twig' %}
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Attach click listeners to all favorite buttons
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    const actionUrl = this.dataset.actionUrl;
+                    const csrfToken = this.dataset.csrfToken;
+                    const productId = this.dataset.productId;
+                    const isCurrentlyFav = this.classList.contains('btn-danger');
+
+                    fetch(actionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ _token: csrfToken })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.productId == productId) {
+                                // Toggle button appearance & data for next click
+                                if (isCurrentlyFav) {
+                                    // Was favorited → now removed
+                                    btn.classList.remove('btn-danger');
+                                    btn.classList.add('btn-outline-danger');
+                                    btn.dataset.actionUrl = "{{ path('favorite_add', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
+                                    btn.dataset.csrfToken = "{{ csrf_token('addREPLACE') }}".replace('REPLACE', productId);
+                                    btn.innerHTML = '<i class="far fa-heart"></i>';
+                                } else {
+                                    // Was not favorited → now added
+                                    btn.classList.remove('btn-outline-danger');
+                                    btn.classList.add('btn-danger');
+                                    btn.dataset.actionUrl = "{{ path('favorite_remove', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
+                                    btn.dataset.csrfToken = "{{ csrf_token('removeREPLACE') }}".replace('REPLACE', productId);
+                                    btn.innerHTML = '<i class="fas fa-heart"></i>';
+                                }
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Erreur AJAX favoritage :', err);
+                        });
+                });
+            });
+        });
+    </script>
 {% endblock %}
