@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Mes commandes</h1>
+
+        {% if commandes|length > 0 %}
+            {% for commande in commandes %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Commande #{{ commande.id }} – {{ commande.dateCommande|date('d/m/Y H:i') }}
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            {% for product in commande.products %}
+                                <li>{{ product.name }} – {{ product.price }} €</li>
+                            {% endfor %}
+                        </ul>
+                        <strong>Total : {{ commande.getTotalPrice() }} €</strong>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Vous n'avez passé aucune commande pour le moment.</p>
+        {% endif %}
+    </div>
+{% endblock %}{% block developpers %}{{ parent() }}{% endblock %}

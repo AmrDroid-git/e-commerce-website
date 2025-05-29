@@ -48,6 +48,11 @@ class Commande
     {
         return $this->products;
     }
+    public function getDateCommande(): \DateTimeInterface
+    {
+        return $this->dateCommande;
+    }
+
 
     public function addProduct(Product $product): self
     {

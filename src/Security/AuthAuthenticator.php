@@ -51,18 +51,17 @@ class AuthAuthenticator extends AbstractLoginFormAuthenticator
         $roles = $token->getRoleNames();
 
 
-
         if (in_array('ROLE_ADMIN', $roles)) {
             return new RedirectResponse($this->urlGenerator->generate('app_admin_dashboard'));
         }
 
         else if (in_array('ROLE_USER', $roles)) {
             return new RedirectResponse($this->urlGenerator->generate('app_dashboard'));
-        }
+        }}
 
 
-        return new RedirectResponse($this->urlGenerator->generate('app_login'));
-    }
+
+
 
 
     protected function getLoginUrl(Request $request): string
