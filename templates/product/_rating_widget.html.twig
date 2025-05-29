@@ -1,0 +1,213 @@
+<div id="rating-widget" class="mb-4 p-4 rounded" style="background-color: #f8fafc; border: 1px solid var(--border);">
+    <h2 class="h4 mb-3" style="color: var(--primary-dark);">Rate This Product</h2>
+    {% if app.user %}
+        <div id="star-container" class="d-flex align-items-center">
+            {% set userRating = product.getRatings()
+                |filter(r => r.getUser().getId() == app.user.id)
+                |first
+            %}
+            <div class="stars-wrapper me-3">
+                {% for i in 1..5 %}
+                    {% set filledClass = (userRating and userRating.getValue() >= i) ? 'fas' : 'far' %}
+                    <i data-value="{{ i }}"
+                       class="{{ filledClass }} fa-star star"
+                       style="font-size: 1.8rem; transition: all 0.2s;"
+                       title="{{ i }} star{{ i > 1 ? 's' : '' }}"></i>
+                {% endfor %}
+            </div>
+            <span id="rating-label" class="text-muted">
+                {% if userRating %}
+                    You rated: <strong>{{ userRating.getValue() }}★</strong>
+                {% else %}
+                    Click to rate
+                {% endif %}
+            </span>
+        </div>
+
+        <div id="feedback-form" style="display:none;" class="mt-4 p-3 rounded" style="background-color: white; border: 1px solid var(--border);">
+            <h3 class="h5 mb-3" style="color: var(--primary);">Any comments to share?</h3>
+            <textarea id="feedback-text" class="form-control mb-2" rows="3"
+                      placeholder="Optional feedback..." style="border-color: var(--border);"></textarea>
+            <div class="d-flex gap-2">
+                <button id="submit-rating"
+                        class="btn btn-primary text-white flex-grow-1 py-2"
+                        style="background-color: #007bff; border-color: #007bff;">
+                    <i class="fas fa-check me-1"></i> Submit
+                </button>
+                <button id="cancel-rating" class="btn btn-outline-secondary flex-grow-1 py-2">
+                    <i class="fas fa-times me-1"></i> Cancel
+                </button>
+            </div>
+            <div id="feedback-message" class="mt-2 small"></div>
+        </div>
+    {% else %}
+        <div class="alert alert-light d-flex align-items-center" style="border: 1px dashed var(--border);">
+            <i class="bi bi-info-circle me-2" style="color: var(--secondary);"></i>
+            <p class="mb-0">
+                <a href="{{ path('app_login') }}" class="text-decoration-none fw-bold"
+                   style="color: var(--primary);">Log in</a> to rate this product
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    /* Star Rating Styles */
+    .stars-wrapper {
+        display: inline-flex;
+        gap: 0.3rem;
+    }
+
+    .star {
+        color: #e1e5eb; /* Light gray for empty stars */
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.1s;
+    }
+
+    .star:hover {
+        transform: scale(1.1);
+    }
+
+    /* Gold color for filled stars */
+    .fas.fa-star {
+        color: #ffc107; /* Gold color */
+        text-shadow: 0 0 4px rgba(255, 193, 7, 0.4);
+    }
+
+    /* Hover effect - fill all stars up to the hovered one */
+    .stars-wrapper:hover .star {
+        color: #ffc107;
+    }
+
+    /* Reset stars after the hovered one */
+    .star:hover ~ .star {
+        color: #e1e5eb;
+    }
+
+    /* Rating form styles */
+    #feedback-message.success {
+        color: var(--success);
+    }
+
+    #feedback-message.error {
+        color: var(--danger);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const starContainer = document.getElementById('star-container');
+        const stars = document.querySelectorAll('.star');
+        const feedbackForm = document.getElementById('feedback-form');
+        const feedbackText = document.getElementById('feedback-text');
+        const submitBtn = document.getElementById('submit-rating');
+        const cancelBtn = document.getElementById('cancel-rating');
+        const ratingLabel = document.getElementById('rating-label');
+        const feedbackMessage = document.getElementById('feedback-message');
+
+        let chosenRating = null;
+
+        function highlightStars(count) {
+            stars.forEach((star, idx) => {
+                if (idx < count) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', (e) => {
+                const value = parseInt(e.currentTarget.dataset.value);
+                highlightStars(value);
+            });
+
+            star.addEventListener('mouseout', () => {
+                if (chosenRating !== null) {
+                    highlightStars(chosenRating);
+                } else {
+                    highlightStars({{ userRating ? userRating.getValue() : 0 }});
+                }
+            });
+
+            star.addEventListener('click', (e) => {
+                chosenRating = parseInt(e.currentTarget.dataset.value);
+                highlightStars(chosenRating);
+                ratingLabel.innerHTML = `You rated: <strong>${chosenRating}★</strong>`;
+                feedbackForm.style.display = 'block';
+                feedbackMessage.textContent = '';
+                feedbackText.focus();
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            if (!chosenRating) {
+                alert('Please select a rating first.');
+                return;
+            }
+
+            const payload = {
+                product_id: {{ product.id }},
+                value: chosenRating,
+                comment: feedbackText.value.trim()
+            };
+
+            fetch('{{ path('rating_upsert') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '{{ csrf_token('authenticate') }}'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.error) {
+                        feedbackMessage.style.color = 'red';
+                        feedbackMessage.textContent = data.error;
+                        return;
+                    }
+
+                    feedbackText.value = '';
+                    feedbackForm.style.display = 'none';
+                    ratingLabel.innerHTML = `You rated: <strong>${chosenRating}★</strong>`;
+
+                    highlightStars(chosenRating);
+
+                    if (data.comment_html) {
+                        const commentsList = document.querySelector('.list-group');
+                        if (commentsList) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = data.comment_html;
+                            commentsList.prepend(tempDiv.firstElementChild);
+                        }
+                    }
+
+                    feedbackMessage.style.color = 'green';
+                    feedbackMessage.textContent = 'Thank you for your feedback!';
+                })
+                .catch(err => {
+                    window.location.reload();
+                    console.error(err);
+                    feedbackMessage.style.color = 'red';
+                    feedbackMessage.textContent = 'Failed to send rating.';
+                });
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            feedbackForm.style.display = 'none';
+            chosenRating = {{ userRating ? userRating.getValue() : 0 }};
+            highlightStars(chosenRating);
+            ratingLabel.innerHTML = chosenRating ? `You rated: <strong>${chosenRating}★</strong>` : 'Click to rate';
+            feedbackMessage.textContent = '';
+            feedbackText.value = '';
+        });
+
+        highlightStars({{ userRating ? userRating.getValue() : 0 }});
+    });
+</script>

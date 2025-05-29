@@ -1,0 +1,39 @@
+{# comment/_form.html.twig #}
+<style>
+    .comment-form {
+        background: white;
+        border-radius: 10px;
+        border-top: 4px solid var(--primary, #143d6d);
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(10, 25, 47, 0.1);
+    }
+
+    .form-label {
+        color: var(--primary-dark, #0a192f);
+        font-weight: 600;
+    }
+
+    .form-control {
+        border: 1px solid var(--border, #9ec5e6);
+        padding: 0.75rem;
+    }
+
+    .form-control:focus {
+        border-color: var(--accent, #2a6fa6);
+        box-shadow: 0 0 0 0.25rem rgba(42, 111, 166, 0.15);
+    }
+</style>
+
+<div class="comment-form mt-4">
+    {{ form_start(form) }}
+    <div class="mb-4">
+        {{ form_label(form.content, 'Your Review', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 6}}) }}
+        {{ form_errors(form.content) }}
+    </div>
+
+    <button class="btn btn-primary py-2 px-4">
+        <i class="bi bi-send-check me-2"></i>{{ button_label|default('Submit') }}
+    </button>
+    {{ form_end(form) }}
+</div>

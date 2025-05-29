@@ -26,4 +26,32 @@ class ProductController extends AbstractController
             'user' => $user
         ]);
     }
+
+    #[Route('/product/{id}', name: 'product_show', requirements: ['id' => '\d+'])]
+    public function show(int $id, EntityManagerInterface $em, Security $security): Response
+    {
+        $product = $em->getRepository(Product::class)->find($id);
+        if (!$product) {
+            throw $this->createNotFoundException('Product not found');
+        }
+
+        $user = $security->getUser();
+
+        // Optional: Calculate average rating
+        $ratings = $product->getRatings();
+        $averageRating = 0;
+        if (count($ratings) > 0) {
+            $sum = array_sum(array_map(fn($r) => $r->getValue(), $ratings->toArray()));
+            $averageRating = round($sum / count($ratings), 2);
+        }
+
+        return $this->render('product/show.html.twig', [
+            'product' => $product,
+            'comments' => $product->getComments(),
+            'ratings' => $ratings,
+            'average_rating' => $averageRating,
+            'user' => $user,
+        ]);
+    }
+
 }
