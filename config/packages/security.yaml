@@ -3,7 +3,7 @@ security:
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
-
+    access_denied_url: /error/403
     providers:
             users:
                 entity:
@@ -30,7 +30,7 @@ security:
             logout:
                 path: app_logout
                 # where to redirect after logout
-                # target: app_any_route
+                target: app_login
 
             remember_me:
                 secret: '%kernel.secret%'
@@ -51,6 +51,7 @@ security:
     access_control:
           - { path: ^/dashboard, roles: ROLE_USER }
           -  { path: ^/admin, roles: ROLE_ADMIN }
+          - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 
