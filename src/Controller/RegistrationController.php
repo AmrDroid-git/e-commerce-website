@@ -7,6 +7,7 @@ use App\Form\RegistrationForm;
 use App\Security\AuthAuthenticator;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
+use mysql_xdevapi\Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -18,6 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use App\Entity\Panier;
+use Symfony\Component\Form\FormError;
 
 class RegistrationController extends AbstractController
 {
@@ -33,31 +35,45 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
+            try {
+                $plainPassword = $form->get('password')->getData();
+                $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+                $panier = new Panier();
+                $panier->setUser($user);
+                $user->setPanier($panier);
 
-            $panier = new Panier();
-            $panier->setUser($user);
-            $user->setPanier($panier);
+                $entityManager->persist($user);
+                $entityManager->persist($panier);
+                $entityManager->flush();
 
-            $entityManager->persist($user);
-            $entityManager->persist($panier);
-            $entityManager->flush();
+                $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+                if ($existingUser) {
+                    $form->get('email')->addError(new FormError('This email is already registered.'));
+                } else {
+                    $plainPassword = $form->get('password')->getData();
+                    $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('tsourirakia88@gmail.com', 'Webify Team'))
-                    ->to((string) $user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                }
 
-            // do anything else you need here, like send an email
+                $this->emailVerifier->sendEmailConfirmation(
+                    'app_verify_email',
+                    $user,
+                    (new TemplatedEmail())
+                        ->from(new Address('tsourirakia88@gmail.com', 'Webify Team'))
+                        ->to((string)$user->getEmail())
+                        ->subject('Please Confirm your Email')
+                        ->htmlTemplate('registration/confirmation_email.html.twig')
+                );
 
-            return $security->login($user, AuthAuthenticator::class, 'main');
+                return $security->login($user, AuthAuthenticator::class, 'main');
+
+            } catch (\Exception $e) {
+                $form->get('email')->addError(new FormError('Email is already in use.'));            }
         }
+
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,

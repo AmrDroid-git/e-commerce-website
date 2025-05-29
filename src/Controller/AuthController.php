@@ -15,7 +15,7 @@ final class AuthController extends AbstractController
     {
         $form = $this->createForm(AuthForm::class);
 
-        return $this->render('auth/index.html.twig', [
+        return $this->render('security/login.html.twig', [
             'controller_name' => 'AuthController', 'form' => $form->createView(),
         ]);
     }

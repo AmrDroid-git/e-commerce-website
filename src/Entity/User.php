@@ -46,6 +46,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Panier $panier = null;
 
+
+
     public function getId(): ?int
     {
         return $this->id;

@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Webify - Dashboard</title>
@@ -11,41 +11,79 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 
-</head>
-<body>
+        {{ parent() }}
 
+
+        <style>
+            body {
+                background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+        </style>
+    {% endblock %}
+{% block body %}
 <!-- Top Navbar -->
-<nav class="navbar navbar-expand-lg  px-4" style="background-color: #1e1b4b">
+    <nav class="topbar">
+        <a href="/product" class="topbar-logo">Webify</a>
 
-        <a href="#" class="navbar-logo">Webify</a>
+        <div class="topbar-links">
+            <a href="/products" class="topbar-link">Products</a>
+            <a href="/about" class="topbar-link">About</a>
+            <a href="/contact" class="topbar-link">Contact</a>
+        </div>
 
+        <div class="topbar-actions">
+            <button class="icon-button">
+                <!-- Heart Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="icon">
+                    <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5
+                    5.5 0 0 0-7.78 7.78l1.06 1.06L12
+                    21.23l7.78-7.78 1.06-1.06a5.5
+                    5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </button>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="mainNavbar">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link active" href="#dashboard" style="color: white"><i class="fas fa-home me-1"></i>Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="#products"><i class="fas fa-box-open me-1"></i>My Products</a></li>
-            <li class="nav-item"><a class="nav-link" href="#purchases"><i class="fas fa-shopping-bag me-1"></i>Purchases</a></li>
-            <li class="nav-item"><a class="nav-link" href="#favorites"><i class="fas fa-heart me-1"></i>Favorites</a></li>
-            <li class="nav-item"><a class="nav-link" href="#account"><i class="fas fa-user me-1"></i>Account</a></li>
-            <li class="nav-item"><a class="nav-link" href="#support"><i class="fas fa-question-circle me-1"></i>Support</a></li>
-        </ul>
-
-        <div class="d-flex align-items-center gap-3">
-            <div class="position-relative">
-                <i class="fas fa-bell text-white"></i>
-                <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle p-1">3</span>
+            <div class="topbar-cart">
+                <button class="icon-button" style="position: relative;">
+                    <!-- Cart Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="icon">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path
+                                d="M1 1h4l2.68 13.39a2 2 0 0 0 2
+                        1.61h9.72a2 2 0 0 0 2-1.61L23
+                        6H6"></path>
+                    </svg>
+                    <span class="cart-count">0</span>
+                </button>
             </div>
 
-            <a href="#" class="btn btn-outline-light btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <button class="mobile-menu-btn icon-button">
+                <!-- Menu Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="icon">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
         </div>
-    </div>
-</nav>
 
-<div class="w-100 px-4 mt-4" id="dashboardContent">
+        <a href="/login" class="btn btn-outline-light">Login</a>
+    </nav>
+
+    <div class="w-100 px-4 mt-4" id="dashboardContent">
 
 
 
@@ -204,5 +242,4 @@
         });
     });
 </script>
-</body>
-</html>
+{%  endblock %}

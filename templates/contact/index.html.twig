@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}About - Webify{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <nav class="topbar">
+        <a href="/product" class="topbar-logo">Webify</a>
+
+        <div class="topbar-links">
+            <a href="/products" class="topbar-link">Products</a>
+            <a href="/about" class="topbar-link">About</a>
+            <a href="/contact" class="topbar-link">Contact</a>
+        </div>
+
+        <div class="topbar-actions">
+            <button class="icon-button">
+                <!-- Heart Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="icon">
+                    <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5
+                    5.5 0 0 0-7.78 7.78l1.06 1.06L12
+                    21.23l7.78-7.78 1.06-1.06a5.5
+                    5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </button>
+
+            <div class="topbar-cart">
+                <button class="icon-button" style="position: relative;">
+                    <!-- Cart Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="icon">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path
+                                d="M1 1h4l2.68 13.39a2 2 0 0 0 2
+                        1.61h9.72a2 2 0 0 0 2-1.61L23
+                        6H6"></path>
+                    </svg>
+                    <span class="cart-count">0</span>
+                </button>
+            </div>
+
+            <button class="mobile-menu-btn icon-button">
+                <!-- Menu Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="icon">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <a href="/login" class="btn btn-outline-light">Login</a>
+    </nav>
+    <p>noumrou rakia: 28772311</p>
+{% endblock %}
