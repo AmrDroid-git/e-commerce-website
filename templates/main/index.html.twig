@@ -140,7 +140,6 @@
     <h2 class="section-title">Have a look at our products !</h2>
 
     <div class="products-grid">
-        {# Loop over the real products we passed from HomeController #}
         {% for product in products %}
             <div class="product-card animate-fade-in-up">
                 <img
@@ -163,6 +162,11 @@
                         <button type="submit" class="add-to-cart">
                             <i class="fas fa-shopping-cart"></i> Add to Cart
                         </button>
+                        <br />
+                        <a href="{{ path('product_show', {id: product.id}) }}" class="add-to-cart btn btn-primary">
+                            <i class="fas fa-shopping-cart"></i> View Product
+                        </a>
+
                     </form>
                 </div>
             </div>
