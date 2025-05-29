@@ -23,5 +23,19 @@ class CommandeController extends AbstractController
             'commandes' => $commandes,
         ]);
     }
-
+    #[Route('/commande/delete/{id}', name: 'commande_delete')]
+    #[IsGranted('ROLE_USER')]
+    public function delete(Commande $commande, EntityManagerInterface $em): RedirectResponse
+    {
+        $user = $this->getUser();
+        // Vérifie si la commande appartient à l'utilisateur
+        if ($commande->getUser() !== $user) {
+            $this->addFlash('error', 'Vous ne pouvez pas supprimer cette commande.');
+            return $this->redirectToRoute('app_commandes');
+        }
+        $em->remove($commande);
+        $em->flush();
+        $this->addFlash('success', 'Commande annulée avec succès.');
+        return $this->redirectToRoute('app_commandes');
+    }
 }
