@@ -1,208 +1,289 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ScriptSphere - Dashboard</title>
+{% extends 'base.html.twig' %}
+
+{% block title %}ScriptSphere - Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+{% endblock %}
 
-</head>
-<body>
-
-<!-- Top Navbar -->
-<nav class="navbar navbar-expand-lg  px-4" style="background-color: #1e1b4b">
-
-        <a href="#" class="navbar-logo">ScriptSphere</a>
-
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="mainNavbar">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-            <li class="nav-item"><a class="nav-link" href="{{ path('product') }}"><i class="fas fa-box-open me-1"></i>My Products</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ path('app_commandes') }}"><i class="fas fa-shopping-bag me-1"></i>Purchases</a></li>
-            <li class="nav-item"><a class="nav-link" href="#favorites"><i class="fas fa-heart me-1"></i>Favorites</a></li>
-            <li class="nav-item"><a class="nav-link" href="#account"><i class="fas fa-user me-1"></i>Account</a></li>
-            <li class="nav-item"><a class="nav-link" href="#support"><i class="fas fa-question-circle me-1"></i>Support</a></li>
-        </ul>
-
-        <div class="d-flex align-items-center gap-3">
-            <div class="position-relative">
-                <i class="fas fa-bell text-white"></i>
-                <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle p-1">3</span>
-            </div>
-
-            <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-    </div>
-</nav>
-
-<div class="w-100 px-4 mt-4" id="dashboardContent">
-
-
-
-
-
-
-
-
-
-
-
-
-        <!-- Main Dashboard Content -->
-
-    <div class="page-header mb-4">
-        <div class="d-flex align-items-center text-white">
-            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="User" style="width: 50px; height: 50px; border-radius: 50%;" class="me-2">
-            <h1 class="me-auto">Welcome, User</h1>
-
-            <a href="{{ path('app_panier', {'user': app.user.id}) }}" class="btn btn-primary ms-auto">Go to My Panier</a>
-        </div>
-        <p>Welcome back! Here's what's happening with your digital empire.</p>
-    </div>
-
-            <!-- Stats Cards -->
-            <div class="row stats-row mb-4">
-                <!-- Card 1 -->
-                <div class="col-md-3">
-                    <div class="stat-card purple">
-                        <div class="stat-icon"><i class="fas fa-box"></i></div>
-                        <div class="stat-info"><h3>12</h3><p>Products Owned</p></div>
-                    </div>
-                </div>
-                <!-- Card 2 -->
-                <div class="col-md-3">
-                    <div class="stat-card blue">
-                        <div class="stat-icon"><i class="fas fa-heart"></i></div>
-                        <div class="stat-info"><h3>8</h3><p>Favorites</p></div>
-                    </div>
-                </div>
-                <!-- Card 3 -->
-                <div class="col-md-3">
-                    <div class="stat-card green">
-                        <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                        <div class="stat-info"><h3>$1,249</h3><p>Total Spent</p></div>
-                    </div>
-                </div>
-                <!-- Card 4 -->
-                <div class="col-md-3">
-                    <div class="stat-card orange">
-                        <div class="stat-icon"><i class="fas fa-star"></i></div>
-                        <div class="stat-info"><h3>Premium</h3><p>Membership</p></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="card mb-4 activity-card">
-                <div class="card-header d-flex justify-content-between">
-                    <h3>Recent Activity</h3>
-                    <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
-                </div>
-                <div class="card-body">
-                    <ul class="activity-list">
-                        <li><div class="activity-icon"><i class="fas fa-download"></i></div>
-                            <div class="activity-details"><p>Downloaded <strong>E-Commerce Template</strong></p><small>2 hours ago</small></div>
-                        </li>
-                        <li><div class="activity-icon"><i class="fas fa-shopping-cart"></i></div>
-                            <div class="activity-details"><p>Purchased <strong>SEO Package</strong> for $349</p><small>1 day ago</small></div>
-                        </li>
-                        <li><div class="activity-icon"><i class="fas fa-heart"></i></div>
-                            <div class="activity-details"><p>Added <strong>Brand Identity Pack</strong> to favorites</p><small>2 days ago</small></div>
-                        </li>
-                        <li><div class="activity-icon"><i class="fas fa-comment"></i></div>
-                            <div class="activity-details"><p>Left a review for <strong>Premium Domain Name</strong></p><small>3 days ago</small></div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Recommended Products -->
-            <div class="card products-card">
-                <div class="card-header d-flex justify-content-between">
-                    <h3>Recommended For You</h3>
-                    <a href="#" class="btn btn-sm btn-outline-primary">Browse All</a>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <!-- Product 1 -->
-                        <div class="col-md-4">
-                            <div class="product-recommendation">
-                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop" alt="Product">
-                                <div class="product-info">
-                                    <h4>Marketing Analytics Pro</h4>
-                                    <p class="price">$299 <span class="old-price">$399</span></p>
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(24)</span>
-                                    </div>
-                                    <button class="btn btn-sm btn-primary">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Product 2 -->
-                        <div class="col-md-4">
-                            <div class="product-recommendation">
-                                <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1000&auto=format&fit=crop" alt="Product">
-                                <div class="product-info">
-                                    <h4>Social Media Suite</h4>
-                                    <p class="price">$499</p>
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i><i class="far fa-star"></i> <span>(18)</span>
-                                    </div>
-                                    <button class="btn btn-sm btn-primary">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Product 3 -->
-                        <div class="col-md-4">
-                            <div class="product-recommendation">
-                                <img src="https://images.unsplash.com/photo-1493119508027-2b584f234d6c?q=80&w=1000&auto=format&fit=crop" alt="Product">
-                                <div class="product-info">
-                                    <h4>BusinessDomain.com</h4>
-                                    <p class="price">$1,299</p>
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i><i class="fas fa-star"></i> <span>(32)</span>
-                                    </div>
-                                    <button class="btn btn-sm btn-primary">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> <!-- End Products -->
-        </div> <!-- End Main -->
-    </div> <!-- End Row -->
-</div> <!-- End Container -->
-
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.getElementById("searchInput").addEventListener("input", function () {
-        const term = this.value.toLowerCase();
-        const dashboard = document.querySelectorAll("#dashboardContent *");
-
-        dashboard.forEach(el => {
-            if (el.textContent.toLowerCase().includes(term)) {
-                el.style.display = "";
-            } else {
-                if (el.children.length === 0) {
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById("searchInput")?.addEventListener("input", function () {
+            const term = this.value.toLowerCase();
+            const dashboardElements = document.querySelectorAll("#dashboardContent *");
+            dashboardElements.forEach(el => {
+                if (el.textContent.toLowerCase().includes(term)) {
+                    el.style.display = "";
+                } else if (el.children.length === 0) {
                     el.style.display = "none";
                 }
-            }
+            });
         });
-    });
-</script>
-</body>
-</html>
+    </script>
+{% endblock %}
+
+{% block body %}
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg px-4" style="background-color: #1e1b4b">
+        <a href="#" class="navbar-logo">ScriptSphere</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('product') }}">
+                        <i class="fas fa-box-open me-1"></i>My Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_commandes') }}">
+                        <i class="fas fa-shopping-bag me-1"></i>Purchases
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#favorites">
+                        <i class="fas fa-heart me-1"></i>Favorites
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#account">
+                        <i class="fas fa-user me-1"></i>Account
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#support">
+                        <i class="fas fa-question-circle me-1"></i>Support
+                    </a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="position-relative">
+                    <i class="fas fa-bell text-white"></i>
+                    <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle p-1">3</span>
+                </div>
+                <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="w-100 px-4 mt-4" id="dashboardContent">
+        <div class="page-header mb-4">
+            <div class="d-flex align-items-center text-white">
+                <img src="https://www.w3schools.com/howto/img_avatar.png"
+                     alt="User"
+                     style="width: 50px; height: 50px; border-radius: 50%;"
+                     class="me-2">
+                <h1 class="me-auto">Welcome, {{ app.user.username }}</h1>
+                <a href="{{ path('app_panier', {'user': app.user.id}) }}" class="btn btn-primary ms-auto">
+                    Go to My Panier
+                </a>
+            </div>
+            <p>Welcome back! Here's what's happening with your digital empire.</p>
+        </div>
+
+        <div class="row stats-row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card purple">
+                    <div class="stat-icon"><i class="fas fa-box"></i></div>
+                    <div class="stat-info">
+
+
+
+{#                        <h3>{{ products|length }}</h3>#}
+
+
+
+                        <p>Products Owned</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card blue">
+                    <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                    <div class="stat-info">
+                        <h3>{{ favorites|length }}</h3>
+                        <p>Favorites</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card orange">
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                    <div class="stat-info">
+                        <h3>{{ averageRating }}</h3>
+                        <p>Average Rating Provided</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Recent Activity -->
+        <div class="card mb-4 activity-card">
+            <div class="card-header d-flex justify-content-between">
+                <h3>Recent Activity</h3>
+
+
+                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+
+
+            </div>
+            {% if recent_comments is not empty %}
+                <div class="card-body">
+                    <ul class="activity-list">
+                        {% for comment in recent_comments %}
+                            <li>
+                                <div class="activity-icon">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p>You commented on <strong>{{ comment.product.name }}</strong></p>
+                                    <p class="text-muted">At <strong>{{ comment.createdAt|date('Y-m-d H:i') }}</strong></p>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li><em>No recent comments.</em></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Favorites Section -->
+        <div id="favorites" class="card mb-5">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>Mes Favoris</h3>
+                <a href="{{ path('favorite_list') }}" class="btn btn-sm btn-outline-primary">See All Favorites</a>
+            </div>
+            <div class="card-body">
+                {% if favorites is not empty %}
+                    <div class="row g-4">
+                        {% for product in favorites|slice(0, 3) %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card h-100 shadow-sm border-0 hover-lift">
+                                    <div class="card-img-top overflow-hidden" style="height: 200px; background: #f8f9fa;">
+                                        {% if product.imageUrl %}
+                                            <img
+                                                    src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                                    class="img-fluid w-100 h-100 object-fit-cover"
+                                                    alt="{{ product.name }}"
+                                            >
+                                        {% else %}
+                                            <div class="d-flex align-items-center justify-content-center h-100">
+                                                <i class="fas fa-image fa-3x text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <h5 class="mb-0">{{ product.name }}</h5>
+                                            <span class="badge bg-primary rounded-pill">{{ product.category }}</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="rating small text-warning">
+                                                {% for i in 1..5 %}
+                                                    <i class="fas fa-star{{ i > product.rating ? '-half-alt' : '' }}"></i>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="h4 text-dark mt-2">{{ product.price }} €</div>
+                                        </div>
+                                        <div class="mt-auto d-flex justify-content-between">
+                                            <a href="{{ path('product_show', { id: product.id }) }}"
+                                               class="btn btn-outline-info btn-sm w-50">
+                                                <i class="fas fa-search me-1"></i>Inspect
+                                            </a>
+                                            <form
+                                                    method="post"
+                                                    action="{{ path('favorite_remove', { id: product.id }) }}"
+                                                    class="w-50"
+                                            >
+                                                <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ product.id) }}">
+                                                <button type="submit" class="btn btn-danger btn-sm w-100">
+                                                    <i class="fas fa-heart"></i> Retirer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-light text-center py-5" style="border: 1px dashed #ccc;">
+                        <i class="fas fa-heart-broken fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Aucun favori pour le moment.</h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recommended Products -->
+        <div class="card products-card">
+            <div class="card-header d-flex justify-content-between">
+                <h3>Recommended For You</h3>
+                <a href="{{ path('product') }}" class="btn btn-sm btn-outline-primary">Browse All</a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for product in topProducts %}
+                        <div class="col-md-4">
+                            <div class="product-recommendation">
+                                <img
+                                        src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                        alt="{{ product.name }}"
+                                        class="img-fluid rounded mb-2"
+                                >
+                                <div class="product-info">
+                                    <h4>{{ product.name }}</h4>
+                                    <p class="price">{{ product.price }}€</p>
+                                    <div class="rating">
+                                        {% set ratings = product.ratings %}
+                                        {% set avg = 0 %}
+                                        {% if ratings|length > 0 %}
+                                            {% set sum = 0 %}
+                                            {% for r in ratings %}
+                                                {% set sum = sum + r.value %}
+                                            {% endfor %}
+                                            {% set avg = (sum / ratings|length)|round(1) %}
+                                        {% endif %}
+                                        {% for i in 1..5 %}
+                                            {% if i <= avg %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% elseif (i - avg) < 1 %}
+                                                <i class="fas fa-star-half-alt text-warning"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-warning"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <span>({{ ratings|length }})</span>
+                                    </div>
+                                    <a href="{{ path('product_show', { id: product.id }) }}"
+                                       class="btn btn-sm btn-primary mt-2">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            <p class="text-muted">No recommended products at this time.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

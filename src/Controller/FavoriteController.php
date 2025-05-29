@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class FavoriteController extends AbstractController
 {
@@ -70,5 +72,20 @@ class FavoriteController extends AbstractController
         }
 
         return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('product'));
+    }
+
+    #[Route('/favorites', name: 'favorite_list', methods: ['GET'])]
+    public function listFavorites(): Response
+    {
+        $user = $this->getUser();
+        if (! $user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $favorites = $user->getFavorites();
+
+        return $this->render('favorite/list.html.twig', [
+            'favorites' => $favorites,
+        ]);
     }
 }
