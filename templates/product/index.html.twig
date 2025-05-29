@@ -6,7 +6,9 @@
     <div class="w-100 px-4 mt-4" id="dashboardContent">
         <div class="page-header mb-4">
             <div class="d-flex align-items-center justify-content-between">
-                <h1 class="h2 text-dark mb-0"><i class="fas fa-boxes me-2" style="color: #1e1b4b;"></i>Liste des Produits</h1>
+                <h1 class="h2 text-dark mb-0">
+                    <i class="fas fa-boxes me-2" style="color: #1e1b4b;"></i>Liste des Produits
+                </h1>
                 {% if is_granted('ROLE_ADMIN') %}
                     <a href="#" class="btn btn-primary">
                         <i class="fas fa-plus-circle me-2"></i>Nouveau Produit
@@ -21,9 +23,11 @@
                     <div class="card h-100 shadow-sm border-0 hover-lift">
                         <div class="card-img-top overflow-hidden" style="height: 200px; background: #f8f9fa;">
                             {% if product.imageUrl %}
-                                <img src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
-                                     class="img-fluid w-100 h-100 object-fit-cover"
-                                     alt="{{ product.name }}">
+                                <img
+                                        src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                        class="img-fluid w-100 h-100 object-fit-cover"
+                                        alt="{{ product.name }}"
+                                >
                             {% else %}
                                 <div class="d-flex align-items-center justify-content-center h-100">
                                     <i class="fas fa-image fa-3x text-muted"></i>
@@ -51,8 +55,20 @@
                                     <a href="#" class="btn btn-outline-warning btn-sm flex-grow-1">
                                         <i class="fas fa-edit me-2"></i>Modifier
                                     </a>
-                                    <form method="post" action="#" class="d-inline w-50" onsubmit="return confirm('Supprimer ce produit ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                    <form
+                                            method="post"
+                                            action="#"
+                                            class="d-inline w-50"
+                                            onsubmit="return confirm('Supprimer ce produit ?');"
+                                    >
+                                        <input
+                                                type="hidden"
+                                                name="_token"
+                                                value="{{ csrf_token('delete' ~ product.id) }}"
+                                        >
+                                        <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-outline-info btn-sm w-100">
+                                            <i class="fas fa-search me-2"></i>Inspect
+                                        </a>
                                         <button class="btn btn-outline-danger btn-sm w-100">
                                             <i class="fas fa-trash me-2"></i>
                                         </button>
@@ -61,12 +77,44 @@
                             </div>
 
                             {% if is_granted('ROLE_USER') %}
-                                <form action="{{ path('app_panier_add', { 'user': user.id }) }}" method="post" class="mt-3">
+                                <form
+                                        action="{{ path('app_panier_add', { 'user': user.id }) }}"
+                                        method="post"
+                                        class="mt-3"
+                                >
                                     <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-outline-info btn-sm w-100">
+                                        <i class="fas fa-search me-2"></i>Inspect
+                                    </a>
                                     <button type="submit" class="btn btn-primary w-100">
                                         <i class="fas fa-cart-plus me-2"></i>Ajouter au panier
                                     </button>
                                 </form>
+
+                                <div class="d-flex justify-content-center mt-2">
+                                    {% set isFav = user.getFavorites().contains(product) %}
+                                    {% if isFav %}
+                                        <button
+                                                type="button"
+                                                class="favorite-btn btn btn-danger"
+                                                data-action-url="{{ path('favorite_remove', { id: product.id }) }}"
+                                                data-csrf-token="{{ csrf_token('remove' ~ product.id) }}"
+                                                data-product-id="{{ product.id }}"
+                                        >
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                    {% else %}
+                                        <button
+                                                type="button"
+                                                class="favorite-btn btn btn-outline-danger"
+                                                data-action-url="{{ path('favorite_add', { id: product.id }) }}"
+                                                data-csrf-token="{{ csrf_token('add' ~ product.id) }}"
+                                                data-product-id="{{ product.id }}"
+                                        >
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
                             {% endif %}
                         </div>
                     </div>
@@ -90,10 +138,61 @@
         }
         .hover-lift:hover {
             transform: translateY(-5px);
-            box-shadow: 0 1rem 2.5rem rgba(22,28,45,.1),0 0.5rem 1rem -0.75rem rgba(22,28,45,.05)!important;
+            box-shadow: 0 1rem 2.5rem rgba(22,28,45,.1),
+            0 0.5rem 1rem -0.75rem rgba(22,28,45,.05)!important;
         }
         .object-fit-cover {
             object-fit: cover;
         }
     </style>
-{% endblock %}{% block developpers %}{{ parent() }}{% endblock %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Attach click listeners to all favorite buttons
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    const actionUrl = this.dataset.actionUrl;
+                    const csrfToken = this.dataset.csrfToken;
+                    const productId = this.dataset.productId;
+                    const isCurrentlyFav = this.classList.contains('btn-danger');
+
+                    fetch(actionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ _token: csrfToken })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.productId == productId) {
+                                // Toggle button appearance & data for next click
+                                if (isCurrentlyFav) {
+                                    // Was favorited → now removed
+                                    btn.classList.remove('btn-danger');
+                                    btn.classList.add('btn-outline-danger');
+                                    btn.dataset.actionUrl = "{{ path('favorite_add', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
+                                    btn.dataset.csrfToken = "{{ csrf_token('addREPLACE') }}".replace('REPLACE', productId);
+                                    btn.innerHTML = '<i class="far fa-heart"></i>';
+                                } else {
+                                    // Was not favorited → now added
+                                    btn.classList.remove('btn-outline-danger');
+                                    btn.classList.add('btn-danger');
+                                    btn.dataset.actionUrl = "{{ path('favorite_remove', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
+                                    btn.dataset.csrfToken = "{{ csrf_token('removeREPLACE') }}".replace('REPLACE', productId);
+                                    btn.innerHTML = '<i class="fas fa-heart"></i>';
+                                }
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Erreur AJAX favoritage :', err);
+                        });
+                });
+            });
+        });
+
+    </script>
+{% endblock %}
