@@ -2,21 +2,21 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
-final class RoleController extends AbstractController
+class RoleController extends AbstractController
 {
     #[Route('/role{id}', name: 'app_role')]
     public function updateRole(User $user, EntityManagerInterface $entityManager)
     {
-        // Mise à jour des rôles de l'utilisateur
-        $user->setRoles(['ROLE_ADMIN']); // Assigner le rôle ROLE_ADMIN
-
-        // Sauvegarder les changements dans la base de données
+        $user->setRoles(['ROLE_ADMIN']);
+        $entityManager->persist($user);
         $entityManager->flush();
 
-        return $this->redirectToRoute('user_list');
+        return $this->redirectToRoute('app_admin_dashboard');
     }
 }
+
