@@ -10,6 +10,7 @@
 {% block title %}{{ panier.user.username }}'s Cart - ScriptSphere{% endblock %}
 
 {% block body %}
+    {{ parent() }}
     <div class="w-100 px-4 mt-4" id="dashboardContent">
         <div class="page-header mb-4">
             <div class="d-flex align-items-center justify-content-between text-white">
@@ -120,3 +121,4 @@
         </div>
     </div>
 {% endblock %}
+{% block developpers %}{% endblock %}

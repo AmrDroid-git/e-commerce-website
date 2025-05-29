@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,52 +31,7 @@
 {% endblock %}
 
 {% block body %}
-    <!-- Top Navbar -->
-    <nav class="navbar navbar-expand-lg px-4" style="background-color: #1e1b4b">
-        <a href="#" class="navbar-logo">ScriptSphere</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('product') }}">
-                        <i class="fas fa-box-open me-1"></i>My Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_commandes') }}">
-                        <i class="fas fa-shopping-bag me-1"></i>Purchases
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#favorites">
-                        <i class="fas fa-heart me-1"></i>Favorites
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#account">
-                        <i class="fas fa-user me-1"></i>Account
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#support">
-                        <i class="fas fa-question-circle me-1"></i>Support
-                    </a>
-                </li>
-            </ul>
 
-            <div class="d-flex align-items-center gap-3">
-                <div class="position-relative">
-                    <i class="fas fa-bell text-white"></i>
-                    <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle p-1">3</span>
-                </div>
-                <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </div>
-    </nav>
 
     <div class="w-100 px-4 mt-4" id="dashboardContent">
         <div class="page-header mb-4">
@@ -85,9 +41,7 @@
                      style="width: 50px; height: 50px; border-radius: 50%;"
                      class="me-2">
                 <h1 class="me-auto">Welcome, {{ app.user.username }}</h1>
-                <a href="{{ path('app_panier', {'user': app.user.id}) }}" class="btn btn-primary ms-auto">
-                    Go to My Panier
-                </a>
+
             </div>
             <p>Welcome back! Here's what's happening with your digital empire.</p>
         </div>
@@ -287,3 +241,4 @@
         </div>
     </div>
 {% endblock %}
+{% block developpers %}{% endblock %}

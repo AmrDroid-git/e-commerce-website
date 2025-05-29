@@ -4,7 +4,7 @@ namespace App\Entity;
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\CommandeRepository;
+
 
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
