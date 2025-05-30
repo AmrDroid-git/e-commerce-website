@@ -1,231 +1,582 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles1.css') }}">
 
+    <style>
+        /* Navigation Styles */
+        .nav-link.active {
+            color: #afcbff;
+            font-weight: bold;
+            border-bottom: 2px solid #c0d5ff;
+        }
+        .custom-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #001761;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            height: 92px;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #a5b4fc;
+            transform: translateY(-2px);
+        }
+        .nav-link i {
+            font-size: 1.1em;
+        }
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        body {
+            padding-top: 80px;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/styles1.css') }}">
+        @media (max-width: 992px) {
+            .nav-links {
+                gap: 15px;
+            }
+        }
+        @media (max-width: 768px) {
+            .custom-navbar {
+                flex-wrap: wrap;
+                padding: 15px;
+            }
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .navbar-actions {
+                margin-left: auto;
+            }
+        }
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-            <nav class="navbar">
-                <a href="#" class="navbar-logo">ScriptSphere</a>
+        /* Footer Styles - Optimized for reduced space */
+        .site-footer {
+            background: linear-gradient(135deg, #001761, #6d9eff);
+            color: white;
+            position: relative;
+            padding: 40px 0 15px; /* Reduced top and bottom padding */
+        }
+        .site-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #001761, #6d9eff, #001761);
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .developers-section {
+            padding: 30px 0; /* Reduced padding */
+        }
+        .developers-header {
+            text-align: center;
+            margin-bottom: 30px; /* Reduced margin */
+        }
+        .footer-logo {
+            color: white !important;
+            text-decoration: none !important;
+        }
+        .footer-logo:visited {
+            color: white !important;
+        }
+        .developers-header h2 {
+            font-size: 2.2rem; 
+            font-weight: 700;
+            margin-bottom: 12px; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .developers-header p {
+            font-size: 1.1rem; 
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        .developer-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            height: 80%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin-top: 80px;
+        }
+        .developer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .developer-image {
+            width: 100px; 
+            height: 100px; 
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            margin: 0 auto;
+            display: block;
+        }
+        .developer-info {
+            padding: 20px; /* Reduced padding */
+            text-align: center;
+        }
+        .developer-name {
+            font-size: 1.3rem; 
+            font-weight: 600;
+            margin: 10px 0 5px; /* Reduced margin */
+        }
+        .developer-role {
+            color: #a5c1fc;
+            margin-bottom: 12px; 
+            font-weight: 500;
+        }
+        .developer-social {
+            display: flex;
+            justify-content: center;
+            gap: 12px; /* Reduced gap */
+            margin-bottom: 15px; 
+        }
+        .social-link {
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.1rem; 
+        }
+        .social-link:hover {
+            background: #001761;
+            transform: scale(1.1);
+        }
+        #contact{
+            height: 82vh;
+            align-content: center;
+        }
+        .developer-contact {
+            font-size: 0.9rem; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px; /* Reduced gap */
+        }
+        .footer-content {
+            padding: 30px 0 15px; /* Reduced padding */
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px; /* Reduced margin */
+        }
+        .footer-description {
+            font-size: 1rem; 
+            line-height: 1.6; /* Tighter line height */
+            max-width: 600px;
+            margin-bottom: 20px; 
+            opacity: 0.9;
+        }
+        .footer-offerings {
+            display: flex;
+            gap: 25px; /* Reduced gap */
+            margin-bottom: 20px; 
+        }
+        .offering-column {
+            flex: 1;
+        }
+        .offering-title {
+            font-weight: 600;
+            margin-bottom: 12px; 
+            font-size: 1.1rem; 
+        }
+        .offering-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .offering-list li {
+            margin-bottom: 6px; 
+            position: relative;
+            padding-left: 18px; 
+        }
+        .offering-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #a5c1fc;
+        }
+        .mission-statement {
+            font-style: italic;
+            font-size: 1.1rem; 
+            margin: 20px 0; 
+            padding: 15px; 
+            background: rgba(0, 23, 97, 0.3);
+            border-left: 3px solid #a5c1fc;
+            border-radius: 0 8px 8px 0;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px; 
+            margin: 20px 0; 
+        }
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 3px; 
+            font-size: 0.95rem; 
+        }
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #a5c1fc;
+            transition: width 0.3s ease;
+        }
+        .footer-link:hover::after {
+            width: 100%;
+        }
+        .footer-copyright {
+            text-align: center;
+            padding-top: 20px; 
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px; 
+            font-size: 0.85rem; 
+            opacity: 0.7;
+        }
 
-                <div class="navbar-links">
-                    <a href="#products" class="navbar-link">Products</a>
-                    <a href="#about" class="navbar-link">About</a>
-                    <a href="#contact" class="navbar-link">Contact</a>
-                </div>
+        @media (max-width: 992px) {
+            .footer-offerings {
+                flex-direction: column;
+                gap: 15px; 
+            }
+        }
+        @media (max-width: 768px) {
+            .developers-header h2 {
+                font-size: 1.8rem;
+            }
+            .developers-header p {
+                font-size: 1rem;
+            }
+            .developer-card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
 
-                <div class="navbar-actions">
-                    <a href="{{ path('app_login') }}"> <button class="icon-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                        </button></a>
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+<body>
+<header class="custom-navbar">
+    <a href="/" class="navbar-brand">
+        <i class="fas fa-cube"></i>
+        ScriptSphere
+    </a>
 
-                    <div class="navbar-cart">
-                        <a href="{{ path('app_login') }}"> <button class="icon-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                                <span class="cart-count">0</span>
-                            </button></a>
-                    </div>
-                    <a href="{{ path('app_login') }}"  class="navbar-link">
-                        <button class="mobile-menu-btn icon-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                        </button></a>
-                </div>
-                <a href="{{ path('app_login') }}" class="btn btn-outline-light">Login</a>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
 
-            </nav>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="{{ path('product') }}"
+               class="nav-link {% if app.request.get('_route') == 'product' %}active{% endif %}">
+                <i class="fas fa-box-open"></i>
+                <span>Products</span>
+            </a></li>
 
-        {% endblock %}
+        <li><a href="{{ path('app_commandes') }}"
+               class="nav-link {% if app.request.get('_route') == 'app_commandes' %}active{% endif %}">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Purchases</span>
+            </a></li>
 
-        {% block javascripts %}
+        <li><a href="/favorites"
+               class="nav-link {% if app.request.get('_route') == 'favorite_list' %}active{% endif %}">
+                <i class="fas fa-heart"></i>
+                <span>Favorites</span>
+            </a></li>
 
-        {% endblock %}
-    </head>
-    <body>
-    <!-- Top Navbar -->
-    <nav class="navbar navbar-expand-lg px-4" style="background-color: #1e1b4b">
-        <a href="#" class="navbar-logo">ScriptSphere</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('product') }}">
-                        <i class="fas fa-box-open me-1"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_commandes') }}">
-                        <i class="fa fa-shopping-cart me-1"></i>Purchases
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#favorites">
-                        <i class="fas fa-heart me-1"></i>Favorites
-                    </a>
-                </li>
-                <li>
-                    <a href="{% if app.user %}{{ path('app_panier', {'user': app.user.id}) }}{% else %}#{% endif %}" class="nav-link">
+        <li><a href="{% if app.user %}{{ path('app_panier', {'user': app.user.id}) }}{% else %}#{% endif %}"
+               class="nav-link {% if app.request.get('_route') == 'app_panier' %}active{% endif %}">
+                <i class="fas fa-shopping-bag"></i>
+                <span>My Panier</span>
+            </a></li>
+    </ul>
 
-                        <i class="fa fa-shopping-bag me-1"></i>My Panier
-                    </a>
-                </li>
+    <div class="navbar-actions d-flex align-items-center gap-3">
+        {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')%}
+            <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm d-flex align-items-center">
+                <i class="fas fa-sign-out-alt me-1"></i>
+                <span>Logout</span>
+            </a>
+        {% else %}
+            <a href="{{ path('app_registeration') }}" class="btn btn-outline-light btn-sm d-flex align-items-center">
+                <i class="fas fa-user-plus me-1"></i>
+                <span>Register</span>
+            </a>
+            <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-sm d-flex align-items-center">
+                <i class="fas fa-sign-in-alt me-1"></i>
+                <span>Login</span>
+            </a>
+        {% endif %}
+    </div>
+</header>
 
+<main>
+    {% block body %}{% endblock %}
+</main>
 
-            </ul>
-
-            <div class="d-flex align-items-center gap-3">
-                <div class="position-relative">
-                    <i class="fas fa-bell text-white"></i>
-                    <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle p-1">3</span>
-                </div>
-                <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </div>
-    </nav>
-        {% block body %}
-        {% endblock %}
-    {% block developpers %}</section>
-        <!-- Developers Contact Section -->
-        <section id="contact" class="py-5" style="background-color: #f8f9fa;">
-            <div class="container">
-                <div class="row justify-content-center mb-5">
-                    <div class="col-lg-8 text-center">
-                        <h2 class="display-5 fw-bold mb-3">Meet Our Developers</h2>
-                        <p class="lead">Get in touch with our talented development team</p>
-                    </div>
+{% block developpers %}
+    <div class="site-footer">
+        <div class="footer-container">
+            <section id="contact" class="developers-section">
+                <div class="developers-header">
+                    <h2>Meet Our Developers</h2>
+                    <p>Get in touch with our talented development team</p>
                 </div>
 
                 <div class="row g-4">
-                    <!-- Developer 1 -->
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center p-4">
-                                <img src="{{ asset('images/amrdroid.jpg') }}" class="rounded-circle mb-3" width="100" alt="Developer">                        <h5 class="card-title">Sinda Ferchichi</h5>
-                                <h5 class="card-title">Amr Slama</h5>
-                                <p class="text-muted mb-2">Fullstack Engineer</p>
-                                <div class="d-flex justify-content-center gap-2 mb-3">
-                                    <a href="https://github.com/AmrDroid-git" class="text-primary"><i class="fab fa-github"></i></a>
-                                    <a href="https://www.linkedin.com/in/slama-amr-27834b339/" class="text-primary"><i class="fab fa-linkedin"></i></a>
-                                    <a href="mailto:amr.slama@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
-
+                        <div class="developer-card">
+                            <div class="developer-info">
+                                <img src="{{ asset('images/amrdroid.jpg') }}" alt="Developer" class="developer-image">
+                                <h3 class="developer-name">Amr Slama</h3>
+                                <p class="developer-role">Fullstack Engineer</p>
+                                <div class="developer-social">
+                                    <a href="https://github.com/AmrDroid-git" class="social-link">
+                                        <i class="fab fa-github"></i>
+                                    </a>
+                                    <a href="https://www.linkedin.com/in/slama-amr-27834b339/" class="social-link">
+                                        <i class="fab fa-linkedin"></i>
+                                    </a>
+                                    <a href="mailto:amr.slama@insat.ucar.tn" class="social-link">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
                                 </div>
-                                <small class="d-block text-muted">
-                                    <i class="fas fa-phone me-2"></i> +216 28123673
-                                </small>
+                                <p class="developer-contact">
+                                    <i class="fas fa-phone"></i> +216 28123673
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Developer 2 -->
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center p-4">
-                                <img src="{{ asset('images/sinda.jpg') }}" class="rounded-circle mb-3" width="100" alt="Developer">                        <h5 class="card-title">Sinda Ferchichi</h5>
-                                <p class="text-muted mb-2">Software Engineer</p>
-                                <div class="d-flex justify-content-center gap-2 mb-3">
-                                    <a href="https://github.com/sendaferchichi" class="text-primary"><i class="fab fa-github"></i></a>
-                                    <a href="https://www.linkedin.com/in/ferchichi-sinda-7115a0333/" class="text-primary"><i class="fab fa-linkedin"></i></a>
-                                    <a href="mailto:senda.ferchichi@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
+                        <div class="developer-card">
+                            <div class="developer-info">
+                                <img src="{{ asset('images/sinda.jpg') }}" alt="Developer" class="developer-image">
+                                <h3 class="developer-name">Sinda Ferchichi</h3>
+                                <p class="developer-role">Software Engineer</p>
+                                <div class="developer-social">
+                                    <a href="https://github.com/sendaferchichi" class="social-link">
+                                        <i class="fab fa-github"></i>
+                                    </a>
+                                    <a href="https://www.linkedin.com/in/ferchichi-sinda-7115a0333/" class="social-link">
+                                        <i class="fab fa-linkedin"></i>
+                                    </a>
+                                    <a href="mailto:senda.ferchichi@insat.ucar.tn" class="social-link">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
                                 </div>
-                                <small class="d-block text-muted">
-                                    <i class="fas fa-phone me-2"></i> +216 57069847
-                                </small>
+                                <p class="developer-contact">
+                                    <i class="fas fa-phone"></i> +216 57069847
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Developer 3 -->
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center p-4">
-                                <img src="{{ asset('images/moetez.jpg') }}" class="rounded-circle mb-3" width="100" alt="Developer">                        <h5 class="card-title">Sinda Ferchichi</h5>
-                                <h5 class="card-title">Moetaz Fradi</h5>
-                                <p class="text-muted mb-2">AI Engineer</p>
-                                <div class="d-flex justify-content-center gap-2 mb-3">
-                                    <a href="https://github.com/Moetez-Fradi" class="text-primary"><i class="fab fa-github"></i></a>
-                                    <a href="https://www.linkedin.com/in/moetez-fradi-349b2933b/" class="text-primary"><i class="fab fa-linkedin"></i></a>
-                                    <a href="mailto:moetez.fradi@insat.ucar.tn" class="text-primary"><i class="fas fa-envelope"></i></a>
+                        <div class="developer-card">
+                            <div class="developer-info">
+                                <img src="{{ asset('images/moetez.jpg') }}" alt="Developer" class="developer-image">
+                                <h3 class="developer-name">Moetaz Fradi</h3>
+                                <p class="developer-role">AI Engineer</p>
+                                <div class="developer-social">
+                                    <a href="https://github.com/Moetez-Fradi" class="social-link">
+                                        <i class="fab fa-github"></i>
+                                    </a>
+                                    <a href="https://www.linkedin.com/in/moetez-fradi-349b2933b/" class="social-link">
+                                        <i class="fab fa-linkedin"></i>
+                                    </a>
+                                    <a href="mailto:moetez.fradi@insat.ucar.tn" class="social-link">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
                                 </div>
-                                <small class="d-block text-muted">
-                                    <i class="fas fa-phone me-2"></i> +216 48000136
-                                </small>
+                                <p class="developer-contact">
+                                    <i class="fas fa-phone"></i> +216 48000136
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Developer 4 -->
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm">
-                            <div class="card-body text-center p-4">
-                                <img src="{{ asset('images/rakia.jpg') }}" class="rounded-circle mb-3" width="100" alt="Developer">                        <h5 class="card-title">Sinda Ferchichi</h5>
-                                <h5 class="card-title">Rakia Tsouri</h5>
-                                <p class="text-muted mb-2">Software Engineer</p>
-                                <div class="d-flex justify-content-center gap-2 mb-3">
-                                    <a href="https://github.com/rakia-tsouri" class="text-primary"><i class="fab fa-github"></i></a>
-                                    <a href="https://www.linkedin.com/in/rakia-tsouri-795053303/" class="text-primary"><i class="fab fa-linkedin"></i></a>
-                                    <a href="mailto:tsourirakia88@gmail.com" class="text-primary"><i class="fas fa-envelope"></i></a>
+                        <div class="developer-card">
+                            <div class="developer-info">
+                                <img src="{{ asset('images/rakia.jpg') }}" alt="Developer" class="developer-image">
+                                <h3 class="developer-name">Rakia Tsouri</h3>
+                                <p class="developer-role">Software Engineer</p>
+                                <div class="developer-social">
+                                    <a href="https://github.com/rakia-tsouri" class="social-link">
+                                        <i class="fab fa-github"></i>
+                                    </a>
+                                    <a href="https://www.linkedin.com/in/rakia-tsouri-795053303/" class="social-link">
+                                        <i class="fab fa-linkedin"></i>
+                                    </a>
+                                    <a href="mailto:tsourirakia88@gmail.com" class="social-link">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
                                 </div>
-                                <small class="d-block text-muted">
-                                    <i class="fas fa-phone me-2"></i> +216 21798827
-                                </small>
+                                <p class="developer-contact">
+                                    <i class="fas fa-phone"></i> +216 21798827
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-            <footer  class="footer">
-                <div  id="about" class="footer-logo">ScriptSphere</div>
-                <p>Your destination for premium digital assets and online solutions</p></br>
-                <br>We're a team of four passionate developer students from INSAT, building the future one line of code at a time. At ScriptSphere, we combine academic knowledge with practical expertise to deliver premium digital solutions.
+            </section>
+            <section id="about">
+                <div class="footer-content">
+                    <div style="font-size: 40pt; color: white !important; font-family: 'Montserrat', sans-serif;">
+                        ScriptSphere
+                    </div>
+                    <br>
+                    <p class="footer-description">
+                        Your destination for premium digital assets and online solutions.
+                        At ScriptSphere, we combine academic knowledge and
+                        practical expertise to deliver premium digital solutions.
+                    </p>
 
-                What We Offer:
+                    <div class="footer-offerings">
+                        <div class="offering-column">
+                            <h4 class="offering-title">What We Offer</h4>
+                            <ul class="offering-list">
+                                <li>Website templates & UI kits</li>
+                                <li>Full-stack development services</li>
+                                <li>Custom digital solutions</li>
+                                <li>E-commerce integrations</li>
+                                <li>Artificial Intelligence integration</li>
+                            </ul>
+                        </div>
 
-                Premium website templates & UI kits </br>
+                        <div class="offering-column">
+                            <h4 class="offering-title">Our Mission</h4>
+                            <p>
+                                We believe in the need for digitalisation, especially in <br />
+                                under-developed country. We aim to advance technology  <br />
+                                implementation in our nation in a non-stopping developing world.
+                            </p>
+                        </div>
+                    </div>
 
+                    <p class="mission-statement">
+                        "The goal is not to do business with everyone who needs what you have. The goal is to do business with people who believe what you believe."
+                    </p>
 
+                    <div class="footer-links">
+                        <a href="/" class="footer-link">Home</a>
+                        <a href="/products" class="footer-link">Products</a>
+                        <a href="#about" class="footer-link">About</a>
+                        <a href="#contact" class="footer-link">Contact</a>
+                    </div>
 
-                Full-stack development services</br>
-
-
-
-                Our mission is to bridge classroom concepts with real-world digital needs, offering affordable yet high-quality solutions for businesses and creators. As students ourselves, we understand the importance of budget-friendly options without compromising on quality.</br>
-
-                <i  style="color: #2a1ec6;font-size: large">"From our laptops at INSAT to your digital presence - we make web excellence accessible."</i></p>
-
-
-                <div class="footer-links">
-                    <a href="#" class="footer-link">Home</a>
-                    <a href="#products" class="footer-link">Products</a>
-                    <a href="#about" class="footer-link">About</a>
-                    <a href="#contact" class="footer-link">Contact</a>
-                    <a href="#privacy" class="footer-link">Privacy Policy</a>
+                    <div class="footer-copyright">
+                        &copy; <span id="current-year"></span> ScriptSphere. All rights reserved.
+                    </div>
                 </div>
-
-                <div class="footer-copyright">
-                    &copy; <span id="current-year"></span> ScriptSphere. All rights reserved.
-                </div>
-            </footer>
-
-        <!-- JavaScript -->
-            <script src="{{ asset('js/script.js') }}"></script>
+            </section>
+        </div>
+    </div>
 {% endblock %}
-    </body>
+
+<script>
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+        const navLinks = document.getElementById('navLinks');
+        navLinks.classList.toggle('active');
+    });
+
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
+
+{% block javascripts %}
+    <script src="{{ asset('js/script.js') }}"></script>
+{% endblock %}
+</body>
 </html>

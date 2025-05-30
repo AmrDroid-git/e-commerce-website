@@ -1,45 +1,115 @@
-{# templates/security/login.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Log in - ScriptSphere{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
 
     <style>
+
         body {
-            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&amp;auto=format&amp;fit=crop&amp;w=2000&amp;q=80');
+            background-image:
+                    linear-gradient(rgba(0, 0, 255, 0.7), rgba(0, 0, 219, 0.7)),
+                    url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             min-height: 100vh;
         }
-    </style>
+
+        .auth-container-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 60px);
+        }
+
+        .auth-container {
+            background-color: rgba(240, 248, 255, 0.95); /* soft blue tint */
+            border: 2px solid #1e3a8a;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            width: 600px;
+            height: auto;
+            box-shadow: 0 0 10px rgba(30, 58, 138, 0.3);
+        }
+
+        .auth-header h1 {
+            color: #1e3a8a;
+        }
+
+        .auth-header p {
+            color: #3b82f6;
+        }
+
+        .topbar {
+            background-color: rgba(30, 58, 138, 0.7);
+            padding: 0.75rem 1.5rem;
+        }
+
+        .topbar-logo, .topbar-link {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .topbar-link:hover {
+            color: #dbeafe;
+        }
+
+        .form-label {
+            color: #1e40af;
+        }
+
+        .form-check-label {
+            color: #1d4ed8;
+        }
+
+        .btn-auth {
+            background-color: #001761;
+            border-color: #1e3a8a;
+            color: white;
+        }
+
+        .btn-auth:hover {
+            background-color: #1d4ed8;
+            border-color: #1e3a8a;
+        }
+
+        .form-footer a {
+            color: #1e3a8a;
+            text-decoration: underline;
+        }
+
+        .form-footer a:hover {
+            color: #3b82f6;
+        }
+
+        .alert-success, .alert-danger {
+            border-left: 4px solid #1e3a8a;
+        }
+        .form-control:focus {
+            border-color: #1e40af !important;     /* Deep blue border */
+            box-shadow: 0 0 0 0.25rem rgba(30, 64, 175, 0.25) !important; /* Blue glow */
+            outline: none;
+        }    </style>
 {% endblock %}
 
-{% block body %}
-    <nav class="topbar">
-        <a href="#" class="topbar-logo">ScriptSphere</a>
-        <div class="topbar-links">
-            <a href="#about" class="topbar-link">About</a>
-            <a href="#contact" class="topbar-link">Contact</a>
-        </div>
-    </nav>
 
-    <div class="container">
+{% block body %}
+
+    <div class="auth-container-wrapper">
         <div class="auth-container">
-            <div class="auth-header">
-                <h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
-                <p class="text-muted">Access your ScriptSphere account</p>
+            <div class="auth-header text-center mb-4">
+                <h1 class="h3 mb-1 font-weight-normal">Sign In</h1>
+                <p class="text-muted mb-3">Access your ScriptSphere account</p>
             </div>
 
-            {# Success flash (after registration) #}
             {% for msg in app.flashes('success') %}
                 <div class="alert alert-success" role="alert">
                     {{ msg }}
                 </div>
             {% endfor %}
 
-            {# Login errors #}
             {% if error %}
                 <div class="alert alert-danger">
                     {{ error.messageKey|trans(error.messageData, 'security') }}
@@ -47,7 +117,7 @@
             {% endif %}
 
             {% if app.user %}
-                <div class="mb-3">
+                <div class="mb-3 text-center">
                     You are logged in as {{ app.user.userIdentifier }},
                     <a href="{{ path('app_logout') }}">Logout</a>
                 </div>
@@ -89,20 +159,16 @@
                     </label>
                 </div>
 
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2 mb-3">
                     <button class="btn btn-primary btn-auth" type="submit">
                         Sign in
                     </button>
                 </div>
 
-                <div class="form-footer mt-4">
+                <div class="form-footer text-center">
                     <p>Don't have an account? <a href="{{ path('app_registeration') }}">Register here</a></p>
                 </div>
             </form>
         </div>
     </div>
-
-    </section>
-
-
 {% endblock %}

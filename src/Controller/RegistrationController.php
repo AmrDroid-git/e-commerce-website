@@ -38,7 +38,6 @@ class RegistrationController extends AbstractController
         $form   = $this->createForm(RegistrationForm::class, $user);
         $form->handleRequest($request);
 
-        // collect validation errors as flash messages
         if ($form->isSubmitted() && ! $form->isValid()) {
             foreach ($form->getErrors(true) as $error) {
                 $this->addFlash('error', $error->getMessage());
@@ -65,7 +64,6 @@ class RegistrationController extends AbstractController
                 ]);
             }
 
-            // send confirmation email
             $this->emailVerifier->sendEmailConfirmation(
                 'app_verify_email',
                 $user,

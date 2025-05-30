@@ -346,7 +346,6 @@ body {
     font-weight: 900;
     font-size: 2rem;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #9b87f5 0%, #33C3F0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

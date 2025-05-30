@@ -1,168 +1,163 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des produits - ScriptSphere{% endblock %}
-{% block stylesheets %}{{ parent() }}{% endblock %}
+{% block title %}Liste des produits – ScriptSphere{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        #dashboardContent { max-width: 80%; margin: 0 auto; padding: 1rem 0; }
+        .page-header h1 { font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 700; }
+        .btn-custom { background-color: #001761; color: #fff; }
+        .btn-custom:hover { background-color: #001140; }
+        .hover-lift { transition: transform .2s, box-shadow .2s; }
+        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1rem rgba(0,0,0,0.1); }
+        .object-fit-cover { object-fit: cover; }
+        .form-control:focus, .form-select:focus { border-color: #001761; box-shadow: 0 0 .2rem rgba(0,23,97,.25); }
+    </style>
+{% endblock %}
+
 {% block body %}
-
-    {% for label, messages in app.flashes %}
-        {% for msg in messages %}
-            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                {{ msg }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endfor %}
-
-
-    <div class="w-100 px-4 mt-4" id="dashboardContent">
-        <div class="page-header mb-4">
-            <div class="d-flex align-items-center justify-content-between">
-                <h1 class="h2 text-dark mb-0">
-                    <i class="fas fa-boxes me-2" style="color: #1e1b4b;"></i>Liste des Produits
-                </h1>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="#" class="btn btn-primary">
-                        <i class="fas fa-plus-circle me-2"></i>Nouveau Produit
-                    </a>
-                {% endif %}
-            </div>
+    <div class="container-fluid" id="dashboardContent">
+<br />
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
+            <h3 class="h5 mb-3 text-dark"><i class="fas fa-filter me-2"></i>Search Products</h3>
+            <form method="get" action="{{ path('product') }}" class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" name="search" value="{{ currentSearch }}" class="form-control border-start-0" placeholder="Search by name...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fas fa-tag text-muted"></i>
+                        </span>
+                        <select name="category" class="form-select">
+                            <option value="0" {{ currentCategory == 0 ? 'selected' : '' }}>all categories</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}" {{ cat.id == currentCategory ? 'selected' : '' }}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-custom w-100">
+                        <i class="fas fa-filter me-1"></i>Apply
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <form method="get" action="{{ path('product') }}" class="row g-3 mb-4">
-            <div class="col-md-6">
-                <input
-                        type="text"
-                        name="search"
-                        value="{{ currentSearch }}"
-                        class="form-control"
-                        placeholder="Rechercher un produit..."
-                >
-            </div>
-            <div class="col-md-4">
-                <select name="category" class="form-select">
-                    <option value="0" {{ currentCategory == 0 ? 'selected' : '' }}>Toutes les catégories</option>
-                    {% for cat in categories %}
-                        <option
-                                value="{{ cat.id }}"
-                                {{ cat.id == currentCategory ? 'selected' : '' }}
-                        >
-                            {{ cat.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i>Filtrer
-                </button>
-            </div>
-        </form>
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="/admin/product/new" class="btn btn-custom">
+                    <i class="fas fa-plus-circle me-2"></i>New Product
+                </a>
+            {% endif %}
+        </div>
 
-
-        <div class="row g-4">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for product in products %}
-                <div class="col-md-6 col-lg-4">
+                <div class="col">
                     <div class="card h-100 shadow-sm border-0 hover-lift">
-                        <div class="card-img-top overflow-hidden" style="height: 200px; background: #f8f9fa;">
+                        <div class="card-img-top overflow-hidden bg-light" style="height: 180px;">
                             {% if product.imageUrl %}
-                                <img
-                                        src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
-                                        class="img-fluid w-100 h-100 object-fit-cover"
-                                        alt="{{ product.name }}"
-                                >
+                                <img src="{{ asset('uploads/products/' ~ product.imageUrl) }}" alt="{{ product.name }}" class="img-fluid w-100 h-100 object-fit-cover">
                             {% else %}
                                 <div class="d-flex align-items-center justify-content-center h-100">
                                     <i class="fas fa-image fa-3x text-muted"></i>
                                 </div>
                             {% endif %}
                         </div>
-
                         <div class="card-body d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex justify-content-between mb-2">
                                 <h5 class="mb-0">{{ product.name }}</h5>
-                                <span class="badge bg-primary rounded-pill">{{ product.category }}</span>
+                                <span class="badge bg-primary rounded-pill py-1 px-2" style="width: 40%; height: 20px">{{ product.category }}</span>
                             </div>
-
                             <div class="mb-3">
                                 <div class="rating small text-warning">
+                                    {# Correct star display #}
                                     {% for i in 1..5 %}
-                                        <i class="fas fa-star{{ i > product.rating ? '-half-alt' : '' }}"></i>
+                                        {% if i <= product.rating %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
-                                <div class="h4 text-dark mt-2">{{ product.price }} €</div>
+                                <div class="h4 mt-1">{{ product.price }} €</div>
                             </div>
-
-                            <div class="mt-auto d-flex gap-2">
-                                {% if is_granted('ROLE_ADMIN') %}
-                                    <a href="#" class="btn btn-outline-warning btn-sm flex-grow-1">
-                                        <i class="fas fa-edit me-2"></i>Modifier
+                            <div class="mt-auto d-flex align-items-center gap-2">
+                                <div class="d-flex flex-grow-1 gap-2">
+                                    <a href="{{ path('product_show', { id: product.id }) }}"
+                                       class="btn btn-sm btn-custom w-100 d-flex align-items-center justify-content-center height: 30px">
+                                        <i class="fas fa-search me-1"></i>Inspect
                                     </a>
-                                    <form
-                                            method="post"
-                                            action="#"
-                                            class="d-inline w-50"
-                                            onsubmit="return confirm('Supprimer ce produit ?');"
-                                    >
-                                        <input
-                                                type="hidden"
-                                                name="_token"
-                                                value="{{ csrf_token('delete' ~ product.id) }}"
-                                        >
-                                        <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-outline-info btn-sm w-100">
-                                            <i class="fas fa-search me-2"></i>Inspect
+
+                                    {% if is_granted('ROLE_USER') %}
+                                        <form action="{{ path('app_panier_add', { user: user.id }) }}" method="post" class="w-100">
+                                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                                            <button class="btn btn-sm btn-custom w-100 d-flex align-items-center justify-content-center" style="height: 40px">
+                                                <i class="fas fa-cart-plus me-1"></i>Add
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <a href="{{ path('app_login') }}"
+                                           class="btn btn-sm btn-custom w-100 d-flex align-items-center justify-content-center" style="height: 40px">
+                                            <i class="fas fa-cart-plus me-1"></i>Add
                                         </a>
-                                        <button class="btn btn-outline-danger btn-sm w-100">
-                                            <i class="fas fa-trash me-2"></i>
-                                        </button>
-                                    </form>
+                                    {% endif %}
+                                </div>
+
+                                {% if is_granted("ROLE_USER") %}
+                                    {% set isFav = user.getFavorites().contains(product) %}
+                                    <button type="button"
+                                            class="favorite-btn btn {{ isFav ? 'btn-danger' : 'btn-outline-danger' }}"
+                                            style="width: 40px; height: 40px; padding: 0;"
+                                            data-action-url="{{ isFav ? path('favorite_remove', { id: product.id }) : path('favorite_add', { id: product.id }) }}"
+                                            data-csrf-token="{{ isFav ? csrf_token('remove' ~ product.id) : csrf_token('add' ~ product.id) }}"
+                                            data-product-id="{{ product.id }}">
+                                        <i class="{{ isFav ? 'fas' : 'far' }} fa-heart m-0"></i>
+                                    </button>
+                                {% else %}
+                                    <a href="{{ path('app_login') }}"
+                                       class="btn btn-outline-danger d-flex align-items-center justify-content-center"
+                                       style="width: 40px; height: 40px; padding: 0;">
+                                        <i class="far fa-heart m-0"></i>
+                                    </a>
                                 {% endif %}
                             </div>
 
-                            {% if is_granted('ROLE_USER') %}
-                                <form
-                                        action="{{ path('app_panier_add', { 'user': user.id }) }}"
-                                        method="post"
-                                        class="mt-3"
-                                >
-                                    <input type="hidden" name="product_id" value="{{ product.id }}">
-                                    <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-outline-info btn-sm w-100">
-                                        <i class="fas fa-search me-2"></i>Inspect
-                                    </a>
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class="fas fa-cart-plus me-2"></i>Ajouter au panier
-                                    </button>
-                                </form>
 
-                                <div class="d-flex justify-content-center mt-2">
-                                    {% set isFav = user.getFavorites().contains(product) %}
-                                    {% if isFav %}
-                                        <button
-                                                type="button"
-                                                class="favorite-btn btn btn-danger"
-                                                data-action-url="{{ path('favorite_remove', { id: product.id }) }}"
-                                                data-csrf-token="{{ csrf_token('remove' ~ product.id) }}"
-                                                data-product-id="{{ product.id }}"
-                                        >
-                                            <i class="fas fa-heart"></i>
-                                        </button>
-                                    {% else %}
-                                        <button
-                                                type="button"
-                                                class="favorite-btn btn btn-outline-danger"
-                                                data-action-url="{{ path('favorite_add', { id: product.id }) }}"
-                                                data-csrf-token="{{ csrf_token('add' ~ product.id) }}"
-                                                data-product-id="{{ product.id }}"
-                                        >
-                                            <i class="far fa-heart"></i>
-                                        </button>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
+{#                            {% if is_granted("ROLE_USER") %}#}
+{#                                {% set isFav = user.getFavorites().contains(product) %}#}
+{#                                <button type="button"#}
+{#                                        class="favorite-btn btn {{ isFav ? 'btn-danger' : 'btn-outline-danger' }} mt-2"#}
+{#                                        style="width: 65px; padding: 0;"#}
+{#                                        data-action-url="{{ isFav ? path('favorite_remove', { id: product.id }) : path('favorite_add', { id: product.id }) }}"#}
+{#                                        data-csrf-token="{{ isFav ? csrf_token('remove' ~ product.id) : csrf_token('add' ~ product.id) }}"#}
+{#                                        data-product-id="{{ product.id }}">#}
+{#                                    <i class="{{ isFav ? 'fas' : 'far' }} fa-heart m-0"></i>#}
+{#                                </button>#}
+{#                            {% else %}#}
+{#                                <a href="{{ path('app_login') }}"#}
+{#                                   class="btn btn-outline-danger d-flex align-items-center justify-content-center mt-2"#}
+{#                                   style="width: 65px; padding: 0;">#}
+{#                                    <i class="far fa-heart m-0"></i>#}
+{#                                </a>#}
+{#                            {% endif %}#}
                         </div>
                     </div>
                 </div>
             {% else %}
-                <div class="col-12">
+                <div class="col">
                     <div class="card shadow-sm border-0">
                         <div class="card-body text-center py-5">
                             <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
@@ -171,26 +166,45 @@
                     </div>
                 </div>
             {% endfor %}
+
         </div>
     </div>
 
     <style>
         .hover-lift {
+            will-change: transform, box-shadow;
+            backface-visibility: hidden;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
         .hover-lift:hover {
             transform: translateY(-5px);
-            box-shadow: 0 1rem 2.5rem rgba(22,28,45,.1),
-            0 0.5rem 1rem -0.75rem rgba(22,28,45,.05)!important;
+            box-shadow:
+                    0 1rem 2.5rem rgba(22,28,45,.1),
+                    0 0.5rem 1rem -0.75rem rgba(22,28,45,.05) !important;
         }
+
         .object-fit-cover {
             object-fit: cover;
+        }
+
+        .input-group-text {
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #001761;
+            box-shadow: 0 0 0 0.2rem rgba(0, 23, 97, 0.25);
+        }
+
+        .btn[style*="background-color: #001761"]:hover {
+            background-color: #001140 !important;
         }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Attach click listeners to all favorite buttons
+            // Handle favorite buttons for authenticated users
             document.querySelectorAll('.favorite-btn').forEach(btn => {
                 btn.addEventListener('click', function(event) {
                     event.preventDefault();
@@ -211,16 +225,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success && data.productId == productId) {
-                                // Toggle button appearance & data for next click
                                 if (isCurrentlyFav) {
-                                    // Was favorited → now removed
                                     btn.classList.remove('btn-danger');
                                     btn.classList.add('btn-outline-danger');
                                     btn.dataset.actionUrl = "{{ path('favorite_add', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
                                     btn.dataset.csrfToken = "{{ csrf_token('addREPLACE') }}".replace('REPLACE', productId);
                                     btn.innerHTML = '<i class="far fa-heart"></i>';
                                 } else {
-                                    // Was not favorited → now added
                                     btn.classList.remove('btn-outline-danger');
                                     btn.classList.add('btn-danger');
                                     btn.dataset.actionUrl = "{{ path('favorite_remove', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
@@ -234,7 +245,15 @@
                         });
                 });
             });
-        });
 
+            // Handle login redirects for non-authenticated users
+            document.querySelectorAll('.login-redirect').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = "{{ path('app_login') }}";
+                });
+            });
+        });
     </script>
 {% endblock %}
+{% block developpers %} {% endblock %}

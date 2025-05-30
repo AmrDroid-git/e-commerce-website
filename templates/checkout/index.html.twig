@@ -3,37 +3,42 @@
 {% block title %}Payment - ScriptSphere{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1 class="my-4 text-center">Payment for Order #{{ commande.id }}</h1>
+    <div class="container my-5">
+        <div class="bg-white rounded-4 shadow-sm p-4">
+            <h1 class="h4 text-center mb-1" style="font-size: 22pt">Payment for Order #{{ panier.id }}</h1>
+            <p class="text-center mb-1" style="font-size: 20pt"><strong>User:</strong> {{ commande.user.username }}</p>
+            <p class="text-center mb-4"><strong>Total Price:</strong> {{ totalPrice }} $</p>
 
-        <p class="text-center"><strong>User:</strong> {{ commande.user.username }}</p>
-        <p class="text-center"><strong>Total Price:</strong> {{ totalPrice }}</p>
+            <hr>
+            <br />
 
-        <hr>
-
-        <h3 class="my-4">Payment Details</h3>
-
-        <!-- Payment form -->
-        <form action="{{ path('payment_process') }}" method="POST">
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="card_number">Card Number</label>
+            <h3 class="h6 mb-3" style="font-size: 18pt">Payment Details</h3>
+    <br />
+            <form action="{{ path('payment_process') }}" method="POST" class="row g-3">
+                <div class="col-md-6">
+                    <label for="card_number" class="form-label">Card Number</label>
                     <input type="text" class="form-control" id="card_number" name="card_number" placeholder="Enter your card number" required>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="secret_key">Secret Key</label>
-                    <input type="text" class="form-control" id="secret_key" name="secret_key" placeholder="Enter your secret key" required>
+                <div class="col-md-6">
+                    <label for="secret_key" class="form-label">Secret Key</label>
+                    <input type="password" class="form-control" id="secret_key" name="secret_key" placeholder="Enter your secret key" required>
                 </div>
+                <div class="col-12">
+                    <button type="submit" class="btn w-100 mt-3" style="background-color: #001761; color: white;">
+                        <i class="fas fa-credit-card me-1"></i>Pay Now
+                    </button>
+                </div>
+                <br />
+
+            </form>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+                <small>By proceeding, you agree to our <a href="#">Terms and Conditions</a>.</small>
             </div>
-
-            <button type="submit" class="btn btn-primary btn-block mt-3">Pay Now</button>
-        </form>
-
-        <hr>
-
-        <div class="text-center">
-            <small>By proceeding, you agree to our <a href="#">Terms and Conditions</a></small>
         </div>
     </div>
-
 {% endblock %}
+
+{% block developpers %}{% endblock %}

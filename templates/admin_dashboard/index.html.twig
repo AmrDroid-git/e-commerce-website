@@ -1,166 +1,128 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ScriptSphere - Dashboard{% endblock %}
+{% block title %}ScriptSphere – Admin Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background: #f8f9fa; color: #343a40; }
+        .page-header h1 { font-size: 2rem; font-weight: 700; }
+        .stat-card { background: #fff; border-radius: .75rem; padding: 1rem; box-shadow: 0 .25rem .5rem rgba(0,0,0,0.1); text-align: center; }
+        .stat-icon { font-size: 2rem; color: #001761; margin-bottom: .5rem; }
+        .stat-info p { margin: 0; font-weight: 600; color: #001761; }
+        .activity-card, .products-card { background: #fff; border-radius: .75rem; box-shadow: 0 .25rem .5rem rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .card-header { background: transparent; border-bottom: none; padding-bottom: 0; margin-bottom: 1rem; }
+        .card-header h3 { margin: 0; font-size: 1.25rem; font-weight: 700; }
+        .btn-custom { background-color: #001761; color: #fff; }
+        .btn-custom:hover { background-color: #001140; }
+        .activity-list li { display: flex; align-items: center; margin-bottom: .75rem; }
+        .activity-icon { font-size: 1.25rem; color: #001761; margin-right: .75rem; }
+        .product-recommendation img { width: 100%; height: 180px; object-fit: cover; border-radius: .5rem; margin-bottom: .5rem; }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
 
 {% block body %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ScriptSphere - Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-</head>
-<body>
+    <div class="container py-5">
+        <div class="page-header text-center mb-5">
+            <h1>Admin Dashboard</h1>
+            <p class="text-muted">Platform overview and recent activity</p>
+        </div>
 
-<!-- Top Navbar -->
-<nav class="navbar navbar-expand-lg  px-4" style="background-color: #1e1b4b">
-    <a href="#" class="navbar-logo">ScriptSphere</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="mainNavbar">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link active" href="#dashboard" style="color: white"><i class="fas fa-home me-1"></i>Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="#products"><i class="fas fa-box-open me-1"></i>My Products</a></li>
-            <li class="nav-item"><a class="nav-link" href="#purchases"><i class="fas fa-shopping-bag me-1"></i>Purchases</a></li>
-            <li class="nav-item"><a class="nav-link" href="#favorites"><i class="fas fa-heart me-1"></i>Favorites</a></li>
-            <li class="nav-item"><a class="nav-link" href="#account"><i class="fas fa-user me-1"></i>Account</a></li>
-            <li class="nav-item"><a class="nav-link" href="#support"><i class="fas fa-question-circle me-1"></i>Support</a></li>
-        </ul>
-
-        <div class="d-flex align-items-center gap-3">
-            <div class="position-relative">
-                <i class="fas fa-bell text-white"></i>
-                <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle p-1">3</span>
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info"><p>{{ userCount|default(0) }} Users</p></div>
+                </div>
             </div>
-            <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-    </div>
-</nav>
-
-<div class="w-100 px-4 mt-4" id="dashboardContent">
-
-    <!-- Entête admin -->
-    <div class="page-header mb-4">
-        <div class="d-flex align-items-center text-white">
-            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Admin" style="width: 50px; height: 50px; border-radius: 50%;" class="me-2">
-            <h1>Welcome, Admin</h1>
-        </div>
-        <p>Overview of the platform’s latest statistics and activities.</p>
-    </div>
-
-    <!-- Statistiques -->
-    <div class="row stats-row mb-4">
-        <div class="col-md-3">
-            <div class="stat-card purple">
-                <div class="stat-icon"><i class="fas fa-users"></i></div>
-                <div class="stat-info"><h3>{{ userCount }}</h3><p>Registered Users</p></div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                    <div class="stat-info"><p>{{ productCount|default(0) }} Products</p></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-info"><p>{{ totalSales|default(0) }} $</p></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                    <div class="stat-info"><p>{{ commandeCount|default(0) }} Orders</p></div>
+                </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card blue">
-                <div class="stat-icon"><i class="fas fa-box-open"></i></div>
-                <div class="stat-info"><h3>{{ productCount }}</h3><p>Products Available</p></div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card green">
-                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                <div class="stat-info"><h3>{{ totalSales }}$</h3><p>Total Sales</p></div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card orange">
-                <div class="stat-icon"><i class="fas fa-headset"></i></div>
-                <div class="stat-info"><h3>{{ commandeCount }}</h3><p>Pending Tasks</p></div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Activité récente -->
-    <div class="card mb-4 activity-card">
-        <div class="card-header d-flex justify-content-between">
-            <h3>Recent Admin Activity</h3>
-{#            <a href="#" class="btn btn-sm btn-outline-primary">View All Logs</a>#}
+        <!-- Recent Admin Activity -->
+        <div class="activity-card p-4 mb-5">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>Recent Admin Activity</h3>
+            </div>
+            <div class="card-body">
+                <ul class="activity-list list-unstyled">
+                    {% if latestUsers is not empty %}
+                        {% for user in latestUsers %}
+                            <li>
+                                <div class="activity-icon"><i class="fas fa-user-plus"></i></div>
+                                <div>
+                                    <p class="mb-1">New user <strong>{{ user.username }}</strong> registered</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="text-center text-muted"><em>No recent registrations.</em></li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-        <div class="card-body">
-            <ul class="activity-list">
-                {% for user in latestUsers %}
-                    <li>
-                        <div class="activity-icon"><i class="fas fa-user-plus"></i></div>
-                        <div class="activity-details">
-                            <p>New user <strong>{{ user.username }}</strong> registered</p>
-{#                            <small>{{ user.createdAt|date('Y-m-d H:i') }}</small>#}
-                        </div>
-                    </li>
-                {% else %}
-                    <li><em>No recent user registrations.</em></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
 
-    <!-- Produits en attente de validation -->
-    <div class="card products-card">
-        <div class="card-header d-flex justify-content-between">
-            <h3>Highest Rated</h3>
-        </div>
-        <div class="row">
-            {% for product in topProducts %}
-                <div class="col-md-4">
-                    <div class="product-recommendation">
-                        <img
-                                src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
-                                alt="{{ product.name }}"
-                                class="img-fluid rounded mb-2"
-                        >
-                        <div class="product-info">
-                            <h4>{{ product.name }}</h4>
-                            <p class="price">{{ product.price }}€</p>
-                            <div class="rating">
-                                {% set ratings = product.ratings %}
-                                {% set avg = 0 %}
-                                {% if ratings|length > 0 %}
-                                    {% set sum = 0 %}
-                                    {% for r in ratings %}
-                                        {% set sum = sum + r.value %}
-                                    {% endfor %}
-                                    {% set avg = (sum / ratings|length)|round(1) %}
-                                {% endif %}
-                                {% for i in 1..5 %}
-                                    {% if i <= avg %}
-                                        <i class="fas fa-star text-warning"></i>
-                                    {% elseif (i - avg) < 1 %}
-                                        <i class="fas fa-star-half-alt text-warning"></i>
-                                    {% else %}
-                                        <i class="far fa-star text-warning"></i>
-                                    {% endif %}
-                                {% endfor %}
-                                <span>({{ ratings|length }})</span>
+        <div class="products-card p-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>Highest Rated Products</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    {% if topProducts is not empty %}
+                        {% for product in topProducts %}
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-img-top overflow-hidden bg-light" style="height:180px;">
+                                        <img src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                             alt="{{ product.name }}"
+                                             class="img-fluid w-100 h-100 object-fit-cover">
+                                    </div>
+                                    <div class="card-body text-center pt-3">
+                                        <h4>{{ product.name }}</h4>
+                                        <p class="price">{{ product.price }}€</p>
+                                        <div class="rating mb-2">
+                                            {% for i in 1..5 %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% endfor %}
+                                        </div>
+                                        <a href="{{ path('product_show', { id: product.id }) }}"
+                                           class="btn btn-sm btn-custom w-100">
+                                            <i class="fas fa-search me-1"></i>View Details
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <a href="{{ path('product_show', { id: product.id }) }}"
-                               class="btn btn-sm btn-primary mt-2">
-                                View Details
-                            </a>
-                        </div>
-                    </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center text-muted">No top-rated products available.</p>
+                    {% endif %}
                 </div>
-            {% else %}
-                <div class="col-12">
-                    <p class="text-muted">No recommended products at this time.</p>
-                </div>
-            {% endfor %}
-        </div>
+            </div>
         </div>
     </div>
-
-</div> <!-- Fin contenu admin -->
-
-<script src="{{ asset('js/script.js') }}"></script>
-</body>
-</html>
 {% endblock %}
+{% block developpers %}{% endblock %}

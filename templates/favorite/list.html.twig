@@ -4,8 +4,10 @@
 
 {% block body %}
     <div class="container py-4">
-        <h1 class="h3 mb-4">Mes Produits Favoris</h1>
+        <br />
+        <h1 class="h3 mb-4" style="font-size: 28pt; font-family: 'Lucida Console', monospace, sans-serif; color: #001761">Favorite Products </h1>
 
+        <br />
         {% if favorites|length > 0 %}
             <div class="row g-4">
                 {% for product in favorites %}
@@ -40,18 +42,16 @@
                                     <div class="h4 text-dark mt-2">{{ product.price }} €</div>
                                 </div>
 
-                                <div class="mt-auto d-flex justify-content-between">
-                                    <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-outline-info btn-sm w-50">
-                                        <i class="fas fa-search me-1"></i>Inspect
+                                <div class="mt-auto d-flex gap-2">
+                                    <a href="{{ path('product_show', { id: product.id }) }}"
+                                       style="background-color: #001761; color: white;"
+                                    class="btn btn-sm flex-fill d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-search me-1"></i> View Details
                                     </a>
-                                    <form
-                                            method="post"
-                                            action="{{ path('favorite_remove', { id: product.id }) }}"
-                                            class="w-50"
-                                    >
+                                    <form method="post" action="{{ path('favorite_remove', { id: product.id }) }}" class="flex-fill m-0">
                                         <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ product.id) }}">
-                                        <button type="submit" class="btn btn-danger btn-sm w-100">
-                                            <i class="fas fa-heart"></i> Retirer
+                                        <button type="submit" class="btn btn-danger btn-sm w-100 d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-heart me-1"></i> Remove from favorites
                                         </button>
                                     </form>
                                 </div>
@@ -79,5 +79,16 @@
         .object-fit-cover {
             object-fit: cover;
         }
+        body {
+            min-height: 100vh;
+        }
+        /*body {*/
+        /*    background: linear-gradient(to bottom right, #000428, #004e92);*/
+        /*    background-attachment: fixed;*/
+        /*    min-height: 100vh;*/
+        /*}*/
+
     </style>
 {% endblock %}
+{% block developpers %}{% endblock %}
+

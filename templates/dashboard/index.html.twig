@@ -1,140 +1,193 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ScriptSphere - Dashboard{% endblock %}
+{% block title %}ScriptSphere – Dashboard{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f8f9fa;
+            color: #343a40;
+        }
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: .75rem;
+            padding: 1rem;
+            box-shadow: 0 .25rem .5rem rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-icon {
+            font-size: 2rem;
+            color: #001761;
+            margin-bottom: .5rem;
+        }
+        .stat-info p {
+            margin: 0;
+            font-weight: 600;
+            color: #001761;
+        }
+        .activity-card, .products-card, #favorites {
+            background: #fff;
+            border-radius: .75rem;
+            box-shadow: 0 .25rem .5rem rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            background: transparent;
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 1rem;
+        }
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .btn-custom {
+            background-color: #001761;
+            color: #fff;
+        }
+        .btn-custom:hover {
+            background-color: #001140;
+        }
+        .hover-lift:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        .activity-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: .75rem;
+        }
+        .activity-icon {
+            font-size: 1.25rem;
+            color: #001761;
+            margin-right: .75rem;
+        }
+        .product-recommendation {
+            text-align: center;
+        }
+        .product-recommendation img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: .5rem;
+            margin-bottom: .5rem;
+        }
+        .product-info h4 {
+            font-size: 1rem;
+            margin-bottom: .25rem;
+            font-weight: 600;
+        }
+        .price {
+            font-weight: 700;
+            margin-bottom: .5rem;
+            color: #001761;
+        }
+        .rating i {
+            margin-right: .125rem;
+        }
+    </style>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById("searchInput")?.addEventListener("input", function () {
-            const term = this.value.toLowerCase();
-            const dashboardElements = document.querySelectorAll("#dashboardContent *");
-            dashboardElements.forEach(el => {
-                if (el.textContent.toLowerCase().includes(term)) {
-                    el.style.display = "";
-                } else if (el.children.length === 0) {
-                    el.style.display = "none";
-                }
-            });
-        });
-    </script>
 {% endblock %}
 
 {% block body %}
-
-
-    <div class="w-100 px-4 mt-4" id="dashboardContent">
-        <div class="page-header mb-4">
-            <div class="d-flex align-items-center text-white">
-                <img src="https://www.w3schools.com/howto/img_avatar.png"
-                     alt="User"
-                     style="width: 50px; height: 50px; border-radius: 50%;"
-                     class="me-2">
-                <h1 class="me-auto">Welcome, {{ app.user.username }}</h1>
-
-            </div>
-            <p>Welcome back! Here's what's happening with your digital empire.</p>
+    <div class="container py-5" id="dashboardContent">
+        <!-- Header -->
+        <div class="page-header mb-5 text-center">
+            <h1>Welcome back, {{ app.user.username }}!</h1>
+            <p class="text-muted">Your dashboard overview</p>
         </div>
 
-        <div class="row stats-row mb-4">
-            <div class="col-md-3">
-                <div class="stat-card purple">
+        <!-- Stats Row -->
+        <div class="row mb-5 g-4">
+            <div class="col-md-4">
+                <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-box"></i></div>
                     <div class="stat-info">
-
-
-
-{#                        <h3>{{ products|length }}</h3>#}
-
-
-
-                        <p>Products Owned</p>
+                        <p>{{ purchaseCount|default(0) }} Purchased</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card blue">
+            <div class="col-md-4">
+                <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-heart"></i></div>
                     <div class="stat-info">
-                        <h3>{{ favorites|length }}</h3>
-                        <p>Favorites</p>
+                        <p>{{ favorites|length|default(0) }} Favorites</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card orange">
+            <div class="col-md-4">
+                <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-star"></i></div>
                     <div class="stat-info">
-                        <h3>{{ averageRating }}</h3>
-                        <p>Average Rating Provided</p>
+                        <p>{{ averageRating|default(0) }} Avg Rating</p>
                     </div>
                 </div>
             </div>
         </div>
 
-
-
         <!-- Recent Activity -->
-        <div class="card mb-4 activity-card">
+        <div class="activity-card p-4 mb-5">
             <div class="card-header d-flex justify-content-between">
                 <h3>Recent Activity</h3>
-
-
-                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
-
-
             </div>
-            {% if recent_comments is not empty %}
+            {% if recent_comments|length > 0 %}
                 <div class="card-body">
-                    <ul class="activity-list">
+                    <ul class="activity-list list-unstyled">
                         {% for comment in recent_comments %}
                             <li>
                                 <div class="activity-icon">
                                     <i class="fas fa-comment"></i>
                                 </div>
-                                <div class="activity-details">
-                                    <p>You commented on <strong>{{ comment.product.name }}</strong></p>
-                                    <p class="text-muted">At <strong>{{ comment.createdAt|date('Y-m-d H:i') }}</strong></p>
+                                <div>
+                                    <p class="mb-1">You commented on <strong>{{ comment.product.name }}</strong></p>
+                                    <small class="text-muted">{{ comment.createdAt|date('Y-m-d H:i') }}</small>
                                 </div>
                             </li>
-                        {% else %}
-                            <li><em>No recent comments.</em></li>
                         {% endfor %}
                     </ul>
                 </div>
+            {% else %}
+                <div class="card-body">
+                    <div class="alert alert-light text-center py-5" style="border:1px dashed #ccc;">
+                        <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No recent activity found.</h5>
+                        <p class="text-muted">You haven't commented on any products yet.</p>
+                    </div>
+                </div>
             {% endif %}
-
         </div>
 
-        <!-- Favorites Section -->
-        <div id="favorites" class="card mb-5">
+        <!-- Favorites -->
+        <div id="favorites" class="card p-4 mb-5">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3>Mes Favoris</h3>
-                <a href="{{ path('favorite_list') }}" class="btn btn-sm btn-outline-primary">See All Favorites</a>
+                <h3>My Favorites</h3>
+                <a href="{{ path('favorite_list') }}" class="btn btn-sm btn-custom">See All</a>
             </div>
             <div class="card-body">
                 {% if favorites is not empty %}
                     <div class="row g-4">
-                        {% for product in favorites|slice(0, 3) %}
-                            <div class="col-md-6 col-lg-4">
+                        {% for product in favorites|slice(0,3) %}
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <div class="card h-100 shadow-sm border-0 hover-lift">
-                                    <div class="card-img-top overflow-hidden" style="height: 200px; background: #f8f9fa;">
+                                    <div class="card-img-top overflow-hidden bg-light" style="height:180px;">
                                         {% if product.imageUrl %}
-                                            <img
-                                                    src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
-                                                    class="img-fluid w-100 h-100 object-fit-cover"
-                                                    alt="{{ product.name }}"
-                                            >
+                                            <img src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                                 alt="{{ product.name }}"
+                                                 class="img-fluid w-100 h-100 object-fit-cover">
                                         {% else %}
                                             <div class="d-flex align-items-center justify-content-center h-100">
                                                 <i class="fas fa-image fa-3x text-muted"></i>
@@ -142,31 +195,29 @@
                                         {% endif %}
                                     </div>
                                     <div class="card-body d-flex flex-column">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <h5 class="mb-0">{{ product.name }}</h5>
-                                            <span class="badge bg-primary rounded-pill">{{ product.category }}</span>
-                                        </div>
+                                        <h5 class="card-title mb-2">{{ product.name }}</h5>
+                                        <span class="badge bg-primary mb-3">{{ product.category }}</span>
                                         <div class="mb-3">
                                             <div class="rating small text-warning">
                                                 {% for i in 1..5 %}
-                                                    <i class="fas fa-star{{ i > product.rating ? '-half-alt' : '' }}"></i>
+                                                    <i class="fas fa-star{% if i > product.rating %}-half-alt{% endif %}"></i>
                                                 {% endfor %}
                                             </div>
-                                            <div class="h4 text-dark mt-2">{{ product.price }} €</div>
+                                            <div class="h5 mt-2 text-success">{{ product.price }} €</div>
                                         </div>
-                                        <div class="mt-auto d-flex justify-content-between">
+                                        <div class="mt-auto d-flex gap-2">
                                             <a href="{{ path('product_show', { id: product.id }) }}"
-                                               class="btn btn-outline-info btn-sm w-50">
-                                                <i class="fas fa-search me-1"></i>Inspect
+                                               class="btn btn-sm btn-custom flex-fill d-flex align-items-center justify-content-center">
+                                                <i class="fas fa-search me-1"></i>View
                                             </a>
-                                            <form
-                                                    method="post"
-                                                    action="{{ path('favorite_remove', { id: product.id }) }}"
-                                                    class="w-50"
-                                            >
-                                                <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ product.id) }}">
-                                                <button type="submit" class="btn btn-danger btn-sm w-100">
-                                                    <i class="fas fa-heart"></i> Retirer
+                                            <form method="post"
+                                                  action="{{ path('favorite_remove', { id: product.id }) }}"
+                                                  class="flex-fill m-0">
+                                                <input type="hidden" name="_token"
+                                                       value="{{ csrf_token('remove' ~ product.id) }}">
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-danger w-100 d-flex align-items-center justify-content-center">
+                                                    <i class="fas fa-heart me-1"></i>Remove
                                                 </button>
                                             </form>
                                         </div>
@@ -176,66 +227,49 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="alert alert-light text-center py-5" style="border: 1px dashed #ccc;">
+                    <div class="alert alert-light text-center py-5" style="border:1px dashed #ccc;">
                         <i class="fas fa-heart-broken fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">Aucun favori pour le moment.</h5>
+                        <h5 class="text-muted">No favorites yet.</h5>
                     </div>
                 {% endif %}
             </div>
         </div>
 
-        <!-- Recommended Products -->
-        <div class="card products-card">
-            <div class="card-header d-flex justify-content-between">
+        <!-- Recommendations -->
+        <div class="products-card p-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>Recommended For You</h3>
-                <a href="{{ path('product') }}" class="btn btn-sm btn-outline-primary">Browse All</a>
             </div>
             <div class="card-body">
-                <div class="row">
-                    {% for product in topProducts %}
-                        <div class="col-md-4">
-                            <div class="product-recommendation">
-                                <img
-                                        src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
-                                        alt="{{ product.name }}"
-                                        class="img-fluid rounded mb-2"
-                                >
-                                <div class="product-info">
-                                    <h4>{{ product.name }}</h4>
-                                    <p class="price">{{ product.price }}€</p>
-                                    <div class="rating">
-                                        {% set ratings = product.ratings %}
-                                        {% set avg = 0 %}
-                                        {% if ratings|length > 0 %}
-                                            {% set sum = 0 %}
-                                            {% for r in ratings %}
-                                                {% set sum = sum + r.value %}
-                                            {% endfor %}
-                                            {% set avg = (sum / ratings|length)|round(1) %}
-                                        {% endif %}
-                                        {% for i in 1..5 %}
-                                            {% if i <= avg %}
-                                                <i class="fas fa-star text-warning"></i>
-                                            {% elseif (i - avg) < 1 %}
-                                                <i class="fas fa-star-half-alt text-warning"></i>
-                                            {% else %}
-                                                <i class="far fa-star text-warning"></i>
-                                            {% endif %}
-                                        {% endfor %}
-                                        <span>({{ ratings|length }})</span>
+                <div class="row g-4">
+                    {% if topProducts is not empty %}
+                        {% for product in topProducts %}
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-img-top overflow-hidden bg-light" style="height:180px;">
+                                        <img src="{{ asset('uploads/products/' ~ product.imageUrl) }}"
+                                             alt="{{ product.name }}"
+                                             class="img-fluid w-100 h-100 object-fit-cover">
                                     </div>
-                                    <a href="{{ path('product_show', { id: product.id }) }}"
-                                       class="btn btn-sm btn-primary mt-2">
-                                        View Details
-                                    </a>
+                                    <div class="card-body text-center pt-3">
+                                        <h4>{{ product.name }}</h4>
+                                        <p class="price">{{ product.price }}€</p>
+                                        <div class="rating mb-2">
+                                            {% for i in 1..5 %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% endfor %}
+                                        </div>
+                                        <a href="{{ path('product_show', { id: product.id }) }}"
+                                           class="btn btn-sm btn-custom w-100">
+                                            <i class="fas fa-search me-1"></i>View
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endfor %}
                     {% else %}
-                        <div class="col-12">
-                            <p class="text-muted">No recommended products at this time.</p>
-                        </div>
-                    {% endfor %}
+                        <p class="text-center text-muted">No recommendations at this time.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

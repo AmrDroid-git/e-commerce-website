@@ -3,13 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Product;
-use App\Entity\Category;                        // [ADDED]
+use App\Entity\Category;
+use App\Form\ProductForm;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;     // [ADDED]
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProductController extends AbstractController
 {
@@ -17,10 +22,10 @@ class ProductController extends AbstractController
     public function index(Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         $user       = $security->getUser();
-        $searchTerm = trim((string) $request->query->get('search', ''));    // [ADDED]
-        $categoryId = $request->query->getInt('category', 0);               // [ADDED]
+        $searchTerm = trim((string) $request->query->get('search', ''));    
+        $categoryId = $request->query->getInt('category', 0);               
 
-        $categories = $entityManager->getRepository(Category::class)->findAll();    // [ADDED]
+        $categories = $entityManager->getRepository(Category::class)->findAll();    
 
         $qb = $entityManager->getRepository(Product::class)->createQueryBuilder('p'); // [CHANGED]
 
@@ -29,24 +34,24 @@ class ProductController extends AbstractController
                 ->setParameter('search', '%' . mb_strtolower($searchTerm) . '%');
         }
 
-        if ($categoryId > 0) {                                                     // [ADDED]
-            $category = $entityManager->getRepository(Category::class)->find($categoryId); // [ADDED]
-            if ($category) {                                                       // [ADDED]
-                $qb->andWhere('p.category = :catName')                             // [ADDED]
-                ->setParameter('catName', $category->getName());                // [ADDED]
-            }                                                                       // [ADDED]
-        }                                                                           // [ADDED]
+        if ($categoryId > 0) {                                                     
+            $category = $entityManager->getRepository(Category::class)->find($categoryId); 
+            if ($category) {                                                       
+                $qb->andWhere('p.category = :catName')                             
+                ->setParameter('catName', $category->getName());                
+            }                                                                       
+        }                                                                           
 
-        $qb->orderBy('p.name', 'ASC');                                              // [ADDED]
+        $qb->orderBy('p.name', 'ASC');                                              
 
         $products = $qb->getQuery()->getResult();                                    // [CHANGED]
 
         return $this->render('product/index.html.twig', [
             'products'       => $products,
-            'categories'     => $categories,       // [ADDED]
+            'categories'     => $categories,       
             'user'           => $user,
-            'currentSearch'   => $searchTerm,       // [ADDED]
-            'currentCategory' => $categoryId,       // [ADDED]
+            'currentSearch'   => $searchTerm,       
+            'currentCategory' => $categoryId,       
         ]);
     }
 
@@ -73,6 +78,52 @@ class ProductController extends AbstractController
             'ratings'        => $ratings,
             'average_rating' => $averageRating,
             'user'           => $user,
+        ]);
+    }
+
+    #[Route('/admin/product/new', name: 'admin_product_new')]
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger,
+        ParameterBagInterface $params,
+        CategoryRepository $categoryRepository
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $product = new Product();
+        $form = $this->createForm(ProductForm::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('imageFile')->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $params->get('product_images_directory'),
+                        $newFilename
+                    );
+                    $product->setImageUrl($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Could not upload image: '.$e->getMessage());
+                }
+            }
+
+            $entityManager->persist($product);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Product created successfully!');
+            return $this->redirectToRoute('admin_product_list');
+        }
+
+        return $this->render('product/new.html.twig', [
+            'form' => $form->createView(),
+            'categories' => $categoryRepository->findAll()
         ]);
     }
 }

@@ -3,38 +3,53 @@
 {% block title %}Mes commandes{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1 class="mb-4">Mes commandes</h1>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="bg-white rounded-4 shadow-sm p-4">
+                    <h3 class="h5 mb-4 text-center" style="font-family: 'Lucida Console', monospace;">My Purchases</h3>
 
-        {% if commandes|length > 0 %}
-            {% for commande in commandes %}
-                <div class="card mb-3">
-                    <div class="card-header">
-                        Commande #{{ commande.id }} – {{ commande.dateCommande|date('d/m/Y H:i') }}
-                    </div>
-                    <div class="card-body">
-                        <ul>
-                            {% for product in commande.products %}
-                                <li>{{ product.name }} – {{ product.price }} €</li>
-                            {% endfor %}
-                        </ul>
-                        <strong>Total : {{ commande.getTotalPrice() }} €</strong>
-                    </div>
-                    <form style="margin-bottom: 20px;margin-left: 20px;position: relative" method="post"
-                          action="{{ path('commande_delete', {id: commande.id}) }}"
-                          onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette commande ?');">
+                    {% if commandes|length > 0 %}
+                        {% for commande in commandes %}
+                            <div class="card mb-3 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">Commande #{{ commande.id }}</h6>
+                                        <small class="text-muted">{{ commande.dateCommande|date('d/m/Y H:i') }}</small>
+                                    </div>
+                                    <ul class="list-unstyled mb-2">
+                                        {% for product in commande.products %}
+                                            <li class="text-muted small">• {{ product.name }} – {{ product.price }} €</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <div class="fw-semibold mb-3">Total : {{ commande.getTotalPrice() }} €</div>
 
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete_commande_' ~ commande.id) }}">
-                        <button class="btn btn-danger mt-3">Annuler la commande</button>
-                    </form>
-
-
+                                    <form method="post"
+                                          action="{{ path('commande_delete', {id: commande.id}) }}"
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette commande ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_commande_' ~ commande.id) }}">
+                                        <button class="btn btn-sm" style="background-color: #001761; color: white;">
+                                            <i class="fas fa-times me-1"></i>Annuler la commande
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center text-muted mb-0" style="font-family: 'Lucida Console', monospace;">Vous n'avez passé aucune commande pour le moment.</p>
+                    {% endif %}
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>Vous n'avez passé aucune commande pour le moment.</p>
-        {% endif %}
+            </div>
+        </div>
     </div>
-{% endblock %}
-{% block developpers %}{% endblock %}
 
+    <style>
+        body {
+            background: linear-gradient(135deg, #000a30, #00195a);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+    </style>
+{% endblock %}
+
+{% block developpers %}{% endblock %}

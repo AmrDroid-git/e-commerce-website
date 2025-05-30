@@ -19,40 +19,48 @@ final class DashboardController extends AbstractController
     ) {}
 
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(): Response
     {
         $user = $this->security->getUser();
-        $favorites = $user ? $user->getFavorites() : [];
-        $averageRating = null;
+        $favorites     = $user ? $user->getFavorites() : [];
+        $averageRating = $user
+            ? $this->em->getRepository(Rating::class)->findAverageRatingByUser($user)
+            : null;
 
-        $productRepo = $this->em->getRepository(Product::class);
-        $commentRepo = $this->em->getRepository(Comment::class);
-
-        if ($user) {
-            $averageRating = $em->getRepository(Rating::class)->findAverageRatingByUser($user);
-        }
-
-        $qb = $this->em
-            ->getRepository(Product::class)
+        $qb = $this->em->getRepository(Product::class)
             ->createQueryBuilder('p')
             ->leftJoin('p.ratings', 'r')
             ->addSelect('AVG(r.value) AS avgRating')
             ->groupBy('p.id')
             ->orderBy('avgRating', 'DESC')
             ->setMaxResults(3);
-
         /** @var array<int, array{0: Product, avgRating: float|null}> $rows */
-        $rows = $qb->getQuery()->getResult();
+        $rows       = $qb->getQuery()->getResult();
         $topProducts = array_map(fn($row) => $row[0], $rows);
 
-        $recentComments = $commentRepo->findMostRecent(5);
+        $recentComments = $this->em->getRepository(Comment::class)
+            ->createQueryBuilder('c')
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
 
+        $purchaseCount = 0;
+        if ($user) {
+            foreach ($user->getCommandes() as $commande) {
+                $purchaseCount += $commande->getProducts()->count();
+            }
+
+        }
 
         return $this->render('dashboard/index.html.twig', [
-            'topProducts' => $topProducts,
-            'favorites' => $favorites,
+            'favorites'       => $favorites,
+            'averageRating'   => $averageRating,
+            'topProducts'     => $topProducts,
             'recent_comments' => $recentComments,
-            "averageRating" => $averageRating,
+            'purchaseCount'   => $purchaseCount,
         ]);
     }
 }
