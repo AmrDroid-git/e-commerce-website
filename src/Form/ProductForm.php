@@ -52,7 +52,11 @@ class ProductForm extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'required' => false
-            ]);
+            ])
+        ->add('quantity', IntegerType::class,[
+        'required' => true,
+        'label' => 'Quantity'
+    ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

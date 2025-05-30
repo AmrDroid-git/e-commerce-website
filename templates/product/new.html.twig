@@ -118,6 +118,16 @@
                         {{ form_errors(form.price) }}
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label class="form-label">Quantity</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-sort-numeric-up"></i></span>
+                            {{ form_widget(form.quantity, {'attr': {'class': 'form-control', 'placeholder': 'Enter quantity'}}) }}
+                        </div>
+                        {{ form_errors(form.quantity) }}
+                    </div>
+                </div>
 
 
             </div>
