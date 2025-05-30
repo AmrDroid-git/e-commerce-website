@@ -35,6 +35,17 @@
 {% block title %}{{ panier.user.username }}'s Cart - ScriptSphere{% endblock %}
 
 {% block body %}
+
+    {# display errors #}
+    {% for msg in app.flashes('danger') %}
+        <div class="alert alert-danger">{{ msg }}</div>
+    {% endfor %}
+
+    {# display successes #}
+    {% for msg in app.flashes('success') %}
+        <div class="alert alert-success">{{ msg }}</div>
+    {% endfor %}
+
     {{ parent() }}
     <div class="container py-4" id="dashboardContent">
         <br />
