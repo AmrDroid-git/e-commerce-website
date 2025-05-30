@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Repository\CommentRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Entity\Product;
 use App\Entity\Category;
@@ -157,7 +158,7 @@ class ProductController extends AbstractController
         ]);
     }
     #[Route('/admin/product/{id}/delete', name: 'admin_product_delete', methods: ['POST','DELETE'])]
-    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager,CategoryRepository $categoryRepository): Response
     {
         $filesystem = new Filesystem();
 
@@ -178,6 +179,37 @@ class ProductController extends AbstractController
         return $this->redirectToRoute('product');
     }
 
+    #[Route('/admin/product/{id}/edit', name: 'admin_product_edit', methods: ['GET', 'POST'])]
+    public function edit(Product $product, Request $request, EntityManagerInterface $em, CommentRepository $commentRepository,CategoryRepository $categoryRepository): Response
+    {
+        $form = $this->createForm(ProductForm::class, $product);
+        $form->handleRequest($request);
+
+        // Récupérer les commentaires (optionnel)
+        $comments = $commentRepository->findBy(['product' => $product]);
+
+        // Calcul de la moyenne (optionnel)
+        $ratings = array_map(fn($c) => $c->getRating(), $comments);
+        $averageRating = 0;
+        if (count($ratings) > 0) {
+            $averageRating = array_sum($ratings) / count($ratings);
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+
+            $this->addFlash('success', 'Produit modifié avec succès.');
+
+            return $this->redirectToRoute('product', ['id' => $product->getId()]);
+        }
+        $categories = $categoryRepository->findAll();
+
+        return $this->render('product/edit.html.twig', [
+            'product' => $product,
+            'form' => $form->createView(),
+            'categories' => $categories,  // <-- ici on passe les catégories
+        ]);
+
+    }}
 
 
-}
