@@ -37,16 +37,7 @@ class ProductForm extends AbstractType
                     new Positive(['message' => 'Price must be positive'])
                 ]
             ])
-            ->add('rating', IntegerType::class, [
-                'required' => false,
-                'constraints' => [
-                    new Range([
-                        'min' => 0,
-                        'max' => 5,
-                        'notInRangeMessage' => 'Rating must be between {{ min }} and {{ max }}'
-                    ])
-                ]
-            ])
+
             ->add('imageFile', FileType::class, [
                 'label' => 'Product Image',
                 'mapped' => false,

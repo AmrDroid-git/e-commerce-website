@@ -93,7 +93,8 @@
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-folder"></i></span>
                             <select name="{{ form.category.vars.full_name }}" class="form-select">
-                                <option value="">Select a category</option>
+
+                            <option value="">Select a category</option>
                                 {% for category in categories %}
                                     <option value="{{ category.name }}"
                                             {{ form.category.vars.value == category.name ? 'selected' : '' }}>
@@ -167,7 +168,13 @@
                         <i class="fas fa-save me-2"></i>Create Product
                     </button>
                 </div>
-        </div>
+                {{ form_row(form._token) }}
+
+                {{ form_end(form, {'render_rest': false}) }}
+
+
+
+            </div>
     </div>
 
     <script>
