@@ -3,6 +3,20 @@
 {% block title %}Payment - ScriptSphere{% endblock %}
 
 {% block body %}
+    {# Flash messages #}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+
     <div class="container my-5">
         <div class="bg-white rounded-4 shadow-sm p-4">
             <h1 class="h4 text-center mb-1" style="font-size: 22pt">Payment for Order #{{ panier.id }}</h1>
