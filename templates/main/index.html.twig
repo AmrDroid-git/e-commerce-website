@@ -156,6 +156,11 @@
         <span style="font-family: 'Montserrat', sans-serif !important;">ScriptSphere</span>
     </a>
     <div class="navbar-links">
+
+        {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')%}
+            <a href="{{ path('app_dashboard') }}" class="navbar-link">Dashboard</a>
+        {% endif %}
+
         <a href="/product" class="navbar-link" style="font-family: 'Montserrat', sans-serif !important;">Products</a>
         <a href="#about" class="navbar-link">About</a>
         <a href="#contact" class="navbar-link">Contact</a>
