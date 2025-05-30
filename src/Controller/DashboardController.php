@@ -21,6 +21,10 @@ final class DashboardController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(): Response
     {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_admin_dashboard');
+        }
+
         $user = $this->security->getUser();
         $favorites     = $user ? $user->getFavorites() : [];
         $averageRating = $user
