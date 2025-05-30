@@ -20,38 +20,8 @@
             font-family: 'Montserrat', sans-serif !important;
             background: #f8f9fa;
         }
-        #dashboardContent { max-width: 80%; margin: 0 auto; padding: 1rem 0; }
         .page-header h1 { font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 700; }
-        .btn-custom { background-color: #001761; color: #fff; }
-        .btn-custom:hover { background-color: #001140; }
-        .hover-lift { transition: transform .2s, box-shadow .2s; }
-        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1rem rgba(0,0,0,0.1); }
-        .object-fit-cover { object-fit: cover; }
-        .form-control:focus, .form-select:focus { border-color: #001761; box-shadow: 0 0 .2rem rgba(0,23,97,.25); }
-        .hover-lift {
-            will-change: transform, box-shadow;
-            backface-visibility: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .hover-lift:hover {
-            transform: translateY(-5px);
-            box-shadow:
-                    0 1rem 2.5rem rgba(22,28,45,.1),
-                    0 0.5rem 1rem -0.75rem rgba(22,28,45,.05) !important;
-        }
-        .object-fit-cover {
-            object-fit: cover;
-        }
-        .input-group-text {
-            transition: all 0.3s ease;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #001761;
-            box-shadow: 0 0 0 0.2rem rgba(0, 23, 97, 0.25);
-        }
-        .btn[style*="background-color: #001761"]:hover {
-            background-color: #001140 !important;
-        }
+
     </style>
 
 
@@ -60,36 +30,155 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
     <link rel="stylesheet" href="{{ asset('css/styles.css')}}">
+    <style>
+        .nav-link.active {
+            color: #afcbff;
+            font-weight: bold;
+            border-bottom: 2px solid #c0d5ff;
+        }
+        .custom-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #001761;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            height: 92px;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        /*.navbar-brand i {*/
+        /*    margin-right: 10px;*/
+        /*    font-size: 1.2em;*/
+        /*}*/
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #a5b4fc;
+            transform: translateY(-2px);
+        }
+        .nav-link i {
+            font-size: 1.1em;
+        }
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        main {
+            flex: 1;
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                gap: 15px;
+            }
+        }
+        @media (max-width: 768px) {
+            .custom-navbar {
+                flex-wrap: wrap;
+                padding: 15px;
+            }
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .navbar-actions {
+                margin-left: auto;
+            }
+        }
+        @media (max-width: 992px) {
+            .footer-offerings {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        @media (max-width: 768px) {
+            .developers-header h2 {
+                font-size: 1.8rem;
+            }
+            .developers-header p {
+                font-size: 1rem;
+            }
+            .developer-card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-{#<nav class="navbar">#}
-{#    <a href="/" class="navbar-logo">ScriptSphere</a>#}
+<nav class="navbar">
+    <a href="/" class="navbar-logo">
+        <i class="fas me-1"></i>
+        <span style="font-family: 'Montserrat', sans-serif !important;">ScriptSphere</span>
+    </a>
+    <div class="navbar-links">
+        <a href="/product" class="navbar-link" style="font-family: 'Montserrat', sans-serif !important;">Products</a>
+        <a href="#about" class="navbar-link">About</a>
+        <a href="#contact" class="navbar-link">Contact</a>
+    </div>
+    <div class="navbar-actions d-flex align-items-center gap-3">
+        {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN')%}
+            <a href="{{ path('app_logout') }}" class="btn btn-outline-light btn-sm d-flex align-items-center">
+                <i class="fas fa-sign-out-alt me-1"></i>
+                <span>Logout</span>
+            </a>
+        {% else %}
+            <a href="{{ path('app_registeration') }}" class="btn btn-outline-light btn-sm d-flex align-items-center">
+                <i class="fas fa-user-plus me-1"></i>
+                <span>Register</span>
+            </a>
+            <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-sm d-flex align-items-center">
+                <i class="fas fa-sign-in-alt me-1"></i>
+                <span>Login</span>
+            </a>
+        {% endif %}
+    </div>
 
-{#    <div class="navbar-links">#}
-{#        <a href="/product" class="navbar-link">Products</a>#}
-{#        <a href="#about" class="navbar-link">About</a>#}
-{#        <a href="#contact" class="navbar-link">Contact</a>#}
-{#    </div>#}
-
-{#    <div class="navbar-actions">#}
-{#       <a href="{{ path('app_login') }}"> <button class="icon-button">#}
-{#            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>#}
-{#        </button></a>#}
-
-{#        <div class="navbar-cart">#}
-{#            <a href="{{ path('app_login') }}"> <button class="icon-button">#}
-{#                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>#}
-{#                <span class="cart-count">0</span>#}
-{#                </button></a>#}
-{#        </div>#}
-{#       <a href="{{ path('app_login') }}"  class="navbar-link">#}
-{#        <button class="mobile-menu-btn icon-button">#}
-{#            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>#}
-{#        </button></a>#}
-{#    </div>#}
-{#    <a href="{{ path('app_login') }}" class="btn btn-outline-light">Login</a>#}
-
-{#</nav>#}
+</nav>
 
 
 
@@ -111,6 +200,8 @@
         <img src="https://assets-global.website-files.com/63ec206c5542613e2e5aa784/643312a6bc4ac122fc4e3afa_main%20home.webp" alt="Digital Empire" class="main-image">
     </div>
 </div>
+
+
 <section class="coustumerReview container my-5" style="font-family: 'Montserrat', sans-serif; height: 90vh">
     <h2 class="text-center mb-4">Why 1,250+ Users Trust ScriptSphere</h2>
 
@@ -168,40 +259,17 @@
 </section>
 
 <section id="products" class="products-section" style="font-family: 'Montserrat', sans-serif; height: 90vh">
-    <h2 class="section-title">Check our highest rated products!</h2>
-    <br /><nav class="navbar">
-    <a href="/" class="navbar-logo">ScriptSphere</a>
+    <div style="text-align: center; margin-bottom: 30px;">
 
-    <div class="navbar-links">
-        <a href="#product" class="navbar-link">Products</a>
-        <a href="#about" class="navbar-link">About</a>
-        <a href="#contact" class="navbar-link">Contact</a>
+    <h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Check our best products!</h2>
+        <p style="font-size: 1.1rem; max-width: 700px; margin: 0 auto; opacity: 0.9;">These are our current highest rated products</p>
+
     </div>
-
-    <div class="navbar-actions">
-       <a href="{{ path('app_login') }}"> <button class="icon-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-        </button></a>
-
-        <div class="navbar-cart">
-            <a href="{{ path('app_login') }}"> <button class="icon-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                <span class="cart-count">0</span>
-                </button></a>
-        </div>
-       <a href="{{ path('app_login') }}"  class="navbar-link">
-        <button class="mobile-menu-btn icon-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button></a>
-    </div>
-    <a href="{{ path('app_login') }}" class="btn btn-outline-light">Login</a>
-
-</nav>
-    <br />
 
     {% include 'component/products.html.twig' %}
-
 </section>
+
+
 
 {% include 'component/developers.html.twig' %}
         <span id="current-year" type="hidden"></span>

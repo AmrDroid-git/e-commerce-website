@@ -22,20 +22,22 @@ class MainController extends AbstractController
         $allCategories = $category->findAll();
         $allProducts = $products->findAll();
 
-        $productsWithRating = [];
-
         foreach ($allProducts as $product) {
-            $ratings = $product->getRatings();
+            $ratings       = $product->getRatings();
             $averageRating = null;
+            $countRatings  = count($ratings);
 
-            if (count($ratings) > 0) {
-                $sum = array_sum(array_map(fn($r) => $r->getValue(), $ratings->toArray()));
-                $averageRating = round($sum / count($ratings), 1); // e.g., 4.3
+            if ($countRatings > 0) {
+                $sum           = array_sum(
+                    array_map(fn($r) => $r->getValue(), $ratings->toArray())
+                );
+                $averageRating = round($sum / $countRatings, 1);
             }
 
             $productsWithRating[] = [
-                'product' => $product,
-                'rating' => $averageRating,
+                'product'     => $product,
+                'rating'      => $averageRating,
+                'ratingCount' => $countRatings,
             ];
         }
 

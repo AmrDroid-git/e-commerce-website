@@ -38,11 +38,12 @@
         color: #fff !important;
     }
 </style>
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-0 mt-5 mx-3" style="justify-content: center">
     {% for entry in productsWithRating %}
+
         {% set product = entry.product %}
         {% set rating = entry.rating %}
-        <div class="col">
+        <div class="col" style="max-width: 450px">
             <div class="card h-100 shadow-sm border-0 hover-lift">
                 <div class="card-img-top overflow-hidden bg-light" style="height: 180px;">
                     {% if product.imageUrl %}
@@ -70,7 +71,9 @@
                                         <i class="far fa-star"></i>
                                     {% endif %}
                                 {% endfor %}
-                                <span class="text-muted small">({{ rating }}/5)</span>
+                                <span class="text-muted small">
+                                    {{ entry.rating ?? 'N/A' }} ({{ entry.ratingCount }} {{ entry.ratingCount == 1 ? 'review' : 'reviews' }})
+                            </span>
                             </div>
                         {% endif %}
                         <div class="h4 mt-1">{{ product.price }} €</div>
@@ -83,7 +86,7 @@
                             </a>
 
                             {% if is_granted('ROLE_USER') %}
-                                <form action="{{ path('app_panier_add', { user: user.id }) }}" method="post" class="w-100">
+                                <form action="{{ path('app_panier_add', { user: app.user.id}) }}" method="post" class="w-100">
                                     <input type="hidden" name="product_id" value="{{ product.id }}">
                                     <button class="btn btn-sm btn-custom w-100 d-flex align-items-center justify-content-center" style="height: 40px">
                                         <i class="fas fa-cart-plus me-1"></i>Add
@@ -98,7 +101,7 @@
                         </div>
 
                         {% if is_granted("ROLE_USER") %}
-                            {% set isFav = user.getFavorites().contains(product) %}
+                            {% set isFav = app.user.getFavorites().contains(product) %}
                             <button type="button"
                                     class="favorite-btn btn {{ isFav ? 'btn-danger' : 'btn-outline-danger' }}"
                                     style="width: 40px; height: 40px; padding: 0;"
@@ -131,3 +134,56 @@
     {% endfor %}
 
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle favorite buttons for authenticated users
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const actionUrl = this.dataset.actionUrl;
+                const csrfToken = this.dataset.csrfToken;
+                const productId = this.dataset.productId;
+                const isCurrentlyFav = this.classList.contains('btn-danger');
+
+                fetch(actionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ _token: csrfToken })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.productId == productId) {
+                            if (isCurrentlyFav) {
+                                btn.classList.remove('btn-danger');
+                                btn.classList.add('btn-outline-danger');
+                                btn.dataset.actionUrl = "{{ path('favorite_add', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
+                                btn.dataset.csrfToken = "{{ csrf_token('addREPLACE') }}".replace('REPLACE', productId);
+                                btn.innerHTML = '<i class="far fa-heart"></i>';
+                            } else {
+                                btn.classList.remove('btn-outline-danger');
+                                btn.classList.add('btn-danger');
+                                btn.dataset.actionUrl = "{{ path('favorite_remove', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
+                                btn.dataset.csrfToken = "{{ csrf_token('removeREPLACE') }}".replace('REPLACE', productId);
+                                btn.innerHTML = '<i class="fas fa-heart"></i>';
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Erreur AJAX favoritage :', err);
+                    });
+            });
+        });
+
+        // Handle login redirects for non-authenticated users
+        document.querySelectorAll('.login-redirect').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = "{{ path('app_login') }}";
+            });
+        });
+    });
+</script>

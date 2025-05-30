@@ -1,5 +1,4 @@
 
-/* General styles */
 * {
     margin: 0;
     padding: 0;
@@ -15,7 +14,6 @@ body {
     line-height: 1.5;
 }
 
-/* Wrapper and content */
 .wrapper,
 .content {
     position: relative;
@@ -48,7 +46,6 @@ body {
     background: linear-gradient(135deg, #33C3F0 0%, #0EA5E9 100%);
 }
 
-/* Image container */
 .image-container {
     width: 100%;
     height: 100vh;
@@ -76,7 +73,6 @@ body {
     font-size: 3rem;
 }
 
-/* Scroll appear div with Bootstrap */
 .scroll-appear-div {
     top: 50%;
     left: 50%;
@@ -95,8 +91,6 @@ body {
 }
 
 
-
-
 .highlight {
     color: #9b87f5;
     cursor: pointer;
@@ -108,8 +102,8 @@ body {
     color: #D6BCFA;
 }
 
-/* Navbar styles */
 .navbar {
+    font-family: 'Montserrat', sans-serif;
     position: fixed;
     top: 0;
     left: 0;
@@ -131,13 +125,13 @@ body {
 }
 
 .navbar.scrolled {
-    background-color: rgba(30, 27, 75, 0.95);
+    background-color: rgb(0, 23, 97);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-logo {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
+    font-weight: 500;
     font-size: 1.5rem;
     color: white;
     text-decoration: none;
@@ -146,6 +140,7 @@ body {
 .navbar-links {
     display: flex;
     gap: 2rem;
+    font-family: 'Montserrat', sans-serif !important;
 }
 
 .navbar-link {
@@ -218,18 +213,22 @@ body {
     font-weight: bold;
 }
 
+.coustumerReview {
+    padding: 6rem 2rem;
+    background: linear-gradient(135deg, #0b3571 0%, #1b51c6 100%);
+    min-height: 100vh;
+    position: relative;
+}
 .mobile-menu-btn {
     display: none;
 }
 
-/* Products Section */
 .products-section {
     padding: 6rem 2rem;
-    background: linear-gradient(135deg, #11034b 0%, #1A1F2C 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #bdd3ff 100%);
     min-height: 100vh;
     position: relative;
 }
-
 .section-title {
     font-family: 'Playfair Display', serif;
     font-size: clamp(2rem, 5vw, 3.5rem);
@@ -238,8 +237,7 @@ body {
     margin-bottom: 2rem;
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 1s ease, transform 1s ease;
-}
+    transition: opacity 0.25s ease, transform 0.25s ease !important;}
 
 .section-title.visible {
     opacity: 1;
@@ -703,7 +701,7 @@ img:hover {
 /* — Reveal “customerReview” after scroll — */
 .customerReview {
     position: relative;
-    margin-top: 100vh;                /* sit just below the hero */
+    margin-top: 100vh;
     padding: 4rem 1rem;
     background: rgba(0, 0, 0, 0.5) !important;
     color: #fff;
@@ -723,20 +721,16 @@ img:hover {
 
 
 
-/* remove the default white container spacing */
 #about .row {
     margin: 0;
 }
 
-/* optional: shrink your circular images a bit more */
 #about img {
     max-width: 120px;
     border-radius: 50%;
 }
 
-
 .customerReview {
-    /* bring it above the hero image */
     position: relative;
     z-index: 3;
 }

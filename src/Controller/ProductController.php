@@ -20,61 +20,69 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ProductController extends AbstractController
 {
     #[Route('/product', name: 'product')]
-    public function index(ProductRepository $products, Request $request, EntityManagerInterface $entityManager, Security $security): Response
-    {
+    public function index(
+        ProductRepository $productsRepo,
+        Request $request,
+        EntityManagerInterface $em,
+        Security $security
+    ): Response {
         $user       = $security->getUser();
-        $searchTerm = trim((string) $request->query->get('search', ''));    
+        $searchTerm = trim((string)$request->query->get('search', ''));
         $categoryId = $request->query->getInt('category', 0);
 
-        $allProducts = $products->findAll();
-
-        $productsWithRating = [];
-
-        foreach ($allProducts as $product) {
-            $ratings = $product->getRatings();
-            $averageRating = null;
-
-            if (count($ratings) > 0) {
-                $sum = array_sum(array_map(fn($r) => $r->getValue(), $ratings->toArray()));
-                $averageRating = round($sum / count($ratings), 1);
-            }
-
-            $productsWithRating[] = [
-                'product' => $product,
-                'rating' => $averageRating,
-            ];
-        }
-
-        $categories = $entityManager->getRepository(Category::class)->findAll();    
-
-        $qb = $entityManager->getRepository(Product::class)->createQueryBuilder('p'); // [CHANGED]
+        $categories = $em->getRepository(Category::class)->findAll();
+        $qb = $em->getRepository(Product::class)
+            ->createQueryBuilder('p');
 
         if ($searchTerm !== '') {
             $qb->andWhere('LOWER(p.name) LIKE :search')
                 ->setParameter('search', '%' . mb_strtolower($searchTerm) . '%');
         }
 
-        if ($categoryId > 0) {                                                     
-            $category = $entityManager->getRepository(Category::class)->find($categoryId); 
-            if ($category) {                                                       
-                $qb->andWhere('p.category = :catName')                             
-                ->setParameter('catName', $category->getName());                
-            }                                                                       
-        }                                                                           
+        if ($categoryId > 0) {
+            // Fetch the Category entity so we can get its name
+            $category = $em->getRepository(Category::class)->find($categoryId);
+            if ($category) {
+                $qb->andWhere('p.category = :catName')
+                    ->setParameter('catName', $category->getName());
+            }
+        }
 
-        $qb->orderBy('p.name', 'ASC');                                              
+        $qb->orderBy('p.name', 'ASC');
 
-        $products = $qb->getQuery()->getResult();
+        $filteredProducts = $qb->getQuery()->getResult();
+
+        $productsWithRating = [];
+        foreach ($filteredProducts as $product) {
+            $ratings       = $product->getRatings();
+            $averageRating = null;
+            $countRatings  = count($ratings);
+
+            if ($countRatings > 0) {
+                $sum           = array_sum(
+                    array_map(fn($r) => $r->getValue(), $ratings->toArray())
+                );
+                $averageRating = round($sum / $countRatings, 1);
+            }
+
+            $productsWithRating[] = [
+                'product'     => $product,
+                'rating'      => $averageRating,
+                'ratingCount' => $countRatings,
+            ];
+        }
 
         return $this->render('product/index.html.twig', [
-            'products'       => $products,
-            'categories'     => $categories,       
-            'user'           => $user,
-            'currentSearch'   => $searchTerm,       
-            'currentCategory' => $categoryId,
+            'user'               => $user,
+            'categories'         => $categories,
             'productsWithRating' => $productsWithRating,
+            'currentSearch'      => $searchTerm,
+            'currentCategory'    => $categoryId,
+            'ratingCount' => count($ratings),
         ]);
     }
+
+
 
     #[Route('/product/{id}', name: 'product_show', requirements: ['id' => '\d+'])]
     public function show(int $id, EntityManagerInterface $em, Security $security): Response
