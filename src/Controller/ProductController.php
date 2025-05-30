@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use Symfony\Component\Filesystem\Filesystem;
 use App\Entity\Product;
 use App\Entity\Category;
 use App\Form\ProductForm;
@@ -125,6 +125,7 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Gestion de l'upload d'image
             $imageFile = $form->get('imageFile')->getData();
 
             if ($imageFile) {
@@ -139,15 +140,15 @@ class ProductController extends AbstractController
                     );
                     $product->setImageUrl($newFilename);
                 } catch (FileException $e) {
-                    $this->addFlash('error', 'Could not upload image: '.$e->getMessage());
+                    $this->addFlash('error', 'Erreur lors du téléchargement de l\'image');
                 }
             }
 
             $entityManager->persist($product);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Product created successfully!');
-            return $this->redirectToRoute('admin_product_list');
+            $this->addFlash('success', 'Produit créé avec succès!');
+            return $this->redirectToRoute('product');
         }
 
         return $this->render('product/new.html.twig', [
@@ -155,4 +156,28 @@ class ProductController extends AbstractController
             'categories' => $categoryRepository->findAll()
         ]);
     }
+    #[Route('/admin/product/{id}/delete', name: 'admin_product_delete', methods: ['POST','DELETE'])]
+    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    {
+        $filesystem = new Filesystem();
+
+        $imageFilename = $product->getImageUrl(); // adapte selon ta méthode
+
+
+        $entityManager->remove($product);
+        $entityManager->flush();
+
+
+        if ($imageFilename) {
+            $imagePath = $this->getParameter('uploads_directory') . '/' . $imageFilename;
+            if ($filesystem->exists($imagePath)) {
+                $filesystem->remove($imagePath);
+            }
+        }
+
+        return $this->redirectToRoute('product');
+    }
+
+
+
 }

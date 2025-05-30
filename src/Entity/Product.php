@@ -26,7 +26,8 @@ class Product
     private ?string $price = null;
 
     #[ORM\Column]
-    private ?int $rating = null;
+    private int $rating = 0;
+
 
     #[ORM\Column(length: 255)]
     private ?string $imageUrl = null;
@@ -47,13 +48,13 @@ class Product
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'product')]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'product', orphanRemoval: true, cascade:['remove'])]
     private Collection $comments;
 
     /**
      * @var Collection<int, Rating>
      */
-    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'product')]
+    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'product',orphanRemoval: true, cascade:['remove'])]
     private Collection $ratings;
 
     public function __construct()
