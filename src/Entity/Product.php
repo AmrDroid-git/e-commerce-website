@@ -32,8 +32,8 @@ class Product
     private ?string $imageUrl = null;
 
     //quantity column
-    #[ORM\Column(type: "integer", options: ["default" => 0])]
-    private ?int $quantity = null;
+    #[ORM\Column(type: Types::INTEGER, options: ["default" => 0])]
+    private int $quantity = 0;
 
     /**
      * @var Collection<int, Panier>
