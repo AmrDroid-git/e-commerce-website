@@ -13,38 +13,38 @@ use Doctrine\ORM\EntityManagerInterface;
 class CheckoutController extends AbstractController
 {
     #[Route('/payment', name: 'payment_process', methods: ['POST'])]
-    public function paymentProcess(EntityManagerInterface $em, Request $request): RedirectResponse
+    public function paymentProcess(EntityManagerInterface $em): RedirectResponse
     {
         $user   = $this->getUser();
         $panier = $user->getPanier();
 
+        // Copy products to avoid modifying the collection as we loop
+        $products = $panier->getProducts()->toArray();
+
         $commande = new Commande();
         $commande->setUser($user);
-        foreach ($panier->getProducts() as $product) {
+
+        foreach ($products as $product) {
+            // 1. Add to order
             $commande->addProduct($product);
-        }
-        $em->persist($commande);
-        $em->flush();
 
-        foreach ($panier->getProducts() as $product) {
-            $newQty = max(0, $product->getQuantity() - 1);
-            $product->setQuantity($newQty);
+            // 2. Decrement stock
+            $qty = $product->getQuantity() ?? 0;
+            $product->setQuantity(max(0, $qty - 1));
             $em->persist($product);
-        }
-        $em->flush();
 
-        foreach ($panier->getProducts() as $product) {
+            // 3. Remove from cart
             $panier->removeProduct($product);
         }
-        $em->persist($panier);
-        $em->flush();
 
-        $user->addCommande($commande);
-        $em->persist($user);
+        // Persist all at once
+        $em->persist($commande);
+        $em->persist($panier);
         $em->flush();
 
         return $this->redirectToRoute('app_dashboard');
     }
+
 
     #[Route('/checkout', name: 'app_checkout')]
     public function checkout(): Response

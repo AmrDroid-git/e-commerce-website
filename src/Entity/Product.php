@@ -32,7 +32,7 @@ class Product
     private ?string $imageUrl = null;
 
     //quantity column
-    #[ORM\Column]
+    #[ORM\Column(type: "integer", options: ["default" => 0])]
     private ?int $quantity = null;
 
     /**
