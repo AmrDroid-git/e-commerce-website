@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Entity\Category;
 use App\Form\ProductForm;
 use App\Repository\CategoryRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -19,11 +20,30 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ProductController extends AbstractController
 {
     #[Route('/product', name: 'product')]
-    public function index(Request $request, EntityManagerInterface $entityManager, Security $security): Response
+    public function index(ProductRepository $products, Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
         $user       = $security->getUser();
         $searchTerm = trim((string) $request->query->get('search', ''));    
-        $categoryId = $request->query->getInt('category', 0);               
+        $categoryId = $request->query->getInt('category', 0);
+
+        $allProducts = $products->findAll();
+
+        $productsWithRating = [];
+
+        foreach ($allProducts as $product) {
+            $ratings = $product->getRatings();
+            $averageRating = null;
+
+            if (count($ratings) > 0) {
+                $sum = array_sum(array_map(fn($r) => $r->getValue(), $ratings->toArray()));
+                $averageRating = round($sum / count($ratings), 1);
+            }
+
+            $productsWithRating[] = [
+                'product' => $product,
+                'rating' => $averageRating,
+            ];
+        }
 
         $categories = $entityManager->getRepository(Category::class)->findAll();    
 
@@ -44,14 +64,15 @@ class ProductController extends AbstractController
 
         $qb->orderBy('p.name', 'ASC');                                              
 
-        $products = $qb->getQuery()->getResult();                                    // [CHANGED]
+        $products = $qb->getQuery()->getResult();
 
         return $this->render('product/index.html.twig', [
             'products'       => $products,
             'categories'     => $categories,       
             'user'           => $user,
             'currentSearch'   => $searchTerm,       
-            'currentCategory' => $categoryId,       
+            'currentCategory' => $categoryId,
+            'productsWithRating' => $productsWithRating,
         ]);
     }
 
