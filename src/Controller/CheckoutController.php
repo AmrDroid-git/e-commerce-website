@@ -67,7 +67,8 @@ class CheckoutController extends AbstractController
 
         return $this->render('checkout/index.html.twig', [
             'commande'   => $commande,
-            'totalPrice' => $totalPrice
+            'totalPrice' => $totalPrice,
+            'panier'     => $panier,
         ]);
     }
 }
