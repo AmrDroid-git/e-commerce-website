@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\Commande;                       // ← add this
+use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminDashboardController extends AbstractController
 {
     #[Route('/admin/dashboard', name: 'app_admin_dashboard')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager,CommandeRepository $commandeRepo): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -53,6 +54,7 @@ class AdminDashboardController extends AbstractController
             'totalSales'    => $totalSales,
             'commandeCount' => $commandeCount,
             'topProducts'   => $topProducts,
+            'orders'        => $commandeRepo->findBy([], ['dateCommande' => 'DESC'])
         ]);
     }
 }

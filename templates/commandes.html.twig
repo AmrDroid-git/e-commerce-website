@@ -19,10 +19,10 @@
                                     </div>
                                     <ul class="list-unstyled mb-2">
                                         {% for product in commande.products %}
-                                            <li class="text-muted small">• {{ product.name }} – {{ product.price }} €</li>
+                                            <li class="text-muted small">• {{ product.name }}  </li>
                                         {% endfor %}
                                     </ul>
-                                    <div class="fw-semibold mb-3">Total : {{ commande.getTotalPrice() }} €</div>
+                                    <div class="fw-semibold mb-3">Total : {{ commande.getPrice() }} €</div>
 
                                     <form method="post"
                                           action="{{ path('commande_delete', {id: commande.id}) }}"

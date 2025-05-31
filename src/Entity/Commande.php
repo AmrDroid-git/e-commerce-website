@@ -25,10 +25,14 @@ class Commande
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $dateCommande;
 
+    #[ORM\Column(type: 'float', options: ['default' => 0])]
+    private float $price;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
-        $this->dateCommande = new \DateTime();  // Default to current date/time
+        $this->dateCommande = new \DateTime();
+        $this->price = 0; // Default to current date/time
     }
 
     public function getId(): ?int
@@ -79,5 +83,17 @@ class Commande
             $total += $product->getPrice();
         }
         return $total;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): static
+    {
+        $this->price = $price;
+
+        return $this;
     }
 }

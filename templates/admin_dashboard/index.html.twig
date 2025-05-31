@@ -86,6 +86,40 @@
             </div>
         </div>
 
+        <!-- All Orders Section -->
+        <div class="activity-card p-4 mb-5">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>All Orders</h3>
+            </div>
+            <div class="card-body">
+                {% if orders is not empty %}
+                    <table class="table table-hover table-bordered align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Total Price</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <th scope="row">{{ order.id }}</th>
+                                <td>{{ order.user.username }}</td>
+                                <td>{{ order.price }} €</td>
+                                <td>{{ order.dateCommande|date('Y-m-d H:i') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-center text-muted"><em>No orders found.</em></p>
+                {% endif %}
+            </div>
+        </div>
+
+
         <div class="products-card p-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>Highest Rated Products</h3>

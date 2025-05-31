@@ -24,10 +24,11 @@ class CheckoutController extends AbstractController
         foreach ($panier->getProducts() as $p) {
             $commande->addProduct($p);
         }
+        $commande->setPrice($commande->getTotalPrice());
 
         return $this->render('checkout/index.html.twig', [
             'commande'   => $commande,
-            'totalPrice' => $commande->getTotalPrice(),
+            'totalPrice' => $commande->getPrice(),
             'panier'     => $panier,
         ]);
     }
@@ -49,10 +50,11 @@ class CheckoutController extends AbstractController
                 foreach ($panier->getProducts() as $p) {
                     $previewOrder->addProduct($p);
                 }
+                $previewOrder->setPrice($previewOrder->getTotalPrice());
 
                 return $this->render('checkout/direct_payment.html.twig', [
                     'commande'   => $previewOrder,
-                    'totalPrice' => $previewOrder->getTotalPrice(),
+                    'totalPrice' => $previewOrder->getPrice(),
                     'panier'     => $panier,
                 ]);
             }
@@ -67,6 +69,7 @@ class CheckoutController extends AbstractController
             $em->persist($product);
             $panier->removeProduct($product);
         }
+        $commande->setPrice($commande->getTotalPrice());
 
         $em->persist($commande);
         $em->persist($panier);
@@ -92,10 +95,11 @@ class CheckoutController extends AbstractController
         foreach ($panier->getProducts() as $p) {
             $commande->addProduct($p);
         }
+        $commande->setPrice($commande->getTotalPrice());
 
         return $this->render('checkout/direct_payment.html.twig', [
             'commande'   => $commande,
-            'totalPrice' => $commande->getTotalPrice(),
+            'totalPrice' => $commande->getPrice(),
             'panier'     => $panier,
         ]);
     }
