@@ -134,13 +134,10 @@
                             <span>Total</span>
                             <span>€{{ total }}</span>
                         </div>
+
                         <a
                                 href="{{ panier.products|length > 0 ? path('app_checkout') : '#' }}"
                                 class="btn btn-primary w-100 {% if panier.products is empty %}disabled{% endif %}"
-                                {% if panier.products is empty %}
-                                    tabindex="-1"
-                                    aria-disabled="true"
-                                {% endif %}
                         >
                             <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
                         </a>

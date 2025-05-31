@@ -1,13 +1,11 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Commande;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CheckoutController extends AbstractController
@@ -34,7 +32,7 @@ class CheckoutController extends AbstractController
         ]);
     }
 
-    #[Route('/checkout', name: 'payment_process', methods: ['POST'])]
+    #[Route('/checkout/process_direct', name: 'payment_process', methods: ['POST'])]
     public function processPayment(EntityManagerInterface $em, Request $request): Response
     {
         $user   = $this->getUser();
@@ -45,14 +43,14 @@ class CheckoutController extends AbstractController
             if (($product->getQuantity() ?? 0) <= 0) {
                 $this->addFlash('error', 'Sorry, one of the products is out of stock.');
 
-                // Build a preview order again for the template
+                // Re‐build preview order for the template
                 $previewOrder = new Commande();
                 $previewOrder->setUser($user);
                 foreach ($panier->getProducts() as $p) {
                     $previewOrder->addProduct($p);
                 }
 
-                return $this->render('checkout/index.html.twig', [
+                return $this->render('checkout/direct_payment.html.twig', [
                     'commande'   => $previewOrder,
                     'totalPrice' => $previewOrder->getTotalPrice(),
                     'panier'     => $panier,
@@ -60,7 +58,6 @@ class CheckoutController extends AbstractController
             }
         }
 
-        // 1. Everything in stock → proceed
         $commande = new Commande();
         $commande->setUser($user);
         foreach ($panier->getProducts()->toArray() as $product) {
@@ -71,7 +68,6 @@ class CheckoutController extends AbstractController
             $panier->removeProduct($product);
         }
 
-        // 2. Persist & flush
         $em->persist($commande);
         $em->persist($panier);
         $em->flush();
@@ -80,4 +76,27 @@ class CheckoutController extends AbstractController
         return $this->redirectToRoute('app_dashboard');
     }
 
+    // CheckoutController.php
+    #[Route('/checkout/direct_payment', name: 'app_direct_payment', methods: ['GET'])]
+    public function directPayment(): Response
+    {
+        $user = $this->getUser();
+        if (!$user || !$user->getPanier()) {
+            return $this->redirectToRoute('product');
+        }
+
+        $panier = $user->getPanier();
+        $commande = new Commande();
+        $commande->setUser($user);
+
+        foreach ($panier->getProducts() as $p) {
+            $commande->addProduct($p);
+        }
+
+        return $this->render('checkout/direct_payment.html.twig', [
+            'commande'   => $commande,
+            'totalPrice' => $commande->getTotalPrice(),
+            'panier'     => $panier,
+        ]);
+    }
 }
