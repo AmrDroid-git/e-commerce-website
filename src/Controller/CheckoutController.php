@@ -77,7 +77,7 @@ class CheckoutController extends AbstractController
     }
 
     // CheckoutController.php
-    #[Route('/checkout/direct_payment', name: 'app_direct_payment', methods: ['GET'])]
+    #[Route('/checkout/direct_payment', name: 'app_direct_payment', methods: ['GET','POST'])]
     public function directPayment(): Response
     {
         $user = $this->getUser();

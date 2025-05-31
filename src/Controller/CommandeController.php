@@ -38,7 +38,10 @@ class CommandeController extends AbstractController
             $this->addFlash('error', 'Vous ne pouvez pas supprimer cette commande.');
             return $this->redirectToRoute('app_commandes');
         }
-
+        $products = $commande->getProducts();
+        foreach ($products as $product) {
+            $product->setQuantity($product->getQuantity()+1);
+        }
         $em->remove($commande);
         $em->flush();
 
