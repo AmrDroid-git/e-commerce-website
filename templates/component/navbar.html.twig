@@ -358,7 +358,7 @@
                 <i class="fas fa-box-open"></i>
                 <span>Products</span>
             </a></li>
-
+        {% if is_granted('ROLE_USER') %}
         <li><a href="{{ path('app_commandes') }}"
                class="nav-link {% if app.request.get('_route') == 'app_commandes' %}active{% endif %}">
                 <i class="fas fa-shopping-cart"></i>
@@ -375,7 +375,7 @@
                class="nav-link {% if app.request.get('_route') == 'app_panier' %}active{% endif %}">
                 <i class="fas fa-shopping-bag"></i>
                 <span>My Panier</span>
-            </a></li>
+            </a></li>{% endif %}
     </ul>
 
     <div class="navbar-actions d-flex align-items-center gap-3">
