@@ -185,15 +185,13 @@ class ProductController extends AbstractController
         $form = $this->createForm(ProductForm::class, $product);
         $form->handleRequest($request);
 
-        // Récupérer les commentaires (optionnel)
-        $comments = $commentRepository->findBy(['product' => $product]);
-
-        // Calcul de la moyenne (optionnel)
-        $ratings = array_map(fn($c) => $c->getRating(), $comments);
-        $averageRating = 0;
-        if (count($ratings) > 0) {
-            $averageRating = array_sum($ratings) / count($ratings);
-        }
+//        $comments = $commentRepository->findBy(['product' => $product]);
+//
+//        $ratings = array_map(fn($c) => $c->getRating(), $comments);
+//        $averageRating = 0;
+//        if (count($ratings) > 0) {
+//            $averageRating = array_sum($ratings) / count($ratings);
+//        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
@@ -207,7 +205,7 @@ class ProductController extends AbstractController
         return $this->render('product/edit.html.twig', [
             'product' => $product,
             'form' => $form->createView(),
-            'categories' => $categories,  // <-- ici on passe les catégories
+            'categories' => $categories,
         ]);
 
     }}
