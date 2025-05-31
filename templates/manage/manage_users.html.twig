@@ -8,7 +8,6 @@
     <div class="container mt-4">
         <h1>Manage Users</h1>
 
-        {# === Flash messages === #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="alert alert-{{ label == 'success' ? 'success' : 'danger' }}">
@@ -145,3 +144,4 @@
     </div>
 
 {% endblock %}
+{% block developpers %} {% endblock %}
