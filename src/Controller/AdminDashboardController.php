@@ -51,7 +51,7 @@ class AdminDashboardController extends AbstractController
             'latestUsers'   => $latestUsers,
             'productCount'  => $productCount,
             'totalSales'    => $totalSales,
-            'commandeCount' => $commandeCount,   // ← pass it
+            'commandeCount' => $commandeCount,
             'topProducts'   => $topProducts,
         ]);
     }

@@ -52,6 +52,7 @@ security:
           - { path: ^/dashboard, roles: [ROLE_USER, ROLE_ADMIN] }
           -  { path: ^/admin, roles: ROLE_ADMIN }
           - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
+          - { path: ^/manageusers, roles: ROLE_ADMIN }
 
 
   # - { path: ^/profile, roles: ROLE_USER }

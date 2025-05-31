@@ -29,7 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'json')]
     private array $roles = ['ROLE_USER'];
 
     /**
@@ -81,12 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-
-        $roles[] = 'ROLE_USER';
-        if (in_array('ROLE_ADMIN', $roles)) {return ['ROLE_ADMIN'];}
-
-        return array_unique($roles);
+        return array_unique($this->roles);
     }
 
     /**
@@ -94,9 +89,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setRoles(array $roles): static
     {
-        $roles[]= 'ROLE_USER';
-        $this->roles = $roles;
-
+        // Store exactly what’s passed, then remove duplicates
+        $this->roles = array_values(array_unique($roles));
         return $this;
     }
 
@@ -167,12 +161,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setAdminRole(): static
     {
-        // Set the user's roles to include ROLE_ADMIN
-        $this->roles[] = 'ROLE_ADMIN';
-
-        // Make sure the roles array doesn't have duplicates
-        $this->roles = array_unique($this->roles);
-
+        if (!in_array('ROLE_ADMIN', $this->roles, true)) {
+            $this->roles[] = 'ROLE_ADMIN';
+        }
+        $this->roles = array_values(array_unique($this->roles));
         return $this;
     }
 

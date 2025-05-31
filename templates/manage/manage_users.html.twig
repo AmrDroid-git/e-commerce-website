@@ -1,0 +1,147 @@
+{# templates/manage/manage_users.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block body %}
+
+    <div class="container mt-4">
+        <h1>Manage Users</h1>
+
+        {# === Flash messages === #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'success' ? 'success' : 'danger' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="row">
+            {# ---------------------- Promote to Admin ---------------------- #}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        Promote User to Admin
+                    </div>
+                    <div class="card-body">
+                        <form
+                                action="{{ path('app_manage_promote') }}"
+                                method="POST">
+                            <div class="mb-3">
+                                <label for="promote_user_id" class="form-label">
+                                    Choose a user:
+                                </label>
+                                <select
+                                        name="promote_user_id"
+                                        id="promote_user_id"
+                                        class="form-select"
+                                        required>
+                                    <option value="" disabled selected>
+                                        -- Select a User --
+                                    </option>
+                                    {% for user in usersOnly %}
+                                        <option value="{{ user.id }}">
+                                            {{ user.username }} ({{ user.email }})
+                                        </option>
+                                    {% else %}
+                                        <option disabled>
+                                            No plain USERS found
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                Promote to Admin
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {# ---------------------- Demote Admin to User ---------------------- #}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        Demote Admin to User
+                    </div>
+                    <div class="card-body">
+                        <form
+                                action="{{ path('app_manage_demote') }}"
+                                method="POST">
+                            <div class="mb-3">
+                                <label for="demote_admin_id" class="form-label">
+                                    Choose an admin:
+                                </label>
+                                <select
+                                        name="demote_admin_id"
+                                        id="demote_admin_id"
+                                        class="form-select"
+                                        required>
+                                    <option value="" disabled selected>
+                                        -- Select an Admin --
+                                    </option>
+                                    {% for admin in admins %}
+                                        <option value="{{ admin.id }}">
+                                            {{ admin.username }} ({{ admin.email }})
+                                        </option>
+                                    {% else %}
+                                        <option disabled>
+                                            No ADMINS found
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100">
+                                Demote to User
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {# ---------------------- Delete User ---------------------- #}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header text-danger">
+                        Delete User
+                    </div>
+                    <div class="card-body">
+                        <form
+                                action="{{ path('app_manage_delete') }}"
+                                method="POST"
+                                onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            <div class="mb-3">
+                                <label for="delete_user_id" class="form-label">
+                                    Choose a user to delete:
+                                </label>
+                                <select
+                                        name="delete_user_id"
+                                        id="delete_user_id"
+                                        class="form-select"
+                                        required>
+                                    <option value="" disabled selected>
+                                        -- Select a User --
+                                    </option>
+                                    {% for user in usersForDelete %}
+                                        <option value="{{ user.id }}">
+                                            {{ user.username }} ({{ user.email }})
+                                        </option>
+                                    {% else %}
+                                        <option disabled>
+                                            No USERS available
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100">
+                                Delete User
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

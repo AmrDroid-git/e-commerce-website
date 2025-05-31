@@ -341,6 +341,18 @@
     </button>
 
     <ul class="nav-links" id="navLinks">
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <li>
+                <a href="{{ path('app_manage_users') }}"
+                   class="nav-link {% if app.request.get('_route') == 'app_manage_users' %}active{% endif %}">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Manage Users</span>
+                </a>
+            </li>
+        {% endif %}
+
+
         <li><a href="{{ path('product') }}"
                class="nav-link {% if app.request.get('_route') == 'product' %}active{% endif %}">
                 <i class="fas fa-box-open"></i>
