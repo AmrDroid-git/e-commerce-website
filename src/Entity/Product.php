@@ -57,6 +57,11 @@ class Product
     #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'product',orphanRemoval: true, cascade:['remove'])]
     private Collection $ratings;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $isActive = true;
+
+
+
     public function __construct()
     {
         $this->paniers  = new ArrayCollection();
@@ -99,6 +104,16 @@ class Product
     public function setPrice(string $price): static
     {
         $this->price = $price;
+        return $this;
+    }
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
         return $this;
     }
 

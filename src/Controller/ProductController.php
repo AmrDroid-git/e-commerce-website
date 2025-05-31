@@ -33,7 +33,10 @@ class ProductController extends AbstractController
 
         $categories = $em->getRepository(Category::class)->findAll();
         $qb = $em->getRepository(Product::class)
-            ->createQueryBuilder('p');
+            ->createQueryBuilder('p')
+            ->where('p.isActive = :active')
+            ->setParameter('active', true);
+
 
         if ($searchTerm !== '') {
             $qb->andWhere('LOWER(p.name) LIKE :search')
@@ -157,27 +160,15 @@ class ProductController extends AbstractController
             'categories' => $categoryRepository->findAll()
         ]);
     }
-    #[Route('/admin/product/{id}/delete', name: 'admin_product_delete', methods: ['POST','DELETE'])]
-    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager,CategoryRepository $categoryRepository): Response
+    #[Route('/admin/product/{id}/delete', name: 'admin_product_delete', methods: ['POST', 'DELETE'])]
+    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
-        $filesystem = new Filesystem();
-
-        $imageFilename = $product->getImageUrl(); // adapte selon ta méthode
-
-
-        $entityManager->remove($product);
+        $product->setIsActive(false);
         $entityManager->flush();
-
-
-        if ($imageFilename) {
-            $imagePath = $this->getParameter('uploads_directory') . '/' . $imageFilename;
-            if ($filesystem->exists($imagePath)) {
-                $filesystem->remove($imagePath);
-            }
-        }
 
         return $this->redirectToRoute('product');
     }
+
 
     #[Route('/admin/product/{id}/edit', name: 'admin_product_edit', methods: ['GET', 'POST'])]
     public function edit(Product $product, Request $request, EntityManagerInterface $em, CommentRepository $commentRepository,CategoryRepository $categoryRepository): Response
