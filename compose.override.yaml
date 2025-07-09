@@ -16,3 +16,5 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 ###< symfony/mailer ###
+
+# backdated-commit: 2025-07-09 00:00:00
