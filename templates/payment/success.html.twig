@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payment confirmed - ScriptSphere{% endblock %}
+
+{% block body %}
+    <section class="container py-5">
+        <div class="mx-auto bg-white rounded-4 shadow-sm p-5 text-center" style="max-width: 720px;">
+            <div class="display-4 text-success mb-3">
+                <i class="fas fa-circle-check"></i>
+            </div>
+            <h1 class="h3 mb-3">Payment confirmed</h1>
+            <p class="text-muted mb-4">Your order #{{ commande.id }} has been saved successfully.</p>
+
+            <div class="bg-light rounded-3 p-3 mb-4 text-start">
+                <div class="d-flex justify-content-between fw-semibold">
+                    <span>Total</span>
+                    <span>{{ commande.price|number_format(2, '.', ' ') }} €</span>
+                </div>
+                <small class="text-muted">Stripe session: {{ session_id }}</small>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <a href="{{ path('app_commandes') }}" class="btn btn-primary">View my purchases</a>
+                <a href="{{ path('product') }}" class="btn btn-outline-primary">Continue shopping</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block developpers %}{% endblock %}
+
+# backdated-commit: 2025-07-10 00:00:00
