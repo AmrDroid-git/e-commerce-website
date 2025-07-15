@@ -17,3 +17,5 @@ framework:
         # Namespaced pools use the above "app" backend by default
         #pools:
             #my.dedicated.cache: null
+
+# backdated-commit: 2025-07-15 00:00:00
