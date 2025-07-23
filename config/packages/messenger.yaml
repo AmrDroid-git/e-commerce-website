@@ -27,3 +27,5 @@ framework:
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
+
+# backdated-commit: 2025-07-23 00:00:00
