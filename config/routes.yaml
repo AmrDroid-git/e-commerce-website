@@ -3,3 +3,5 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+# backdated-commit: 2025-08-04 00:00:00
