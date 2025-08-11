@@ -48,3 +48,5 @@ final class Version20250531150046 extends AbstractMigration
         SQL);
     }
 }
+
+# backdated-commit: 2025-08-11 00:00:00
