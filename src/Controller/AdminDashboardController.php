@@ -27,9 +27,7 @@ class AdminDashboardController extends AbstractController
         $productCount = $entityManager->getRepository(Product::class)->count([]);
 
         $totalSalesDql = $entityManager->createQuery(
-            'SELECT SUM(p.price) 
-             FROM App\Entity\Commande c 
-             JOIN c.products p'
+            'SELECT SUM(c.price) FROM App\Entity\Commande c'
         );
         $totalSales = $totalSalesDql->getSingleScalarResult();
         $totalSales = $totalSales !== null ? (float) $totalSales : 0.0;
@@ -41,6 +39,8 @@ class AdminDashboardController extends AbstractController
             ->createQueryBuilder('p')
             ->leftJoin('p.ratings', 'r')
             ->addSelect('AVG(r.value) AS avgRating')
+            ->where('p.isActive = :active')
+            ->setParameter('active', true)
             ->groupBy('p.id')
             ->orderBy('avgRating', 'DESC')
             ->setMaxResults(3);
@@ -58,3 +58,5 @@ class AdminDashboardController extends AbstractController
         ]);
     }
 }
+
+# backdated-commit: 2025-08-19 00:00:00
