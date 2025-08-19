@@ -34,3 +34,5 @@ final class AuthController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }
+
+# backdated-commit: 2025-08-20 00:00:00
