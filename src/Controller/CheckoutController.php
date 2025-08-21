@@ -1,106 +1,88 @@
 <?php
+
 namespace App\Controller;
 
-use App\Entity\Commande;
+use App\Service\OrderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\ORM\EntityManagerInterface;
 
 class CheckoutController extends AbstractController
 {
     #[Route('/checkout', name: 'app_checkout', methods: ['GET'])]
-    public function checkout(): Response
+    public function checkout(OrderService $orderService): Response
     {
         $user = $this->getUser();
         if (!$user || !$user->getPanier()) {
-            return $this->redirectToRoute('product');
+            return $this->redirectToRoute('app_login');
         }
 
         $panier = $user->getPanier();
-        $commande = new Commande();
-        $commande->setUser($user);
-        foreach ($panier->getProducts() as $p) {
-            $commande->addProduct($p);
-        }
-        $commande->setPrice($commande->getTotalPrice());
+        $commande = $orderService->createPreviewOrder($panier);
 
         return $this->render('checkout/index.html.twig', [
-            'commande'   => $commande,
+            'commande' => $commande,
             'totalPrice' => $commande->getPrice(),
-            'panier'     => $panier,
+            'panier' => $panier,
+        ]);
+    }
+
+    #[Route('/checkout/direct_payment', name: 'app_direct_payment', methods: ['GET', 'POST'])]
+    public function directPayment(OrderService $orderService): Response
+    {
+        $user = $this->getUser();
+        if (!$user || !$user->getPanier()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $panier = $user->getPanier();
+        if ($panier->getProducts()->isEmpty()) {
+            $this->addFlash('warning', 'Your cart is empty.');
+            return $this->redirectToRoute('product');
+        }
+
+        $commande = $orderService->createPreviewOrder($panier);
+
+        return $this->render('checkout/direct_payment.html.twig', [
+            'commande' => $commande,
+            'totalPrice' => $commande->getPrice(),
+            'panier' => $panier,
         ]);
     }
 
     #[Route('/checkout/process_direct', name: 'payment_process', methods: ['POST'])]
-    public function processPayment(EntityManagerInterface $em, Request $request): Response
-    {
-        $user   = $this->getUser();
-        $panier = $user->getPanier();
-
-        // 0. Stock check
-        foreach ($panier->getProducts() as $product) {
-            if (($product->getQuantity() ?? 0) <= 0) {
-                $this->addFlash('error', 'Sorry, one of the products is out of stock.');
-
-                // Re‐build preview order for the template
-                $previewOrder = new Commande();
-                $previewOrder->setUser($user);
-                foreach ($panier->getProducts() as $p) {
-                    $previewOrder->addProduct($p);
-                }
-                $previewOrder->setPrice($previewOrder->getTotalPrice());
-
-                return $this->render('checkout/direct_payment.html.twig', [
-                    'commande'   => $previewOrder,
-                    'totalPrice' => $previewOrder->getPrice(),
-                    'panier'     => $panier,
-                ]);
-            }
-        }
-
-        $commande = new Commande();
-        $commande->setUser($user);
-        foreach ($panier->getProducts()->toArray() as $product) {
-            $commande->addProduct($product);
-            $currentQty = $product->getQuantity() ?? 0;
-            $product->setQuantity(max(0, $currentQty - 1));
-            $em->persist($product);
-            $panier->removeProduct($product);
-        }
-        $commande->setPrice($commande->getTotalPrice());
-
-        $em->persist($commande);
-        $em->persist($panier);
-        $em->flush();
-
-        $this->addFlash('success', 'Your order has been placed!');
-        return $this->redirectToRoute('app_dashboard');
-    }
-
-    // CheckoutController.php
-    #[Route('/checkout/direct_payment', name: 'app_direct_payment', methods: ['GET','POST'])]
-    public function directPayment(): Response
+    public function processPayment(Request $request, OrderService $orderService): Response
     {
         $user = $this->getUser();
         if (!$user || !$user->getPanier()) {
-            return $this->redirectToRoute('product');
+            return $this->redirectToRoute('app_login');
+        }
+
+        if (!$this->isCsrfTokenValid('direct_payment', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid security token.');
+            return $this->redirectToRoute('app_direct_payment');
         }
 
         $panier = $user->getPanier();
-        $commande = new Commande();
-        $commande->setUser($user);
+        $errors = $orderService->validateCartStock($panier);
+        if ($errors !== []) {
+            foreach ($errors as $error) {
+                $this->addFlash('error', $error);
+            }
 
-        foreach ($panier->getProducts() as $p) {
-            $commande->addProduct($p);
+            return $this->render('checkout/direct_payment.html.twig', [
+                'commande' => $orderService->createPreviewOrder($panier),
+                'totalPrice' => $orderService->createPreviewOrder($panier)->getPrice(),
+                'panier' => $panier,
+            ]);
         }
-        $commande->setPrice($commande->getTotalPrice());
 
-        return $this->render('checkout/direct_payment.html.twig', [
-            'commande'   => $commande,
-            'totalPrice' => $commande->getPrice(),
-            'panier'     => $panier,
-        ]);
+        $orderService->placeOrderFromCart($panier);
+        $this->addFlash('success', 'Your order has been placed successfully.');
+
+        return $this->redirectToRoute('app_dashboard');
     }
 }
+
+# backdated-commit: 2025-08-21 00:00:00
