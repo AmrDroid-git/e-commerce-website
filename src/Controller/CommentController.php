@@ -105,3 +105,5 @@ class CommentController extends AbstractController
         return $this->redirectToRoute('product_show', ['id' => $productId]);
     }
 }
+
+# backdated-commit: 2025-08-23 00:00:00
