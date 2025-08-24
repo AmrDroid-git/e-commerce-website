@@ -35,6 +35,8 @@ final class DashboardController extends AbstractController
             ->createQueryBuilder('p')
             ->leftJoin('p.ratings', 'r')
             ->addSelect('AVG(r.value) AS avgRating')
+            ->where('p.isActive = :active')
+            ->setParameter('active', true)
             ->groupBy('p.id')
             ->orderBy('avgRating', 'DESC')
             ->setMaxResults(3);
@@ -68,3 +70,5 @@ final class DashboardController extends AbstractController
         ]);
     }
 }
+
+# backdated-commit: 2025-08-24 00:00:00
