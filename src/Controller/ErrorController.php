@@ -13,3 +13,4 @@ public function accessDenied(): Response
 return $this->render('bundles/TwigBundle/Exception/error403.html.twig');
 }
 }
+# backdated-commit: 2025-08-25 00:00:00
