@@ -1,17 +1,16 @@
 <?php
 
 namespace App\Controller;
-use App\Repository\CommentRepository;
-use Symfony\Component\Filesystem\Filesystem;
-use App\Entity\Product;
+
 use App\Entity\Category;
+use App\Entity\Product;
 use App\Form\ProductForm;
 use App\Repository\CategoryRepository;
-use App\Repository\ProductRepository;
+use App\Service\ProductDisplayService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,104 +19,55 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProductController extends AbstractController
 {
-    #[Route('/product', name: 'product')]
+    #[Route('/product', name: 'product', methods: ['GET'])]
     public function index(
-        ProductRepository $productsRepo,
         Request $request,
         EntityManagerInterface $em,
-        Security $security
+        ProductDisplayService $productDisplay
     ): Response {
-        $user       = $security->getUser();
-        $searchTerm = trim((string)$request->query->get('search', ''));
+        $searchTerm = trim((string) $request->query->get('search', ''));
         $categoryId = $request->query->getInt('category', 0);
+        $sort = (string) $request->query->get('sort', 'name');
 
-        $categories = $em->getRepository(Category::class)->findAll();
-        $qb = $em->getRepository(Product::class)
-            ->createQueryBuilder('p')
-            ->where('p.isActive = :active')
-            ->setParameter('active', true);
-
-
-        if ($searchTerm !== '') {
-            $qb->andWhere('LOWER(p.name) LIKE :search')
-                ->setParameter('search', '%' . mb_strtolower($searchTerm) . '%');
-        }
+        $categories = $em->getRepository(Category::class)->findBy([], ['name' => 'ASC']);
+        $categoryName = null;
 
         if ($categoryId > 0) {
-            // Fetch the Category entity so we can get its name
             $category = $em->getRepository(Category::class)->find($categoryId);
-            if ($category) {
-                $qb->andWhere('p.category = :catName')
-                    ->setParameter('catName', $category->getName());
-            }
+            $categoryName = $category?->getName();
         }
 
-        $qb->orderBy('p.name', 'ASC');
-
-        $filteredProducts = $qb->getQuery()->getResult();
-
-        $productsWithRating = [];
-        foreach ($filteredProducts as $product) {
-            $ratings       = $product->getRatings();
-            $averageRating = null;
-            $countRatings  = count($ratings);
-
-            if ($countRatings > 0) {
-                $sum           = array_sum(
-                    array_map(fn($r) => $r->getValue(), $ratings->toArray())
-                );
-                $averageRating = round($sum / $countRatings, 1);
-            }
-
-            $productsWithRating[] = [
-                'product'     => $product,
-                'rating'      => $averageRating,
-                'ratingCount' => $countRatings,
-            ];
-        }
+        $products = $productDisplay->findVisibleProducts($searchTerm, $categoryName, $sort);
 
         return $this->render('product/index.html.twig', [
-            'user'               => $user,
-            'categories'         => $categories,
-            'productsWithRating' => $productsWithRating,
-            'currentSearch'      => $searchTerm,
-            'currentCategory'    => $categoryId,
-            'ratingCount' => count($ratings),
+            'categories' => $categories,
+            'productsWithRating' => $productDisplay->decorateProducts($products),
+            'currentSearch' => $searchTerm,
+            'currentCategory' => $categoryId,
+            'currentSort' => $sort,
         ]);
     }
 
-
-
-    #[Route('/product/{id}', name: 'product_show', requirements: ['id' => '\d+'])]
-    public function show(int $id, EntityManagerInterface $em, Security $security): Response
+    #[Route('/product/{id}', name: 'product_show', requirements: ['id' => '\\d+'], methods: ['GET'])]
+    public function show(Product $product, ProductDisplayService $productDisplay): Response
     {
-        $product = $em->getRepository(Product::class)->find($id);
-        if (!$product) {
+        if (!$product->isActive() && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createNotFoundException('Product not found');
         }
 
-        $user = $security->getUser();
-
-        $ratings = $product->getRatings();
-        $averageRating = 0;
-        if (count($ratings) > 0) {
-            $sum           = array_sum(array_map(fn($r) => $r->getValue(), $ratings->toArray()));
-            $averageRating = round($sum / count($ratings), 2);
-        }
-
         return $this->render('product/show.html.twig', [
-            'product'        => $product,
-            'comments'       => $product->getComments(),
-            'ratings'        => $ratings,
-            'average_rating' => $averageRating,
-            'user'           => $user,
+            'product' => $product,
+            'comments' => $product->getComments(),
+            'ratings' => $product->getRatings(),
+            'average_rating' => $productDisplay->getAverageRating($product) ?? 0,
+            'user' => $this->getUser(),
         ]);
     }
 
-    #[Route('/admin/product/new', name: 'admin_product_new')]
+    #[Route('/admin/product/new', name: 'admin_product_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
-        EntityManagerInterface $entityManager,
+        EntityManagerInterface $em,
         SluggerInterface $slugger,
         ParameterBagInterface $params,
         CategoryRepository $categoryRepository
@@ -129,76 +79,105 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gestion de l'upload d'image
             $imageFile = $form->get('imageFile')->getData();
-
             if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $params->get('product_images_directory'),
-                        $newFilename
-                    );
-                    $product->setImageUrl($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors du téléchargement de l\'image');
-                }
+                $product->setImageUrl($this->uploadProductImage($imageFile, $slugger, $params));
+            } else {
+                $product->setImageUrl('');
             }
 
-            $entityManager->persist($product);
-            $entityManager->flush();
+            $em->persist($product);
+            $em->flush();
 
-            $this->addFlash('success', 'Produit créé avec succès!');
+            $this->addFlash('success', 'Product created successfully.');
             return $this->redirectToRoute('product');
         }
 
         return $this->render('product/new.html.twig', [
             'form' => $form->createView(),
-            'categories' => $categoryRepository->findAll()
+            'categories' => $categoryRepository->findBy([], ['name' => 'ASC']),
         ]);
     }
-    #[Route('/admin/product/{id}/delete', name: 'admin_product_delete', methods: ['POST', 'DELETE'])]
-    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
-    {
-        $product->setIsActive(false);
-        $entityManager->flush();
 
-        return $this->redirectToRoute('product');
-    }
+    #[Route('/admin/product/{id}/edit', name: 'admin_product_edit', requirements: ['id' => '\\d+'], methods: ['GET', 'POST'])]
+    public function edit(
+        Product $product,
+        Request $request,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger,
+        ParameterBagInterface $params,
+        CategoryRepository $categoryRepository
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-
-    #[Route('/admin/product/{id}/edit', name: 'admin_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Product $product, Request $request, EntityManagerInterface $em, CommentRepository $commentRepository,CategoryRepository $categoryRepository): Response
-    {
+        $oldImage = $product->getImageUrl();
         $form = $this->createForm(ProductForm::class, $product);
         $form->handleRequest($request);
 
-//        $comments = $commentRepository->findBy(['product' => $product]);
-//
-//        $ratings = array_map(fn($c) => $c->getRating(), $comments);
-//        $averageRating = 0;
-//        if (count($ratings) > 0) {
-//            $averageRating = array_sum($ratings) / count($ratings);
-//        }
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('imageFile')->getData();
+            if ($imageFile) {
+                $product->setImageUrl($this->uploadProductImage($imageFile, $slugger, $params));
+                $this->removeProductImage($oldImage, $params);
+            }
+
             $em->flush();
+            $this->addFlash('success', 'Product updated successfully.');
 
-            $this->addFlash('success', 'Produit modifié avec succès.');
-
-            return $this->redirectToRoute('product', ['id' => $product->getId()]);
+            return $this->redirectToRoute('product_show', ['id' => $product->getId()]);
         }
-        $categories = $categoryRepository->findAll();
 
         return $this->render('product/edit.html.twig', [
             'product' => $product,
             'form' => $form->createView(),
-            'categories' => $categories,
+            'categories' => $categoryRepository->findBy([], ['name' => 'ASC']),
         ]);
+    }
 
-    }}
+    #[Route('/admin/product/{id}/delete', name: 'admin_product_delete', requirements: ['id' => '\\d+'], methods: ['POST'])]
+    public function delete(Request $request, Product $product, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        if (!$this->isCsrfTokenValid('delete' . $product->getId(), (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Invalid security token.');
+            return $this->redirectToRoute('product_show', ['id' => $product->getId()]);
+        }
 
+        $product->setIsActive(false);
+        $em->flush();
+
+        $this->addFlash('success', 'Product removed from the public catalog.');
+        return $this->redirectToRoute('product');
+    }
+
+    private function uploadProductImage(mixed $imageFile, SluggerInterface $slugger, ParameterBagInterface $params): string
+    {
+        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = $slugger->slug($originalFilename)->lower();
+        $newFilename = sprintf('%s-%s.%s', $safeFilename, uniqid('', true), $imageFile->guessExtension());
+
+        try {
+            $imageFile->move($params->get('product_images_directory'), $newFilename);
+        } catch (FileException $e) {
+            throw new \RuntimeException('Unable to upload product image.', 0, $e);
+        }
+
+        return $newFilename;
+    }
+
+    private function removeProductImage(?string $filename, ParameterBagInterface $params): void
+    {
+        if (!$filename) {
+            return;
+        }
+
+        $path = rtrim((string) $params->get('product_images_directory'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename;
+        $filesystem = new Filesystem();
+        if ($filesystem->exists($path)) {
+            $filesystem->remove($path);
+        }
+    }
+}
+
+# backdated-commit: 2025-08-31 00:00:00
