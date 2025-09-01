@@ -1,8 +1,11 @@
 <?php
+
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Product;
 use App\Entity\Rating;
+use App\Entity\User;
 use App\Repository\RatingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,23 +13,15 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Comment;
 
 #[Route('/rating')]
 class RatingController extends AbstractController
 {
-    private EntityManagerInterface $em;
-    private Security $security;
-    private RatingRepository $ratingRepo;
-
     public function __construct(
-        EntityManagerInterface $em,
-        Security $security,
-        RatingRepository $ratingRepo
+        private readonly EntityManagerInterface $em,
+        private readonly Security $security,
+        private readonly RatingRepository $ratingRepo
     ) {
-        $this->em = $em;
-        $this->security = $security;
-        $this->ratingRepo = $ratingRepo;
     }
 
     #[Route('/upsert', name: 'rating_upsert', methods: ['POST'])]
@@ -37,43 +32,45 @@ class RatingController extends AbstractController
             return $this->json(['error' => 'Authentication required'], 401);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $productId = $data['product_id'] ?? null;
-        $value = $data['value'] ?? null;
-        $commentContent = trim($data['comment'] ?? '');
-        error_log('Comment content: ' . $commentContent);
-
-        if ($productId === null || $value === null) {
-            return $this->json(['error' => 'Both product_id and value are required'], 400);
+        if (!$this->isCsrfTokenValid('rating_upsert', (string) $request->headers->get('X-CSRF-TOKEN'))) {
+            return $this->json(['error' => 'Invalid security token'], 400);
         }
-        if (!\is_int($value) || $value < 0 || $value > 5) {
-            return $this->json(['error' => 'Rating value must be an integer between 0 and 5'], 400);
+
+        $data = json_decode($request->getContent(), true);
+        if (!is_array($data)) {
+            return $this->json(['error' => 'Invalid JSON body'], 400);
+        }
+
+        $productId = filter_var($data['product_id'] ?? null, FILTER_VALIDATE_INT);
+        $value = filter_var($data['value'] ?? null, FILTER_VALIDATE_INT);
+        $commentContent = trim((string) ($data['comment'] ?? ''));
+
+        if (!$productId || $value === false || $value < 1 || $value > 5) {
+            return $this->json(['error' => 'Rating value must be between 1 and 5'], 400);
         }
 
         $product = $this->em->getRepository(Product::class)->find($productId);
-        if (!$product) {
+        if (!$product || !$product->isActive()) {
             return $this->json(['error' => 'Product not found'], 404);
         }
 
         $existingRating = $this->ratingRepo->findOneByUserAndProduct($user, $product);
-
         if ($existingRating) {
-            $existingRating->setValue($value);
-            $rating = $existingRating;
+            $rating = $existingRating->setValue($value);
         } else {
-            $rating = new Rating();
-            $rating->setUser($user);
-            $rating->setProduct($product);
-            $rating->setValue($value);
+            $rating = (new Rating())
+                ->setUser($user)
+                ->setProduct($product)
+                ->setValue($value);
             $this->em->persist($rating);
         }
 
+        $comment = null;
         if ($commentContent !== '') {
-            $comment = new Comment();
-            $comment->setUser($user);
-            $comment->setProduct($product);
-            $comment->setContent($commentContent);
-            $comment->setCreatedAt(new \DateTimeImmutable());
+            $comment = (new Comment())
+                ->setUser($user)
+                ->setProduct($product)
+                ->setContent(mb_substr($commentContent, 0, 255));
             $this->em->persist($comment);
         }
 
@@ -85,39 +82,36 @@ class RatingController extends AbstractController
             'value' => $rating->getValue(),
         ];
 
-        // If a comment was created, render it and send back HTML
-        if (isset($comment)) {
-            $commentHtml = $this->renderView('comment/_single_comment.html.twig', [
-                'comment' => $comment
+        if ($comment) {
+            $response['comment_html'] = $this->renderView('comment/_single_comment.html.twig', [
+                'comment' => $comment,
             ]);
-            $response['comment_html'] = $commentHtml;
         }
 
         return $this->json($response);
     }
 
-
-    #[Route('/product/{id}', name: 'rating_list_by_product', methods: ['GET'])]
+    #[Route('/product/{id}', name: 'rating_list_by_product', requirements: ['id' => '\\d+'], methods: ['GET'])]
     public function listByProduct(Product $product): JsonResponse
     {
         $ratings = $this->ratingRepo->findBy(['product' => $product]);
-        $payload = array_map(fn(Rating $rating) => [
-            'user' => $rating->getUser()->getUsername(),
-            'value' => $rating->getValue(),
-        ], $ratings);
 
-        return $this->json($payload);
+        return $this->json(array_map(fn (Rating $rating) => [
+            'user' => $rating->getUser()?->getUsername(),
+            'value' => $rating->getValue(),
+        ], $ratings));
     }
 
-    #[Route('/user/{id}', name: 'rating_list_by_user', methods: ['GET'])]
-    public function listByUser(\App\Entity\User $user): JsonResponse
+    #[Route('/user/{id}', name: 'rating_list_by_user', requirements: ['id' => '\\d+'], methods: ['GET'])]
+    public function listByUser(User $user): JsonResponse
     {
         $ratings = $this->ratingRepo->findBy(['user' => $user]);
-        $payload = array_map(fn(Rating $rating) => [
-            'product' => $rating->getProduct()->getName(),
-            'value' => $rating->getValue(),
-        ], $ratings);
 
-        return $this->json($payload);
+        return $this->json(array_map(fn (Rating $rating) => [
+            'product' => $rating->getProduct()?->getName(),
+            'value' => $rating->getValue(),
+        ], $ratings));
     }
 }
+
+# backdated-commit: 2025-09-01 00:00:00
