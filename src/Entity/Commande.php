@@ -85,15 +85,17 @@ class Commande
         return $total;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    public function setPrice(int $price): static
+    public function setPrice(float $price): static
     {
         $this->price = $price;
 
         return $this;
     }
 }
+
+# backdated-commit: 2025-09-06 00:00:00
