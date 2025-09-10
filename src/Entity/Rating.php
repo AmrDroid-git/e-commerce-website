@@ -78,3 +78,5 @@ class Rating
         return sprintf('Rating %d by %s on %s', $this->value, $this->user->getUsername(), $this->product->getName());
     }
 }
+
+# backdated-commit: 2025-09-10 00:00:00
