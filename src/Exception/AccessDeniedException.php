@@ -10,3 +10,4 @@ public function __construct(string $message = "Accès refusé : cette zone est r
 parent::__construct($message, $messageData, $code, $previous);
 }
 }
+# backdated-commit: 2025-09-12 00:00:00
