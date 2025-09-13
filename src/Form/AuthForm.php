@@ -28,3 +28,5 @@ class AuthForm extends AbstractType
         ]);
     }
 }
+
+# backdated-commit: 2025-09-13 00:00:00
