@@ -66,3 +66,5 @@ class RegistrationForm extends AbstractType
         ]);
     }
 }
+
+# backdated-commit: 2025-09-16 00:00:00
