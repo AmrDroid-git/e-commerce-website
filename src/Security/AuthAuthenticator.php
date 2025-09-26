@@ -69,3 +69,5 @@ class AuthAuthenticator extends AbstractLoginFormAuthenticator
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }
+
+# backdated-commit: 2025-09-26 00:00:00
