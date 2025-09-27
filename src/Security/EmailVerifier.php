@@ -50,3 +50,5 @@ class EmailVerifier
         $this->entityManager->flush();
     }
 }
+
+# backdated-commit: 2025-09-27 00:00:00
