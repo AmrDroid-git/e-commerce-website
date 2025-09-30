@@ -1,195 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}ScriptSphere{% endblock %}</title>
+    <meta name="description" content="ScriptSphere is a digital asset marketplace for templates, UI kits and ready-to-use web solutions.">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>💠</text></svg>">
+
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styles1.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/enhancements.css') }}">
 
-    {% block stylesheets %}
-    {% endblock %}
+    {% block stylesheets %}{% endblock %}
 </head>
 <body>
 {% include 'component/navbar.html.twig' %}
-<main>
+
+<div class="flash-container container">
+    {% for type, messages in app.flashes %}
+        {% if type in ['danger', 'error'] %}
+            {% set alertType = 'danger' %}
+        {% elseif type == 'success' %}
+            {% set alertType = 'success' %}
+        {% elseif type == 'warning' %}
+            {% set alertType = 'warning' %}
+        {% else %}
+            {% set alertType = 'info' %}
+        {% endif %}
+        {% for message in messages %}
+            <div class="alert alert-{{ alertType }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<main class="app-main">
     {% block body %}{% endblock %}
 </main>
 
 {% block developpers %}
-    <div class="site-footer">
+    <footer class="site-footer mt-5">
         <div class="footer-container">
             <section id="contact" class="developers-section">
                 <div class="developers-header">
                     <h2>Meet Our Developers</h2>
-                    <p>Get in touch with our talented development team</p>
+                    <p>Get in touch with our development team.</p>
                 </div>
 
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="developer-card">
-                            <div class="developer-info">
-                                <img src="{{ asset('images/amrdroid.jpg') }}" alt="Developer" class="developer-image">
-                                <h3 class="developer-name">Amr Slama</h3>
-                                <p class="developer-role">Fullstack Engineer</p>
-                                <div class="developer-social">
-                                    <a href="https://github.com/AmrDroid-git" class="social-link">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                    <a href="https://www.linkedin.com/in/slama-amr-27834b339/" class="social-link">
-                                        <i class="fab fa-linkedin"></i>
-                                    </a>
-                                    <a href="mailto:amr.slama@insat.ucar.tn" class="social-link">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
-                                </div>
-                                <p class="developer-contact">
-                                    <i class="fas fa-phone"></i> +216 28123673
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row g-4 justify-content-center">
+                    {% set developers = [
+                        {name: 'Amr Slama', role: 'Fullstack Engineer', image: 'amrdroid.jpg', github: 'https://github.com/AmrDroid-git', linkedin: 'https://www.linkedin.com/in/slama-amr-27834b339/', email: 'amr.slama@insat.ucar.tn'},
+                        {name: 'Sinda Ferchichi', role: 'Software Engineer', image: 'sinda.jpg', github: 'https://github.com/sendaferchichi', linkedin: 'https://www.linkedin.com/in/ferchichi-sinda-7115a0333/', email: 'senda.ferchichi@insat.ucar.tn'},
+                        {name: 'Moetaz Fradi', role: 'AI Engineer', image: 'moetez.jpg', github: 'https://github.com/Moetez-Fradi', linkedin: 'https://www.linkedin.com/in/moetez-fradi-349b2933b/', email: 'moetez.fradi@insat.ucar.tn'},
+                        {name: 'Rakia Tsouri', role: 'Software Engineer', image: 'rakia.jpg', github: 'https://github.com/rakia-tsouri', linkedin: 'https://www.linkedin.com/in/rakia-tsouri-795053303/', email: 'tsourirakia88@gmail.com'}
+                    ] %}
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="developer-card">
-                            <div class="developer-info">
-                                <img src="{{ asset('images/sinda.jpg') }}" alt="Developer" class="developer-image">
-                                <h3 class="developer-name">Sinda Ferchichi</h3>
-                                <p class="developer-role">Software Engineer</p>
+                    {% for developer in developers %}
+                        <div class="col-sm-6 col-lg-3">
+                            <article class="developer-card h-100">
+                                <img src="{{ asset('images/' ~ developer.image) }}" alt="{{ developer.name }}" class="developer-image">
+                                <h3 class="developer-name">{{ developer.name }}</h3>
+                                <p class="developer-role">{{ developer.role }}</p>
                                 <div class="developer-social">
-                                    <a href="https://github.com/sendaferchichi" class="social-link">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                    <a href="https://www.linkedin.com/in/ferchichi-sinda-7115a0333/" class="social-link">
-                                        <i class="fab fa-linkedin"></i>
-                                    </a>
-                                    <a href="mailto:senda.ferchichi@insat.ucar.tn" class="social-link">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
+                                    <a href="{{ developer.github }}" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                                    <a href="{{ developer.linkedin }}" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                                    <a href="mailto:{{ developer.email }}" class="social-link" aria-label="Email"><i class="fas fa-envelope"></i></a>
                                 </div>
-                                <p class="developer-contact">
-                                    <i class="fas fa-phone"></i> +216 57069847
-                                </p>
-                            </div>
+                            </article>
                         </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3">
-                        <div class="developer-card">
-                            <div class="developer-info">
-                                <img src="{{ asset('images/moetez.jpg') }}" alt="Developer" class="developer-image">
-                                <h3 class="developer-name">Moetaz Fradi</h3>
-                                <p class="developer-role">AI Engineer</p>
-                                <div class="developer-social">
-                                    <a href="https://github.com/Moetez-Fradi" class="social-link">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                    <a href="https://www.linkedin.com/in/moetez-fradi-349b2933b/" class="social-link">
-                                        <i class="fab fa-linkedin"></i>
-                                    </a>
-                                    <a href="mailto:moetez.fradi@insat.ucar.tn" class="social-link">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
-                                </div>
-                                <p class="developer-contact">
-                                    <i class="fas fa-phone"></i> +216 48000136
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3">
-                        <div class="developer-card">
-                            <div class="developer-info">
-                                <img src="{{ asset('images/rakia.jpg') }}" alt="Developer" class="developer-image">
-                                <h3 class="developer-name">Rakia Tsouri</h3>
-                                <p class="developer-role">Software Engineer</p>
-                                <div class="developer-social">
-                                    <a href="https://github.com/rakia-tsouri" class="social-link">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                    <a href="https://www.linkedin.com/in/rakia-tsouri-795053303/" class="social-link">
-                                        <i class="fab fa-linkedin"></i>
-                                    </a>
-                                    <a href="mailto:tsourirakia88@gmail.com" class="social-link">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
-                                </div>
-                                <p class="developer-contact">
-                                    <i class="fas fa-phone"></i> +216 21798827
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </section>
-            <section id="about">
-                <div class="footer-content">
-                    <div style="font-size: 40pt; color: white !important; font-family: 'Montserrat', sans-serif;">
-                        ScriptSphere
-                    </div>
-                    <br>
-                    <p class="footer-description">
-                        Your destination for premium digital assets and online solutions.
-                        At ScriptSphere, we combine academic knowledge and
-                        practical expertise to deliver premium digital solutions.
-                    </p>
 
-                    <div class="footer-offerings">
-                        <div class="offering-column">
-                            <h4 class="offering-title">What We Offer</h4>
-                            <ul class="offering-list">
-                                <li>Website templates & UI kits</li>
-                                <li>Full-stack development services</li>
-                                <li>Custom digital solutions</li>
-                                <li>E-commerce integrations</li>
-                                <li>Artificial Intelligence integration</li>
-                            </ul>
-                        </div>
-
-                        <div class="offering-column">
-                            <h4 class="offering-title">Our Mission</h4>
-                            <p>
-                                We believe in the need for digitalisation, especially in <br />
-                                under-developed country. We aim to advance technology  <br />
-                                implementation in our nation in a non-stopping developing world.
-                            </p>
-                        </div>
-                    </div>
-
-                    <p class="mission-statement">
-                        "The goal is not to do business with everyone who needs what you have. The goal is to do business with people who believe what you believe."
-                    </p>
-
-                    <div class="footer-links">
-                        <a href="/" class="footer-link">Home</a>
-                        <a href="/products" class="footer-link">Products</a>
-                        <a href="#about" class="footer-link">About</a>
-                        <a href="#contact" class="footer-link">Contact</a>
-                    </div>
-
-                    <div class="footer-copyright">
-                        &copy; <span id="current-year"></span> ScriptSphere. All rights reserved.
-                    </div>
+            <section id="about" class="footer-content">
+                <h2 class="footer-brand">ScriptSphere</h2>
+                <p class="footer-description">
+                    A clean marketplace for premium digital assets, templates and web solutions.
+                </p>
+                <div class="footer-links">
+                    <a href="{{ path('app_home') }}" class="footer-link">Home</a>
+                    <a href="{{ path('product') }}" class="footer-link">Products</a>
+                    <a href="#about" class="footer-link">About</a>
+                    <a href="#contact" class="footer-link">Contact</a>
+                </div>
+                <div class="footer-copyright">
+                    &copy; <span id="current-year"></span> ScriptSphere. All rights reserved.
                 </div>
             </section>
         </div>
-    </div>
+    </footer>
 {% endblock %}
 
-<script>
-    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-        const navLinks = document.getElementById('navLinks');
-        navLinks.classList.toggle('active');
-    });
-
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-</script>
-
-{% block javascripts %}
-    <script src="{{ asset('js/script.js') }}"></script>
-{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="{{ asset('js/favorites.js') }}" defer></script>
+<script src="{{ asset('js/script.js') }}" defer></script>
+{% block javascripts %}{% endblock %}
 </body>
 </html>
+
+# backdated-commit: 2025-09-30 00:00:00
