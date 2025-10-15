@@ -27,6 +27,7 @@
                         <form
                                 action="{{ path('app_manage_promote') }}"
                                 method="POST">
+                            <input type="hidden" name="_token" value="{{ csrf_token('manage_users_promote') }}">
                             <div class="mb-3">
                                 <label for="promote_user_id" class="form-label">
                                     Choose a user:
@@ -68,6 +69,7 @@
                         <form
                                 action="{{ path('app_manage_demote') }}"
                                 method="POST">
+                            <input type="hidden" name="_token" value="{{ csrf_token('manage_users_demote') }}">
                             <div class="mb-3">
                                 <label for="demote_admin_id" class="form-label">
                                     Choose an admin:
@@ -110,6 +112,7 @@
                                 action="{{ path('app_manage_delete') }}"
                                 method="POST"
                                 onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('manage_users_delete') }}">
                             <div class="mb-3">
                                 <label for="delete_user_id" class="form-label">
                                     Choose a user to delete:
@@ -145,3 +148,4 @@
 
 {% endblock %}
 {% block developpers %} {% endblock %}
+# backdated-commit: 2025-10-15 00:00:00
