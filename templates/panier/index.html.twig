@@ -94,7 +94,7 @@
                                                 <p class="mb-1 fw-bold">€{{ product.price }}</p>
                                                 <form action="{{ path('app_panier_remove', { 'user': user.id }) }}" method="post" class="remove-btn">
                                                     <input type="hidden" name="product_id" value="{{ product.id }}">
-                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_remove_' ~ product.id) }}">
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
@@ -149,3 +149,5 @@
     </div>
 {% endblock %}
 {% block developpers %}{% endblock %}
+
+# backdated-commit: 2025-10-16 00:00:00
