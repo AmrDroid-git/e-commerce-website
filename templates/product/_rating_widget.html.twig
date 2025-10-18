@@ -161,7 +161,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': '{{ csrf_token('authenticate') }}'
+                    'X-CSRF-TOKEN': '{{ csrf_token('rating_upsert') }}'
                 },
                 body: JSON.stringify(payload)
             })
@@ -180,7 +180,7 @@
                     highlightStars(chosenRating);
 
                     if (data.comment_html) {
-                        const commentsList = document.querySelector('.list-group');
+                        const commentsList = document.querySelector('.comments-list');
                         if (commentsList) {
                             const tempDiv = document.createElement('div');
                             tempDiv.innerHTML = data.comment_html;
@@ -211,3 +211,4 @@
         highlightStars({{ userRating ? userRating.getValue() : 0 }});
     });
 </script>
+# backdated-commit: 2025-10-18 00:00:00
