@@ -1,135 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des produits – ScriptSphere{% endblock %}
-
-{% block stylesheets %}
-
-    {# display errors #}
-    {% for msg in app.flashes('danger') %}
-        <div class="alert alert-danger">{{ msg }}</div>
-    {% endfor %}
-
-    {# display successes #}
-    {% for msg in app.flashes('success') %}
-        <div class="alert alert-success">{{ msg }}</div>
-    {% endfor %}
-
-    {{ parent() }}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body { background: #f8f9fa; }
-        #dashboardContent { max-width: 80%; margin: 0 auto; padding: 1rem 0; }
-        .page-header h1 { font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 700; }
-        .btn-custom { background-color: #001761; color: #fff; }
-        .btn-custom:hover { background-color: #001140; }
-        .hover-lift { transition: transform .2s, box-shadow .2s; }
-        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1rem rgba(0,0,0,0.1); }
-        .object-fit-cover { object-fit: cover; }
-        .form-control:focus, .form-select:focus { border-color: #001761; box-shadow: 0 0 .2rem rgba(0,23,97,.25); }
-    </style>
-{% endblock %}
+{% block title %}Products - ScriptSphere{% endblock %}
 
 {% block body %}
-    <div class="container-fluid" id="dashboardContent">
-<br />
-        <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
-            <h3 class="h5 mb-3 text-dark"><i class="fas fa-filter me-2"></i>Search Products</h3>
-            <form method="get" action="{{ path('product') }}" class="row g-3">
-                <div class="col-md-6">
+    <section class="page-shell">
+        <div class="page-hero-card mb-4">
+            <span class="page-eyebrow"><i class="fas fa-sparkles"></i> Digital marketplace</span>
+            <h1 class="page-title">Find your next web asset</h1>
+            <p class="page-subtitle mb-0">
+                Browse ready-to-use templates, bundles, bots and UI kits. Use search and filters to find exactly what you need.
+            </p>
+        </div>
+
+        <div class="filter-card p-4 mb-4">
+            <form method="get" action="{{ path('product') }}" class="row g-3 align-items-end">
+                <div class="col-lg-5">
+                    <label class="form-label fw-semibold" for="searchInput">Search</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-light border-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" name="search" value="{{ currentSearch }}" class="form-control border-start-0" placeholder="Search by name...">
+                        <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                        <input id="searchInput" type="text" name="search" value="{{ currentSearch }}" class="form-control border-start-0" placeholder="Product name, category or description...">
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-0">
-                            <i class="fas fa-tag text-muted"></i>
-                        </span>
-                        <select name="category" class="form-select">
-                            <option value="0" {{ currentCategory == 0 ? 'selected' : '' }}>all categories</option>
-                            {% for cat in categories %}
-                                <option value="{{ cat.id }}" {{ cat.id == currentCategory ? 'selected' : '' }}>{{ cat.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+
+                <div class="col-md-4 col-lg-3">
+                    <label class="form-label fw-semibold" for="categorySelect">Category</label>
+                    <select id="categorySelect" name="category" class="form-select">
+                        <option value="0" {{ currentCategory == 0 ? 'selected' : '' }}>All categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {{ cat.id == currentCategory ? 'selected' : '' }}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-custom w-100">
+
+                <div class="col-md-4 col-lg-2">
+                    <label class="form-label fw-semibold" for="sortSelect">Sort</label>
+                    <select id="sortSelect" name="sort" class="form-select">
+                        <option value="name" {{ currentSort == 'name' ? 'selected' : '' }}>Name</option>
+                        <option value="rating" {{ currentSort == 'rating' ? 'selected' : '' }}>Top rated</option>
+                        <option value="newest" {{ currentSort == 'newest' ? 'selected' : '' }}>Newest</option>
+                        <option value="price_asc" {{ currentSort == 'price_asc' ? 'selected' : '' }}>Price ↑</option>
+                        <option value="price_desc" {{ currentSort == 'price_desc' ? 'selected' : '' }}>Price ↓</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 col-lg-2 d-grid">
+                    <button type="submit" class="btn btn-brand">
                         <i class="fas fa-filter me-1"></i>Apply
                     </button>
                 </div>
             </form>
         </div>
 
-        <div class="d-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-4 gap-3 flex-wrap">
+            <div>
+                <h2 class="h4 mb-1">Available products</h2>
+                <p class="text-muted mb-0">{{ productsWithRating|length }} result{{ productsWithRating|length == 1 ? '' : 's' }}</p>
+            </div>
+
             {% if is_granted('ROLE_ADMIN') %}
-                <a href="/admin/product/new" class="btn btn-custom">
+                <a href="{{ path('admin_product_new') }}" class="btn btn-brand">
                     <i class="fas fa-plus-circle me-2"></i>New Product
                 </a>
             {% endif %}
         </div>
 
         {% include 'component/products.html.twig' %}
-    </div>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle favorite buttons for authenticated users
-            document.querySelectorAll('.favorite-btn').forEach(btn => {
-                btn.addEventListener('click', function(event) {
-                    event.preventDefault();
-
-                    const actionUrl = this.dataset.actionUrl;
-                    const csrfToken = this.dataset.csrfToken;
-                    const productId = this.dataset.productId;
-                    const isCurrentlyFav = this.classList.contains('btn-danger');
-
-                    fetch(actionUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: JSON.stringify({ _token: csrfToken })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success && data.productId == productId) {
-                                if (isCurrentlyFav) {
-                                    btn.classList.remove('btn-danger');
-                                    btn.classList.add('btn-outline-danger');
-                                    btn.dataset.actionUrl = "{{ path('favorite_add', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
-                                    btn.dataset.csrfToken = "{{ csrf_token('addREPLACE') }}".replace('REPLACE', productId);
-                                    btn.innerHTML = '<i class="far fa-heart"></i>';
-                                } else {
-                                    btn.classList.remove('btn-outline-danger');
-                                    btn.classList.add('btn-danger');
-                                    btn.dataset.actionUrl = "{{ path('favorite_remove', { id: 'REPLACE_ID' }) }}".replace('REPLACE_ID', productId);
-                                    btn.dataset.csrfToken = "{{ csrf_token('removeREPLACE') }}".replace('REPLACE', productId);
-                                    btn.innerHTML = '<i class="fas fa-heart"></i>';
-                                }
-                            }
-                        })
-                        .catch(err => {
-                            console.error('Erreur AJAX favoritage :', err);
-                        });
-                });
-            });
-
-            // Handle login redirects for non-authenticated users
-            document.querySelectorAll('.login-redirect').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.location.href = "{{ path('app_login') }}";
-                });
-            });
-        });
-    </script>
+    </section>
 {% endblock %}
-{% block developpers %} {% endblock %}
+
+{% block developpers %}{% endblock %}
+
+# backdated-commit: 2025-10-20 00:00:00
