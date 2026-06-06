@@ -29,3 +29,6 @@
 .idea/
 "eval \"$(ssh-agent -s)\""
 "eval \"$(ssh-agent -s)\".pub"
+
+
+/seedingdata.py
